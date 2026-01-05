@@ -1,0 +1,2 @@
+new react app
+  npx @react-native-community/cli init project_name
