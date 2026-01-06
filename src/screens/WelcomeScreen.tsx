@@ -15,22 +15,22 @@ export default function WelcomeScreen({ navigation }: Props) {
     <View style={styles.container}>
       <Text style={styles.title}>Welcome 👋</Text>
       <Text style={styles.subtitle}>
-        Please login or create an account
+        Μικρή περιγραφή της εφαρμογής.
       </Text>
 
       <TouchableOpacity
         style={styles.loginButton}
-        onPress={() => navigation.navigate('Login')}
+        onPress={() => navigation.navigate('Home')}
       >
-        <Text style={styles.loginText}>Login</Text>
+        <Text style={styles.loginText}>Συνέχεια</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={styles.signupButton}
         onPress={() => navigation.navigate('Signup')}
       >
         <Text style={styles.signupText}>Sign Up</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 }
@@ -68,18 +68,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-  signupButton: {
-    borderWidth: 1,
-    borderColor: '#0d9488',
-    paddingVertical: 14,
-    paddingHorizontal: 60,
-    borderRadius: 8,
-    width: '100%',
-  },
-  signupText: {
-    color: '#0d9488',
-    textAlign: 'center',
-    fontSize: 16,
-    fontWeight: '600',
-  },
+  // signupButton: {
+  //   borderWidth: 1,
+  //   borderColor: '#0d9488',
+  //   paddingVertical: 14,
+  //   paddingHorizontal: 60,
+  //   borderRadius: 8,
+  //   width: '100%',
+  // },
+  // signupText: {
+  //   color: '#0d9488',
+  //   textAlign: 'center',
+  //   fontSize: 16,
+  //   fontWeight: '600',
+  // },
 });

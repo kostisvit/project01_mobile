@@ -6,6 +6,7 @@ import LoginScreen from '../screens/LoginScreen';
 import HomeScreen from '../screens/HomeScreen';
 import { RootStackParamList } from '../types/navigation';
 import WelcomeScreen from '../screens/WelcomeScreen';
+import ScrollableTabs from '../components/ScrollableTabs';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -16,6 +17,12 @@ export default function AppNavigator() {
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Signup" component={SignupScreen} />
       <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen
+        name="Tabs"
+        options={{ title: 'Categories' }}
+      >
+        {() => <ScrollableTabs apiUrl="http://127.0.0.1:8000/api/org-types" />}
+      </Stack.Screen>
     </Stack.Navigator>
   );
 }

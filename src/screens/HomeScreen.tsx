@@ -1,57 +1,37 @@
 // src/screens/HomeScreen.tsx
 import React from 'react';
-import { View, Text, StyleSheet,TouchableOpacity,  Alert, } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { RootStackParamList } from '../types/navigation';
+import { View, Text, StyleSheet } from 'react-native';
+import ScrollableTabs from '../components/ScrollableTabs';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
-export default function HomeScreen({ navigation }: Props) {
-  const handleLogout = async () => {
-    try {
-      await AsyncStorage.multiRemove(['access_token', 'refresh_token']);
-
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Login' }],
-      });
-    } catch (error) {
-      Alert.alert('Error', 'Failed to logout');
-    }
-  };
-
+const HomeScreen: React.FC = () => {
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Welcome to Home Screen 🎉</Text>
+    <SafeAreaView style={styles.container}>
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.title}>Welcome to Home</Text>
+      </View>
 
-      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-        <Text style={styles.logoutText}>Logout</Text>
-      </TouchableOpacity>
-    </View>
+      {/* Tab Section */}
+      <View style={styles.tabSection}>
+        <ScrollableTabs apiUrl="http://127.0.0.1:8000/api/org-types/" />
+      </View>
+
+      {/* Other content */}
+      <View style={styles.content}>
+        <Text>Other content here</Text>
+      </View>
+    </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 24,
-  },
-  text: {
-    fontSize: 24,
-    marginBottom: 32,
-  },
-  logoutButton: {
-    backgroundColor: '#FF3B30',
-    paddingVertical: 14,
-    paddingHorizontal: 32,
-    borderRadius: 8,
-  },
-  logoutText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 16,
-  },
+  container: { flex: 1, backgroundColor: '#34d399' },
+  header: { height: 80, justifyContent: 'center', alignItems: 'center' },
+  title: { fontSize: 24, fontWeight: 'bold' },
+  tabSection: { flex: 1 }, // Tabs take remaining space
+  content: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' },
 });
+
+export default HomeScreen;
