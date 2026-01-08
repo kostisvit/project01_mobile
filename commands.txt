@@ -1,2 +1,8 @@
 new react app
   npx @react-native-community/cli init project_name
+  
+clrar Pods
+  rm -rf Pods Podfile.lock
+  pod install
+  
+npm install react-native-config - hide sensitivite data to .env file like Dkjango

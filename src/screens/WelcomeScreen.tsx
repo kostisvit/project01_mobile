@@ -13,7 +13,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Welcome'>;
 export default function WelcomeScreen({ navigation }: Props) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome 👋</Text>
+      <Text style={styles.title}>NearMe</Text>
       <Text style={styles.subtitle}>
         Μικρή περιγραφή της εφαρμογής.
       </Text>
@@ -22,15 +22,15 @@ export default function WelcomeScreen({ navigation }: Props) {
         style={styles.loginButton}
         onPress={() => navigation.navigate('Home')}
       >
-        <Text style={styles.loginText}>Συνέχεια</Text>
+        <Text style={styles.loginText}>Συνέχεια ως επισκέπτης</Text>
       </TouchableOpacity>
 
-      {/* <TouchableOpacity
+      <TouchableOpacity
         style={styles.signupButton}
-        onPress={() => navigation.navigate('Signup')}
+        onPress={() => navigation.navigate('Login')}
       >
-        <Text style={styles.signupText}>Sign Up</Text>
-      </TouchableOpacity> */}
+        <Text style={styles.signupText}>Είσοδος</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -68,18 +68,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-  // signupButton: {
-  //   borderWidth: 1,
-  //   borderColor: '#0d9488',
-  //   paddingVertical: 14,
-  //   paddingHorizontal: 60,
-  //   borderRadius: 8,
-  //   width: '100%',
-  // },
-  // signupText: {
-  //   color: '#0d9488',
-  //   textAlign: 'center',
-  //   fontSize: 16,
-  //   fontWeight: '600',
-  // },
+  signupButton: {
+    borderWidth: 1,
+    borderColor: '#0d9488',
+    paddingVertical: 14,
+    paddingHorizontal: 60,
+    borderRadius: 8,
+    width: '100%',
+  },
+  signupText: {
+    color: '#0d9488',
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: '600',
+  },
 });

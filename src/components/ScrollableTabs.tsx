@@ -3,11 +3,17 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet, FlatList, Image, Dimensions } from 'react-native';
 import axios from 'axios';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import Config from 'react-native-config';
 
+const API_URL = Config.API_URL;
 const Tab = createMaterialTopTabNavigator();
 const { width } = Dimensions.get('window');
 
 // Types
+type OrganizationImage = {
+  image_url: string;
+};
+
 type OrganizationType = {
   id: number;
   name: string;
@@ -18,7 +24,8 @@ type Organization = {
   id: number;
   name: string;
   phone: string;
-  image?: string;
+  address: string;
+  images: OrganizationImage[];
   // add other fields like address, rating, etc.
 };
 
@@ -29,7 +36,7 @@ const TabScreen: React.FC<{ typeSlug: string }> = ({ typeSlug }) => {
 
   useEffect(() => {
     axios
-      .get<Organization[]>(`http://127.0.0.1:8000/api/organizations/?type_slug=${typeSlug}`)
+      .get<Organization[]>(`${API_URL}/organizations/?type_slug=${typeSlug}`)
       .then(res => setOrganizations(res.data))
       .catch(err => console.error(err))
       .finally(() => setLoading(false));
@@ -56,12 +63,28 @@ const TabScreen: React.FC<{ typeSlug: string }> = ({ typeSlug }) => {
       data={organizations}
       keyExtractor={item => item.id.toString()}
       horizontal
+      pagingEnabled
       showsHorizontalScrollIndicator={false}
-      contentContainerStyle={{ paddingHorizontal: 16 }}
+      snapToAlignment="center"
+      decelerationRate="fast"
+      contentContainerStyle={{ paddingHorizontal: 0 }}
       renderItem={({ item }) => (
-        <View style={styles.card}>
-          {item.image && <Image source={{ uri: item.image }} style={styles.image} />}
-          <Text style={styles.name}>{item.name} {item.phone}</Text>
+        <View style={[styles.card, { width: width * 0.85, marginHorizontal: width * 0.075 }]}>
+          {/* Organization image from API */}
+          <Image
+            source={{
+              uri: item.images?.[0]?.image_url || 'https://picsum.photos/400/300',
+            }}
+            style={styles.cardImage}
+            resizeMode="cover"
+          />
+
+          {/* Organization info */}
+          <View style={styles.infoContainer}>
+            <Text style={styles.orgName}>{item.name}</Text>
+            {item.phone && <Text style={styles.orgPhone}>📞 {item.phone}</Text>}
+            {item.address && <Text style={styles.orgAddress}>🏠 {item.address}</Text>}
+          </View>
         </View>
       )}
     />
@@ -101,7 +124,7 @@ const ScrollableTabs: React.FC<{ apiUrl: string }> = ({ apiUrl }) => {
     <Tab.Navigator
       screenOptions={{
         tabBarScrollEnabled: true,
-        tabBarIndicatorStyle: { backgroundColor: 'blue' },
+        tabBarIndicatorStyle: { backgroundColor: '#34d399' },
         tabBarLabelStyle: { fontSize: 16, fontWeight: 'bold' },
         tabBarStyle: { elevation: 0, shadowOpacity: 0 }, // optional
       }}
@@ -121,27 +144,39 @@ const ScrollableTabs: React.FC<{ apiUrl: string }> = ({ apiUrl }) => {
 const styles = StyleSheet.create({
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   card: {
-    width: width * 0.7,
-    marginRight: 16,
-    borderRadius: 12,
-    backgroundColor: '#f2f2f2',
-    padding: 10,
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    overflow: 'hidden', // makes image respect card border radius
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5, // Android shadow
+    marginVertical: 16,
   },
-  image: {
+  cardImage: {
     width: '100%',
-    height: 150,
-    borderRadius: 10,
+    height: 160,
   },
-  name: {
-    marginTop: 8,
-    fontSize: 16,
-    fontWeight: 'bold',
+  infoContainer: {
+    padding: 16,
   },
-  phone: {
-    marginTop: 10,
-    fontSize: 16,
+  orgName: {
+    fontSize: 18,
     fontWeight: 'bold',
+    marginBottom: 6,
+    color: '#333',
+  },
+  orgPhone: {
+    fontSize: 14,
+    color: '#555',
+    marginBottom: 4,
+  },
+  orgAddress: {
+    fontSize: 14,
+    color: '#555',
   },
 });
+
 
 export default ScrollableTabs;

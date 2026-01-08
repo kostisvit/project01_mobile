@@ -7,6 +7,9 @@ import HomeScreen from '../screens/HomeScreen';
 import { RootStackParamList } from '../types/navigation';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import ScrollableTabs from '../components/ScrollableTabs';
+import Config from 'react-native-config';
+
+const API_URL = Config.API_URL;
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -21,7 +24,7 @@ export default function AppNavigator() {
         name="Tabs"
         options={{ title: 'Categories' }}
       >
-        {() => <ScrollableTabs apiUrl="http://127.0.0.1:8000/api/org-types" />}
+        {() => <ScrollableTabs apiUrl={'${API_URL}/org-types'} />}
       </Stack.Screen>
     </Stack.Navigator>
   );
