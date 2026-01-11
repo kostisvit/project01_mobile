@@ -16,62 +16,82 @@ import { login } from '../api/auth';
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 export default function LoginScreen({ navigation }: Props) {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-const handleLogin = async () => {
-  try {
+  const handleLogin = async () => {
+    if (!email || !password)
+      return Alert.alert('Error', 'Please enter email and password');
     setLoading(true);
 
-    const tokens = await login(username, password);
+    try {
+      const user = await login(email, password);
 
-    await AsyncStorage.setItem('access_token', tokens.access);
-    await AsyncStorage.setItem('refresh_token', tokens.refresh);
-
-    navigation.replace('Home');
-  } catch (error) {
-    Alert.alert('Login Failed', 'Invalid credentials');
-  } finally {
-    setLoading(false);
-  }
-};
+      Alert.alert(
+        'Success',
+        `Welcome ${user.first_name || user.email}`,
+        [
+          {
+            text: 'OK',
+            onPress: () => {
+              // Navigate to Home
+              navigation.replace('Home'); // ✅ replaces Login screen
+            },
+          },
+        ]
+      );
+    } catch (err: any) {
+      Alert.alert('Login Failed', err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
+      <Text style={styles.title}>NearMe</Text>
+      <Text style={styles.subtitle}>
+        Ψάξε · Βρες · Πήγαινε
+      </Text>
 
       <TextInput
-        placeholder="Username"
-        value={username}
-        onChangeText={setUsername}
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
         style={styles.input}
         autoCapitalize="none"
+        keyboardType="email-address"
+        autoCorrect={false}
+        placeholderTextColor="#888"
       />
 
       <TextInput
-        placeholder="Password"
+        placeholder="Κωδικός"
         value={password}
         onChangeText={setPassword}
         style={styles.input}
         secureTextEntry
+        placeholderTextColor="#888"
       />
 
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={handleLogin}
+        disabled={loading}
+      >
         <Text style={styles.buttonText}>
-          {loading ? 'Logging in...' : 'Login'}
+          {loading ? 'Είσοδος...' : 'Είσοδος'}
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.buttonGoogle} onPress={handleLogin}>
-        <Text style={styles.buttonText}>
-          {loading ? 'Logging in...' : 'Login with Google'}
-        </Text>
+
+      {/* <TouchableOpacity style={styles.buttonGoogle}>
+        <Text style={styles.buttonText}>Είσοδος με Google</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.buttonApple} onPress={handleLogin}>
-        <Text style={styles.buttonText}>
-          {loading ? 'Logging in...' : 'Login with Apple'}
-        </Text>
-      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.buttonApple}>
+        <Text style={styles.buttonText}>Είσοδος με Apple</Text>
+      </TouchableOpacity> */}
     </View>
   );
 }
@@ -80,26 +100,30 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    padding: 24,
-    backgroundColor: 'ghostwhite',
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    marginBottom: 32,
-    textAlign: 'center',
+    paddingHorizontal: 25,
+    backgroundColor: '#e0f7fa',
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 14,
-    marginBottom: 16,
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20,
+    fontSize: 16,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
+    elevation: 3, // for Android shadow
   },
   button: {
-    backgroundColor: 'orangered',
-    padding: 16,
-    borderRadius: 8,
+    backgroundColor: '#00796b',
+    paddingVertical: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginBottom: 20,
+    shadowColor: '#00796b',
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 2,
   },
   buttonGoogle: {
     backgroundColor: '#4285F4',
@@ -115,7 +139,23 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    textAlign: 'center',
     fontWeight: '600',
+    fontSize: 18,
+  },
+  title: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    marginBottom: 12,
+    color: '#0f766e',
+    textAlign: 'center',
+  },
+  subtitle: {
+    fontSize: 18,
+    fontWeight: '300',
+    letterSpacing: 1.2,
+    color: '#444',
+    textAlign: 'center',
+    marginTop: 8,
+    marginBottom: 40,
   },
 });

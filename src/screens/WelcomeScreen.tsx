@@ -15,7 +15,7 @@ export default function WelcomeScreen({ navigation }: Props) {
     <View style={styles.container}>
       <Text style={styles.title}>NearMe</Text>
       <Text style={styles.subtitle}>
-        Μικρή περιγραφή της εφαρμογής.
+        Ψάξε · Βρες · Πήγαινε
       </Text>
 
       <TouchableOpacity
@@ -31,6 +31,15 @@ export default function WelcomeScreen({ navigation }: Props) {
       >
         <Text style={styles.signupText}>Είσοδος</Text>
       </TouchableOpacity>
+
+      <Text style={{ marginBottom: 16, color: '#444' }}>ή</Text>
+
+      <TouchableOpacity
+        style={styles.registerButton}
+        onPress={() => navigation.navigate('Signup')}
+      >
+        <Text style={styles.signupText}>Κάνε Εγγραφή</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -41,25 +50,33 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24,
-    backgroundColor: '#f0fdfa',
+    backgroundColor: '#e0f7fa',
   },
   title: {
     fontSize: 36,
     fontWeight: 'bold',
     marginBottom: 12,
+    color: '#0f766e',
   },
   subtitle: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 40,
+    fontSize: 18,
+    fontWeight: '300',
+    letterSpacing: 1.2,
+    color: '#444',
     textAlign: 'center',
+    marginTop: 8,
+    marginBottom: 40,
   },
   loginButton: {
-    backgroundColor: '#0d9488',
-    paddingVertical: 14,
+    backgroundColor: '#00796b',
+    paddingVertical: 16,
     paddingHorizontal: 60,
-    borderRadius: 8,
+    borderRadius: 12,
     marginBottom: 16,
+    shadowColor: '#00796b',
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 2,
     width: '100%',
   },
   loginText: {
@@ -69,6 +86,15 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   signupButton: {
+    borderWidth: 1,
+    borderColor: '#0d9488',
+    paddingVertical: 14,
+    paddingHorizontal: 60,
+    borderRadius: 8,
+    marginBottom: 16,
+    width: '100%',
+  },
+  registerButton: {
     borderWidth: 1,
     borderColor: '#0d9488',
     paddingVertical: 14,
