@@ -5,6 +5,9 @@ import axios from 'axios';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Config from 'react-native-config';
 
+import OrganizationsMap from '../components/OrganizationsMap';
+import { OrgCard } from './OrgCard';
+
 const API_URL = Config.API_URL;
 const Tab = createMaterialTopTabNavigator();
 const { width } = Dimensions.get('window');
@@ -25,8 +28,12 @@ type Organization = {
   name: string;
   phone: string;
   address: string;
+  latitude: number;
+  longitude: number;
   images: OrganizationImage[];
-  // add other fields like address, rating, etc.
+};
+type Props = {
+  organizations: Organization[];
 };
 
 // Tab content: organizations for a type
@@ -59,35 +66,31 @@ const TabScreen: React.FC<{ typeSlug: string }> = ({ typeSlug }) => {
   }
 
   return (
-    <FlatList
-      data={organizations}
-      keyExtractor={item => item.id.toString()}
-      horizontal
-      pagingEnabled
-      showsHorizontalScrollIndicator={false}
-      snapToAlignment="center"
-      decelerationRate="fast"
-      contentContainerStyle={{ paddingHorizontal: 0 }}
-      renderItem={({ item }) => (
-        <View style={[styles.card, { width: width * 0.85, marginHorizontal: width * 0.075 }]}>
-          {/* Organization image from API */}
-          <Image
-            source={{
-              uri: item.images?.[0]?.image_url || 'https://picsum.photos/400/300',
-            }}
-            style={styles.cardImage}
-            resizeMode="cover"
+    <View style={{ flex: 1 }}>
+      {/* 📇 CARDS (TOP) */}
+      <FlatList
+        data={organizations}
+        keyExtractor={item => item.id.toString()}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        snapToAlignment="center"
+        decelerationRate="fast"
+        style={{ flexGrow: 0 }} // ⬅ prevents full height
+        renderItem={({ item }) => (
+          <OrgCard
+            org={item}
+            width={width}
+            onPress={() => { }}
           />
+        )}
+      />
 
-          {/* Organization info */}
-          <View style={styles.infoContainer}>
-            <Text style={styles.orgName}>{item.name}</Text>
-            {item.phone && <Text style={styles.orgPhone}>📞 {item.phone}</Text>}
-            {item.address && <Text style={styles.orgAddress}>🏠 {item.address}</Text>}
-          </View>
-        </View>
-      )}
-    />
+      {/* 🗺 MAP (BOTTOM) */}
+      <View style={{ flex: 1 }}>
+        <OrganizationsMap organizations={organizations} />
+      </View>
+    </View>
   );
 };
 
@@ -156,7 +159,7 @@ const styles = StyleSheet.create({
   },
   cardImage: {
     width: '100%',
-    height: 160,
+    height: 140,
   },
   infoContainer: {
     padding: 16,

@@ -56,7 +56,11 @@ const styles = StyleSheet.create({
     fontSize: 36,
     fontWeight: 'bold',
     marginBottom: 12,
-    color: '#0f766e',
+    color: '#00796b',
+    letterSpacing: 1,
+    textShadowColor: 'rgba(0,0,0,0.2)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   subtitle: {
     fontSize: 18,

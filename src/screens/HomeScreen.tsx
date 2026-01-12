@@ -140,9 +140,9 @@ const HomeScreen = ({ navigation }: Props) => {
       </View>
 
       {/* Other content */}
-      <View style={styles.content}>
+      {/* <View style={styles.content}>
         <Text>Other content here</Text>
-      </View>
+      </View> */}
     </SafeAreaView>
   );
 };
