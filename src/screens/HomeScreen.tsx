@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, View, Text, StyleSheet, ActivityIndicator, Alert, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, Alert, TouchableOpacity, Modal } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ScrollableTabs from '../components/ScrollableTabs';
 import Config from 'react-native-config';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation';
 import { logout } from '../api/auth';
+import AppHeader from '../components/AppHeader';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
@@ -58,91 +60,11 @@ const HomeScreen = ({ navigation }: Props) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        {/* Logout button */}
-        <TouchableOpacity
-          style={styles.menuBtn}
-          onPress={() => setMenuVisible(true)}
-        >
-          <Text style={styles.menuIcon}>☰</Text>
-        </TouchableOpacity>
+      <AppHeader user={user} loading={loading} />
 
-        <Text style={styles.brand}>NearMe</Text>
-
-        {/* Display user email below brand */}
-        {loading ? (
-          <ActivityIndicator color="#fff" style={{ marginTop: 4 }} />
-        ) : user ? (
-          <Text style={styles.userEmail}>{user.email}</Text>
-        ) : (
-          <Text style={styles.userEmail}>Περιηγείστε ως επισκέπτης</Text>
-        )}
-      </View>
-      <Modal
-        transparent
-        animationType="slide"
-        visible={menuVisible}
-        onRequestClose={() => setMenuVisible(false)}
-      >
-        <TouchableOpacity
-          style={styles.overlay}
-          activeOpacity={1}
-          onPress={() => setMenuVisible(false)}
-        >
-          <View style={styles.menu}>
-            {user ? (
-              <>
-                <Text style={styles.menuEmail}>{user.email}</Text>
-
-                <TouchableOpacity style={styles.menuItem}>
-                  <Text>Προφίλ Χρήστη</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.menuItem}>
-                  <Text>Ρυθμίσεις</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={styles.menuItem}
-                  onPress={handleLogout}
-                >
-                  <Text style={{ color: 'red', fontWeight: '600' }}>
-                    Έξοδος
-                  </Text>
-                </TouchableOpacity>
-              </>
-            ) : (
-              <>
-
-
-                <TouchableOpacity
-                  style={styles.menuItem}
-                  onPress={() => {
-                    setMenuVisible(false);
-                    navigation.navigate('Login');
-                  }}
-                >
-                  <Text style={{ fontWeight: '600' }}>Είσοδος</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.menuItem}>
-                  <Text>Πληροφορίες</Text>
-                </TouchableOpacity>
-              </>
-            )}
-          </View>
-        </TouchableOpacity>
-      </Modal>
-      {/* Tab Section */}
       <View style={styles.tabSection}>
         <ScrollableTabs apiUrl={`${API_URL}/org-types/`} />
       </View>
-
-      {/* Other content */}
-      {/* <View style={styles.content}>
-        <Text>Other content here</Text>
-      </View> */}
     </SafeAreaView>
   );
 };

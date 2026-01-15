@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
   },
   buttons: {
     position: 'absolute',
-    bottom: 10,
+    bottom: 50,
     right: 10,
     flexDirection: 'column',
   },

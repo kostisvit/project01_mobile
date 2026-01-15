@@ -6,6 +6,8 @@ import LoginScreen from '../screens/LoginScreen';
 import HomeScreen from '../screens/HomeScreen';
 import { RootStackParamList } from '../types/navigation';
 import WelcomeScreen from '../screens/WelcomeScreen';
+import ProfileScreen from '../screens/ProfileScreen';
+import OrgDetails from '../screens/OrgDetailsScreen';
 import ScrollableTabs from '../components/ScrollableTabs';
 import Config from 'react-native-config';
 
@@ -19,6 +21,8 @@ export default function AppNavigator() {
       <Stack.Screen name="Welcome" component={WelcomeScreen} />
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Signup" component={SignupScreen} />
+      <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen name="OrgDetail" component={OrgDetails} />
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen
         name="Tabs"

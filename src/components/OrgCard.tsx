@@ -6,21 +6,24 @@ import {
   Pressable,
   StyleSheet,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../types/navigation';
 
 type OrgCardProps = {
   org: any; // replace with proper type if you have one
   width: number;
-  onPress: () => void;
 };
 
-export const OrgCard: React.FC<OrgCardProps> = ({
-  org,
-  width,
-  onPress,
-}) => {
+export const OrgCard: React.FC<OrgCardProps> = ({ org, width }) => {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
   return (
     <Pressable
-      onPress={onPress}
+      onPress={() =>
+        navigation.navigate('OrgDetail', { orgId: org.id })
+      }
       style={({ pressed }) => [
         styles.pressable,
         { opacity: pressed ? 0.9 : 1 },
@@ -43,15 +46,40 @@ export const OrgCard: React.FC<OrgCardProps> = ({
         />
 
         <View style={styles.infoContainer}>
-          <Text style={styles.orgName}>{org.name}</Text>
+          {/* Header Row */}
+          <View style={styles.headerRow}>
+            <Text style={styles.orgName} numberOfLines={1}>
+              {org.name}
+            </Text>
 
-          {org.phone && (
-            <Text style={styles.orgPhone}>📞 {org.phone}</Text>
-          )}
+            <Text style={styles.rating}>
+              ⭐ {org.average_rating?.toFixed(1) ?? '4.5'}
+            </Text>
 
-          {org.address && (
-            <Text style={styles.orgAddress}>🏠 {org.address}</Text>
-          )}
+
+          </View>
+          <View style={styles.middleRow}>
+            {/* Address */}
+            <Text style={styles.orgAddress} numberOfLines={2}>
+              📍 {org.address ?? '123 Main Street, New York'}
+            </Text>
+
+            <Text style={styles.comments}>
+              ({org.review_count ?? 120}) reviews
+            </Text>
+          </View>
+
+
+          {/* Footer Row */}
+          <View style={styles.footerRow}>
+            <Text style={styles.orgPhone}>
+              📞 {org.phone ?? '+1 234 567 890'}
+            </Text>
+
+            <Text style={styles.statusOpen}>
+              🟢 Open
+            </Text>
+          </View>
         </View>
       </View>
     </Pressable>
@@ -63,33 +91,79 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   card: {
-    backgroundColor: '#fff',
     borderRadius: 16,
+    backgroundColor: '#fff',
+    marginVertical: 12,
     overflow: 'hidden',
-    elevation: 4, // android shadow
-    shadowColor: '#000', // ios shadow
+    elevation: 4, // Android shadow
+    shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 4 },
-    marginTop: 5,
   },
+
   cardImage: {
-    height: 180,
     width: '100%',
+    height: 180,
   },
+
   infoContainer: {
-    padding: 12,
+    padding: 14,
   },
+
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+
   orgName: {
     fontSize: 18,
     fontWeight: '600',
+    flex: 1,
+    marginRight: 8,
   },
-  orgPhone: {
-    marginTop: 4,
-    color: '#555',
+
+  rating: {
+    fontSize: 14,
+    color: '#444',
   },
+
+  comments: {
+    fontSize: 13,
+    color: '#666',
+    marginLeft: 4,
+  },
+
   orgAddress: {
-    marginTop: 2,
-    color: '#555',
+    fontSize: 14,
+    color: '#666',
+    marginVertical: 6,
+  },
+
+  footerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 8,
+  },
+
+  middleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 8,
+  },
+
+  orgPhone: {
+    fontSize: 14,
+    color: '#444',
+  },
+
+  statusOpen: {
+    fontSize: 13,
+    color: '#2e7d32',
+    fontWeight: '500',
   },
 });

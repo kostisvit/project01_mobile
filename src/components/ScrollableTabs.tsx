@@ -81,7 +81,6 @@ const TabScreen: React.FC<{ typeSlug: string }> = ({ typeSlug }) => {
           <OrgCard
             org={item}
             width={width}
-            onPress={() => { }}
           />
         )}
       />
