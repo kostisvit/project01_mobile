@@ -16,6 +16,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import type { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../types/navigation';
 
+
 const API_URL = Config.API_URL;
 
 type OrgDetailRouteProp = RouteProp<RootStackParamList, 'OrgDetail'>;
@@ -70,50 +71,47 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
   }
 
   return (
-    <View style={styles.container}>
-      {/* HEADER FIXED */}
-      <SafeAreaView style={{ backgroundColor: '#34d399' }}>
-        <AppHeader user={user} loading={loading} />
-      </SafeAreaView>
+    <SafeAreaView style={styles.container}>
+      <AppHeader user={user} loading={loading} />
+      <View style={styles.org_detail_container}>
+        <ScrollView>
+          {/* 🖼 IMAGE */}
+          <Image
+            source={{
+              uri: org.images?.[0]?.image_url || 'https://picsum.photos/600/400',
+            }}
+            style={styles.image}
+          />
 
-      {/* SCROLLABLE CONTENT BELOW HEADER */}
-      <ScrollView contentContainerStyle={styles.content}>
-        {/* 🖼 IMAGE */}
-        <Image
-          source={{
-            uri: org.images?.[0]?.image_url || 'https://picsum.photos/600/400',
-          }}
-          style={styles.image}
-        />
+          {/* 🏷 NAME */}
+          <Text style={styles.name}>{org.name}</Text>
 
-        {/* 🏷 NAME */}
-        <Text style={styles.name}>{org.name}</Text>
+          {/* 📍 ADDRESS */}
+          <Text style={styles.text}>📍 {org.address}</Text>
 
-        {/* 📍 ADDRESS */}
-        <Text style={styles.text}>📍 {org.address}</Text>
+          {/* 📞 PHONE */}
+          {org.phone && (
+            <Pressable onPress={() => Linking.openURL(`tel:${org.phone}`)}>
+              <Text style={styles.phone}>📞 {org.phone}</Text>
+            </Pressable>
+          )}
 
-        {/* 📞 PHONE */}
-        {org.phone && (
-          <Pressable onPress={() => Linking.openURL(`tel:${org.phone}`)}>
-            <Text style={styles.phone}>📞 {org.phone}</Text>
-          </Pressable>
-        )}
-
-        {/* 🌍 MAP LINK */}
-        {org.latitude && org.longitude && (
-          <Pressable
-            style={styles.mapButton}
-            onPress={() =>
-              Linking.openURL(
-                `https://www.google.com/maps/search/?api=1&query=${org.latitude},${org.longitude}`
-              )
-            }
-          >
-            <Text style={styles.mapButtonText}>Open in Maps</Text>
-          </Pressable>
-        )}
-      </ScrollView>
-    </View>
+          {/* 🌍 MAP LINK */}
+          {org.latitude && org.longitude && (
+            <Pressable
+              style={styles.mapButton}
+              onPress={() =>
+                Linking.openURL(
+                  `https://www.google.com/maps/search/?api=1&query=${org.latitude},${org.longitude}`
+                )
+              }
+            >
+              <Text style={styles.mapButtonText}>Open in Maps</Text>
+            </Pressable>
+          )}
+        </ScrollView>
+      </View>
+    </SafeAreaView>
   );
 };
 
@@ -122,12 +120,12 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#34d399',
   },
-  content: {
+  org_detail_container: {
+    flex: 1,
+    backgroundColor: "#fff",
     padding: 16,
-    paddingTop: 12,
-    paddingBottom: 40,
   },
   center: {
     flex: 1,
@@ -155,7 +153,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   mapButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#00796b',
     padding: 12,
     borderRadius: 8,
     marginTop: 12,

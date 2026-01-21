@@ -9,6 +9,8 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../types/navigation';
+import { useAuth } from '../context/AuthContext';
+import { Alert } from "react-native";
 
 type OrgCardProps = {
   org: any; // replace with proper type if you have one
@@ -19,11 +21,34 @@ export const OrgCard: React.FC<OrgCardProps> = ({ org, width }) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
+  const { token } = useAuth();
+
+  const handlePress = () => {
+    if (!token) {
+      Alert.alert(
+        "Προσοχή",
+        "Πρέπει να συνδεθείτε για να δείτε τις λεπτομέρειες της επιχείρησης.",
+        [
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "Login",
+            onPress: () =>
+              navigation.navigate("Login", {
+                redirectTo: "OrgDetail",
+                redirectParams: { orgId: org.id },
+              }),
+          },
+        ]
+      );
+      return;
+    }
+
+    navigation.navigate("OrgDetail", { orgId: org.id });
+  };
+
   return (
     <Pressable
-      onPress={() =>
-        navigation.navigate('OrgDetail', { orgId: org.id })
-      }
+      onPress={handlePress}
       style={({ pressed }) => [
         styles.pressable,
         { opacity: pressed ? 0.9 : 1 },

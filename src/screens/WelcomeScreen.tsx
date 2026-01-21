@@ -10,7 +10,9 @@ import { RootStackParamList } from '../types/navigation';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Welcome'>;
 
-export default function WelcomeScreen({ navigation }: Props) {
+
+
+const WelcomeScreen: React.FC<Props> = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>NearMe</Text>
@@ -113,3 +115,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
+
+
+export default WelcomeScreen;

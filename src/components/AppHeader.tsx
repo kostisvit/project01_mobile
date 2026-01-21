@@ -45,7 +45,9 @@ const AppHeader = ({ user, loading }: Props) => {
           <Text style={styles.menuIcon}>☰</Text>
         </TouchableOpacity>
 
-        <Text style={styles.brand}>NearMe</Text>
+        <Text style={styles.brand} onPress={() => {
+          navigation.navigate('Home');
+        }}>NearMe</Text>
 
         {loading ? (
           <ActivityIndicator color="#fff" style={{ marginTop: 4 }} />
@@ -140,7 +142,7 @@ export default AppHeader;
 
 const styles = StyleSheet.create({
   header: {
-    height: 95,
+    height: 80,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#34d399',
