@@ -12,6 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation';
 import { login } from '../api/auth';
+import { useAuth } from '../context/AuthContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
@@ -20,26 +21,26 @@ export default function LoginScreen({ navigation }: Props) {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
+  // <- Here we get setToken from the AuthContext
+  const { setToken } = useAuth();
+
   const handleLogin = async () => {
-    if (!email || !password)
-      return Alert.alert('Error', 'Please enter email and password');
+    if (!email || !password) return Alert.alert('Error', 'Please enter email and password');
     setLoading(true);
 
     try {
-      const user = await login(email, password);
+      const { token, user } = await login(email, password);
+
+      // ✅ Save token in context (and AsyncStorage)
+      await setToken(token);
+
+      const storedToken = await AsyncStorage.getItem("accessToken");
+      console.log("Stored token:", storedToken);
 
       Alert.alert(
         'Success',
         `Welcome ${user.first_name || user.email}`,
-        [
-          {
-            text: 'OK',
-            onPress: () => {
-              // Navigate to Home
-              navigation.replace('Home'); // ✅ replaces Login screen
-            },
-          },
-        ]
+        [{ text: 'OK', onPress: () => navigation.replace('Home') }]
       );
     } catch (err: any) {
       Alert.alert('Login Failed', err.message);
@@ -47,6 +48,7 @@ export default function LoginScreen({ navigation }: Props) {
       setLoading(false);
     }
   };
+
 
   return (
     <View style={styles.container}>

@@ -16,6 +16,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import type { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../types/navigation';
 
+import { useAuth } from '../context/AuthContext';
+import { Alert } from 'react-native';
+
 
 const API_URL = Config.API_URL;
 
@@ -36,28 +39,38 @@ type Props = { route: OrgDetailRouteProp };
 
 const OrgDetailScreen: React.FC<Props> = ({ route }) => {
   const { orgId } = route.params;
-  const [user, setUser] = useState<any>(null);
+  const { user, token } = useAuth(); // ✅ get token here
+
+  //const [user, setUser] = useState<any>(null);
   const [org, setOrg] = useState<Organization | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios
-      .get<Organization>(`${API_URL}/organizations/${orgId}/`)
-      .then(res => setOrg(res.data))
-      .catch(err => console.error(err))
-      .finally(() => setLoading(false));
-  }, [orgId]);
+    if (!token) {
+      console.warn("User not logged in, cannot fetch org details");
+      setLoading(false);
+      return;
+    }
 
-  if (loading) {
-    return (
-      <View style={styles.container}>
-        <AppHeader user={user} loading={loading} />
-        <View style={styles.center}>
-          <ActivityIndicator size="large" color="#34d399" />
-        </View>
-      </View>
-    );
-  }
+    axios
+      .get<Organization>(`${API_URL}/organizations/${orgId}/`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // ✅ include token here
+        },
+      })
+      .then(res => setOrg(res.data))
+      .catch(err => {
+        console.error("Error fetching org:", err.response?.status, err.response?.data);
+        if (err.response?.status === 401) {
+          Alert.alert(
+            "Session expired",
+            "Please log in again",
+            [{ text: "OK" }]
+          );
+        }
+      })
+      .finally(() => setLoading(false));
+  }, [orgId, token]); // ✅ include token in dependency array
 
   if (!org) {
     return (

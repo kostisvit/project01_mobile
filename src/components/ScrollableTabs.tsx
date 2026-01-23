@@ -1,10 +1,9 @@
 // components/ScrollableTabs.tsx
 import React, { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet, FlatList, Image, Dimensions } from 'react-native';
-import axios from 'axios';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Config from 'react-native-config';
-
+import { api } from '../api/client';
 import OrganizationsMap from '../components/OrganizationsMap';
 import { OrgCard } from './OrgCard';
 
@@ -42,10 +41,10 @@ const TabScreen: React.FC<{ typeSlug: string }> = ({ typeSlug }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios
-      .get<Organization[]>(`${API_URL}/organizations/?type_slug=${typeSlug}`)
-      .then(res => setOrganizations(res.data))
-      .catch(err => console.error(err))
+    api
+      .get<Organization[]>(`/organizations/?type_slug=${typeSlug}`)
+      .then((res: { data: Organization[] }) => setOrganizations(res.data))
+      .catch((err: unknown) => console.error(err))
       .finally(() => setLoading(false));
   }, [typeSlug]);
 
@@ -99,10 +98,10 @@ const ScrollableTabs: React.FC<{ apiUrl: string }> = ({ apiUrl }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios
-      .get<OrganizationType[]>(apiUrl)
-      .then(res => setTypes(res.data))
-      .catch(err => console.error(err))
+    api
+      .get<OrganizationType[]>(apiUrl.replace('http://127.0.0.1:8000/api', ''))
+      .then((res: { data: OrganizationType[] }) => setTypes(res.data))
+      .catch((err: unknown) => console.error(err))
       .finally(() => setLoading(false));
   }, [apiUrl]);
 
