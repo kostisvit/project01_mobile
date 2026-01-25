@@ -15,29 +15,20 @@ import Config from 'react-native-config';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../types/navigation';
-
+import { Organization } from '../types/organization';
 import { useAuth } from '../context/AuthContext';
-import { Alert } from 'react-native';
+import { useNavigation } from "@react-navigation/native";
+
 
 
 const API_URL = Config.API_URL;
 
 type OrgDetailRouteProp = RouteProp<RootStackParamList, 'OrgDetail'>;
 
-type OrganizationImage = { image_url: string };
-type Organization = {
-  id: number;
-  name: string;
-  phone: string;
-  address: string;
-  latitude: number;
-  longitude: number;
-  images: OrganizationImage[];
-};
-
 type Props = { route: OrgDetailRouteProp };
 
 const OrgDetailScreen: React.FC<Props> = ({ route }) => {
+  const navigation = useNavigation<any>();
   const { orgId } = route.params;
   const { user, token } = useAuth(); // ✅ get token here
 
@@ -46,31 +37,27 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!token) {
-      console.warn("User not logged in, cannot fetch org details");
-      setLoading(false);
-      return;
-    }
-
     axios
       .get<Organization>(`${API_URL}/organizations/${orgId}/`, {
-        headers: {
-          Authorization: `Bearer ${token}`, // ✅ include token here
-        },
+        headers: token
+          ? { Authorization: `Bearer ${token}` }
+          : undefined, // 👈 allow anonymous
       })
-      .then(res => setOrg(res.data))
+      .then(res => {
+        setOrg({
+          ...res.data,
+          reviews: res.data.reviews ?? [],
+        });
+      })
       .catch(err => {
-        console.error("Error fetching org:", err.response?.status, err.response?.data);
-        if (err.response?.status === 401) {
-          Alert.alert(
-            "Session expired",
-            "Please log in again",
-            [{ text: "OK" }]
-          );
-        }
+        console.error(
+          "Error fetching org:",
+          err.response?.status,
+          err.response?.data
+        );
       })
       .finally(() => setLoading(false));
-  }, [orgId, token]); // ✅ include token in dependency array
+  }, [orgId, token]);
 
   if (!org) {
     return (
@@ -119,9 +106,56 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
                 )
               }
             >
-              <Text style={styles.mapButtonText}>Open in Maps</Text>
+              <Text style={styles.mapButtonText}>Χάρτης</Text>
             </Pressable>
           )}
+
+          {/* ⭐ REVIEWS */}
+          <View style={styles.reviewSection}>
+            <Text style={styles.sectionTitle}>Σχόλια</Text>
+            {user && (
+              <Pressable
+                style={styles.addReviewButton}
+                onPress={() =>
+                  navigation.navigate("Login", { orgId })
+                }
+              >
+                <Text style={styles.addReviewText}>✍️ Άφησε το σχόλιο σου.</Text>
+              </Pressable>
+            ) || (
+                <Text style={styles.loginHint}>
+                  Συνδεθείτε για να αφήσετε το σχόλιο σας.
+                </Text>
+              )}
+            {(!org.reviews || org.reviews.length === 0) && (
+              <Text style={styles.empty}>No reviews yet</Text>
+            )}
+
+            {org.reviews?.map(review => (
+              <View key={review.id} style={styles.reviewCard}>
+                <Text style={styles.rating}>⭐ {review.rating}/5</Text>
+                <Text style={styles.comment}>{review.comment}</Text>
+                <Text style={styles.meta}>
+                  από {review.user_name ?? "Anonymous"} ·{" "}
+                  {new Date(review.created).toLocaleDateString("el-GR")}
+                </Text>
+                {/* 💬 REPLIES */}
+                {review.replies && review.replies.length > 0 && (
+                  <View style={styles.replyContainer}>
+                    {review.replies.map(reply => (
+                      <View key={reply.id} style={styles.replyCard}>
+                        <Text style={styles.replyComment}>{reply.comment}</Text>
+                        <Text style={styles.replyMeta}>
+                          απάντηση · {review.user_name} {" "}
+                          {new Date(reply.created).toLocaleDateString("el-GR")}
+                        </Text>
+                      </View>
+                    ))}
+                  </View>
+                )}
+              </View>
+            ))}
+          </View>
         </ScrollView>
       </View>
     </SafeAreaView>
@@ -175,6 +209,92 @@ const styles = StyleSheet.create({
   mapButtonText: {
     color: '#fff',
     fontWeight: '600',
+  },
+  reviewSection: {
+    marginTop: 24,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    marginBottom: 12,
+  },
+
+  empty: {
+    color: "#888",
+    fontStyle: "italic",
+  },
+
+  reviewCard: {
+    backgroundColor: "#F9F9F9",
+    borderRadius: 10,
+    padding: 12,
+    marginBottom: 12,
+  },
+
+  rating: {
+    fontSize: 15,
+    fontWeight: "600",
+    marginBottom: 4,
+  },
+
+  comment: {
+    fontSize: 14,
+    color: "#333",
+    marginBottom: 6,
+  },
+
+  meta: {
+    fontSize: 12,
+    color: "#888",
+    textTransform: "capitalize",
+  },
+  reviewHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+
+  addReviewButton: {
+    backgroundColor: "#34d399",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+
+  addReviewText: {
+    color: "#fff",
+    fontWeight: "600",
+  },
+
+  loginHint: {
+    color: "#777",
+    marginVertical: 6,
+    fontSize: 13,
+  },
+
+  replyContainer: {
+    marginTop: 8,
+    paddingLeft: 12,
+    borderLeftWidth: 2,
+    borderLeftColor: "#ddd",
+  },
+
+  replyCard: {
+    marginTop: 6,
+    padding: 8,
+    backgroundColor: "#dcdcdc",
+    borderRadius: 6,
+  },
+
+  replyComment: {
+    fontSize: 14,
+    color: "#333",
+  },
+
+  replyMeta: {
+    fontSize: 12,
+    color: "#777",
+    marginTop: 4,
   },
 });
 

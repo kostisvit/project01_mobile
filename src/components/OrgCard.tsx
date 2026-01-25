@@ -25,27 +25,6 @@ export const OrgCard: React.FC<OrgCardProps> = ({ org, width }) => {
 
 
   const handlePress = () => {
-    if (!isAuthenticated) {
-      // ✅ If not logged in, prompt login
-      Alert.alert(
-        "Προσοχή",
-        "Πρέπει να συνδεθείτε για να δείτε τις λεπτομέρειες της επιχείρησης.",
-        [
-          { text: "Επιστροφή", style: "cancel" },
-          {
-            text: "Είσοδος",
-            onPress: () =>
-              navigation.navigate("Login", {
-                redirectTo: "OrgDetail",
-                redirectParams: { orgId: org.id },
-              }),
-          },
-        ]
-      );
-      return;
-    }
-
-    // ✅ If logged in, navigate directly to OrgDetail
     navigation.navigate("OrgDetail", { orgId: org.id });
   };
 
