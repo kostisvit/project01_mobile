@@ -114,7 +114,7 @@ const AppHeader = ({ user, loading }: Props) => {
                   style={styles.menuItem}
                   onPress={() => {
                     setMenuVisible(false);
-                    navigation.navigate('Register');
+                    navigation.navigate('Signup');
                   }}
                 >
                   <Text style={{ fontWeight: '600' }}>Εγγραφή</Text>
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     height: 80,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#34d399',
+    backgroundColor: '#ff4500',
   },
   brand: {
     fontSize: 32,

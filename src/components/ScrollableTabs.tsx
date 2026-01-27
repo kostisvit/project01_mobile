@@ -125,7 +125,7 @@ const ScrollableTabs: React.FC<{ apiUrl: string }> = ({ apiUrl }) => {
     <Tab.Navigator
       screenOptions={{
         tabBarScrollEnabled: true,
-        tabBarIndicatorStyle: { backgroundColor: '#34d399' },
+        tabBarIndicatorStyle: { backgroundColor: '#ff4500' },
         tabBarLabelStyle: { fontSize: 16, fontWeight: 'bold' },
         tabBarStyle: { elevation: 0, shadowOpacity: 0 }, // optional
       }}

@@ -27,6 +27,78 @@ type OrgDetailRouteProp = RouteProp<RootStackParamList, 'OrgDetail'>;
 
 type Props = { route: OrgDetailRouteProp };
 
+const MAX_CHARS = 160;
+
+const ReplyItem = ({
+  reply,
+  level = 1,
+}: {
+  reply: any;
+  level?: number;
+}) => {
+  const [collapsedThread, setCollapsedThread] = React.useState(true);
+  const [collapsedText, setCollapsedText] = React.useState(true);
+
+  const hasChildren = reply.children && reply.children.length > 0;
+  const isLongText = reply.comment.length > MAX_CHARS;
+
+  const displayText =
+    collapsedText && isLongText
+      ? reply.comment.slice(0, MAX_CHARS) + "…"
+      : reply.comment;
+
+  return (
+    <View
+      style={[
+        styles.replyCard,
+        { marginLeft: level * 16 },
+      ]}
+    >
+      {/* 💬 COMMENT */}
+      <Text style={styles.replyComment}>{displayText}</Text>
+
+      {/* 🔽 EXPAND TEXT */}
+      {isLongText && (
+        <Pressable onPress={() => setCollapsedText(!collapsedText)}>
+          <Text style={styles.toggleText}>
+            {collapsedText ? "Δείτε περισσότερα" : "Λιγότερα"}
+          </Text>
+        </Pressable>
+      )}
+
+      {/* 👤 META */}
+      <Text style={styles.replyMeta}>
+        από {reply.user_name ?? "Anonymous"} ·{" "}
+        {new Date(reply.created).toLocaleDateString("el-GR")}
+      </Text>
+
+      {/* 🔽 COLLAPSE THREAD */}
+      {hasChildren && (
+        <Pressable onPress={() => setCollapsedThread(!collapsedThread)}>
+          <Text style={styles.toggleReplies}>
+            {collapsedThread
+              ? `▶ Δείτε απαντήσεις (${reply.children.length})`
+              : "▼ Απόκρυψη απαντήσεων"}
+          </Text>
+        </Pressable>
+      )}
+
+      {/* 🔁 CHILD REPLIES */}
+      {!collapsedThread && hasChildren && (
+        <View>
+          {reply.children.map((child: any) => (
+            <ReplyItem
+              key={child.id}
+              reply={child}
+              level={level + 1}
+            />
+          ))}
+        </View>
+      )}
+    </View>
+  );
+};
+
 const OrgDetailScreen: React.FC<Props> = ({ route }) => {
   const navigation = useNavigation<any>();
   const { orgId } = route.params;
@@ -95,7 +167,10 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
               <Text style={styles.phone}>📞 {org.phone}</Text>
             </Pressable>
           )}
-
+          {/* 📝 DESCRIPTION */}
+          {org.description && (
+            <Text style={styles.text}>{org.description}</Text>
+          )}
           {/* 🌍 MAP LINK */}
           {org.latitude && org.longitude && (
             <Pressable
@@ -128,7 +203,7 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
                 </Text>
               )}
             {(!org.reviews || org.reviews.length === 0) && (
-              <Text style={styles.empty}>No reviews yet</Text>
+              <Text style={styles.empty}>Κανένα σχόλιο.</Text>
             )}
 
             {org.reviews?.map(review => (
@@ -143,13 +218,11 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
                 {review.replies && review.replies.length > 0 && (
                   <View style={styles.replyContainer}>
                     {review.replies.map(reply => (
-                      <View key={reply.id} style={styles.replyCard}>
-                        <Text style={styles.replyComment}>{reply.comment}</Text>
-                        <Text style={styles.replyMeta}>
-                          απάντηση · {review.user_name} {" "}
-                          {new Date(reply.created).toLocaleDateString("el-GR")}
-                        </Text>
-                      </View>
+                      <ReplyItem
+                        key={reply.id}
+                        reply={reply}
+                        level={1}
+                      />
                     ))}
                   </View>
                 )}
@@ -167,7 +240,7 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#34d399',
+    backgroundColor: '#ff4500',
   },
   org_detail_container: {
     flex: 1,
@@ -193,6 +266,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     marginBottom: 4,
+    color: '#1F2937',
   },
   phone: {
     fontSize: 16,
@@ -200,7 +274,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   mapButton: {
-    backgroundColor: '#00796b',
+    backgroundColor: '#FF4500',
     padding: 12,
     borderRadius: 8,
     marginTop: 12,
@@ -295,6 +369,16 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#777",
     marginTop: 4,
+  },
+  toggleText: {
+    color: "#007AFF",
+    fontSize: 13,
+    marginBottom: 4,
+  },
+  toggleReplies: {
+    color: "#007AFF",
+    fontSize: 13,
+    marginTop: 6,
   },
 });
 

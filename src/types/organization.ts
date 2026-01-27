@@ -21,6 +21,7 @@ export type Organization = {
   name: string;
   phone: string;
   address: string;
+  description?: string;
   email?: string;
   reviews: OrganizationReview[];
   latitude: number;
