@@ -9,5 +9,7 @@ export type RootStackParamList = {
   Profile: undefined;
   Home: undefined;
   Tabs: undefined;
+  Recovery: undefined;
+  ResetPassword: { uid: string; token: string };
   OrgDetail: { orgId: number };
 };

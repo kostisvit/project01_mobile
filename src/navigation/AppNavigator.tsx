@@ -8,7 +8,9 @@ import { RootStackParamList } from '../types/navigation';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import OrgDetails from '../screens/OrgDetailsScreen';
+import RecoveryScreen from '../screens/RecoveryScreen';
 import ScrollableTabs from '../components/ScrollableTabs';
+import ResetPasswordScreen from '../screens/ResetPasswordScreen';
 import Config from 'react-native-config';
 import { UserProvider } from '../context/UserContext';
 
@@ -23,6 +25,8 @@ export default function AppNavigator() {
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Signup" component={SignupScreen} />
+        <Stack.Screen name="Recovery" component={RecoveryScreen} />
+        <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="OrgDetail" component={OrgDetails} />
         <Stack.Screen name="Home" component={HomeScreen} />

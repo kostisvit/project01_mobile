@@ -87,13 +87,15 @@ export default function LoginScreen({ navigation }: Props) {
         </Text>
       </TouchableOpacity>
 
-      {/* <TouchableOpacity style={styles.buttonGoogle}>
-        <Text style={styles.buttonText}>Είσοδος με Google</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.buttonApple}>
-        <Text style={styles.buttonText}>Είσοδος με Apple</Text>
-      </TouchableOpacity> */}
+      < Text>
+        Ξεχάσατε τον κωδικό σας?{' '}
+        <Text
+          style={{ textDecorationLine: 'underline', color: '#004d40' }}
+          onPress={() => navigation.navigate('Recovery')}
+        >
+          Επαναφορά Κωδικού
+        </Text>
+      </Text>
     </View>
   );
 }

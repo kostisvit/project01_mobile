@@ -50,8 +50,8 @@ const RegisterScreen = () => {
       });
 
       Alert.alert(
-        'Success',
-        'Registered successfully!',
+        'Εγγραφήκατε με επιτυχία',
+        'Για να ολοκληρώσετε την εγγραφή σας, παρακαλούμε ελέγξτε το email σας για έναν σύνδεσμο επιβεβαίωσης.',
         [
           {
             text: 'OK',

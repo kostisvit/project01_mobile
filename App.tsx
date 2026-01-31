@@ -14,12 +14,20 @@ import { AuthProvider } from "./src/context/AuthContext";
 
 enableScreens();
 
+const linking = {
+  prefixes: ["myapp://"],
+  config: {
+    screens: {
+      ResetPassword: "reset-password",
+    },
+  },
+};
 
 export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <AuthProvider>
-        <NavigationContainer>
+        <NavigationContainer linking={linking}>
           <AppNavigator />
         </NavigationContainer>
       </AuthProvider>
