@@ -87,10 +87,10 @@ export default function LoginScreen({ navigation }: Props) {
         </Text>
       </TouchableOpacity>
 
-      < Text>
-        Ξεχάσατε τον κωδικό σας?{' '}
+      < Text style={{ color: '#fff' }}>
+        Ξεχάσατε τον κωδικό σας;{' '}
         <Text
-          style={{ textDecorationLine: 'underline', color: '#004d40' }}
+          style={{ textDecorationLine: 'underline', color: '#ff4500' }}
           onPress={() => navigation.navigate('Recovery')}
         >
           Επαναφορά Κωδικού
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 25,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: '#0F172A',
   },
   input: {
     backgroundColor: '#ffffff',
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     elevation: 3, // for Android shadow
   },
   button: {
-    backgroundColor: '#00796b',
+    backgroundColor: '#ff4500',
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: 'center',
@@ -150,14 +150,14 @@ const styles = StyleSheet.create({
     fontSize: 36,
     fontWeight: 'bold',
     marginBottom: 12,
-    color: '#0f766e',
+    color: '#ff4500',
     textAlign: 'center',
   },
   subtitle: {
     fontSize: 18,
     fontWeight: '300',
     letterSpacing: 1.2,
-    color: '#444',
+    color: '#fff',
     textAlign: 'center',
     marginTop: 8,
     marginBottom: 40,

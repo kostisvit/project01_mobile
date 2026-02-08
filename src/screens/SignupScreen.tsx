@@ -136,14 +136,14 @@ export default RegisterScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: '#0F172A',
     justifyContent: 'center',
     paddingHorizontal: 25,
   },
   header: {
     fontSize: 28,
     fontWeight: '700',
-    color: '#00796b',
+    color: '#ff4500',
     textAlign: 'center',
     marginVertical: 20,
     letterSpacing: 1,
@@ -168,18 +168,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   button: {
-    backgroundColor: '#00796b',
+    backgroundColor: '#ff4500',
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: 'center',
     marginBottom: 20,
-    shadowColor: '#00796b',
+    shadowColor: '#ff4500',
     shadowOpacity: 0.3,
     shadowRadius: 5,
     elevation: 2,
   },
   buttonText: {
-    color: '#fff',
+    color: '#ff4500',
     fontWeight: '600',
     fontSize: 18,
   },
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   loginLink: {
-    color: '#00796b',
+    color: '#ff4500',
     fontWeight: '500',
   },
 });

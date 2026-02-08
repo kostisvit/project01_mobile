@@ -73,7 +73,7 @@ const RecoveryScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: '#0F172A',
     justifyContent: 'center',
     paddingHorizontal: 25,
   },
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   button: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#ff4500',
     paddingVertical: 15,
     borderRadius: 8,
     alignItems: 'center',

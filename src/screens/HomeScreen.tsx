@@ -70,7 +70,7 @@ const HomeScreen = ({ navigation }: Props) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#ff4500' },
+  container: { flex: 1, backgroundColor: '#0F172A' },
   header: { height: 95, justifyContent: 'center', alignItems: 'center' },
   brand: {
     fontSize: 32,

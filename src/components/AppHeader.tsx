@@ -145,12 +145,12 @@ const styles = StyleSheet.create({
     height: 80,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#ff4500',
+    backgroundColor: '#0F172A',
   },
   brand: {
     fontSize: 32,
     fontWeight: '700',
-    color: 'ghostwhite',
+    color: '#ff4500',
     letterSpacing: 2,
   },
   userEmail: {
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
   },
   menuIcon: {
     fontSize: 26,
-    color: '#fff',
+    color: '#ff4500',
   },
   overlay: {
     flex: 1,

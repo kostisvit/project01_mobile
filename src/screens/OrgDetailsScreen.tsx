@@ -198,7 +198,8 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
                 <Text style={styles.addReviewText}>✍️ Άφησε το σχόλιο σου.</Text>
               </Pressable>
             ) || (
-                <Text style={styles.loginHint}>
+                <Text style={styles.loginHint}
+                  onPress={() => navigation.navigate('Login')}>
                   Συνδεθείτε για να αφήσετε το σχόλιο σας.
                 </Text>
               )}
@@ -240,7 +241,7 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ff4500',
+    backgroundColor: '#0F172A',
   },
   org_detail_container: {
     flex: 1,
@@ -344,6 +345,7 @@ const styles = StyleSheet.create({
     color: "#777",
     marginVertical: 6,
     fontSize: 13,
+    textDecorationLine: 'underline',
   },
 
   replyContainer: {
