@@ -3,6 +3,9 @@ import { View, Text, TextInput, Button, Alert, StyleSheet } from "react-native";
 import { useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../types/navigation";
+import Config from "react-native-config";
+
+const API_URL = Config.API_URL;
 
 type RouteParams = {
   params: {
@@ -40,7 +43,7 @@ export default function ResetPasswordScreen() {
 
     try {
       const res = await fetch(
-        "http://127.0.0.1:8000/api/auth/password-reset-confirm/",
+        "{API_URL}/password-reset-confirm/",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

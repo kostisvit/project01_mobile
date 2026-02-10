@@ -112,16 +112,16 @@ const ProfileScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#34d399" },
+  container: { flex: 1, backgroundColor: "#0F172A" },
   profile_container: {
     flex: 1,
-    backgroundColor: "#e0f7fa",
+    backgroundColor: "#fff",
     padding: 16,
   },
   header: {
     fontSize: 28,
     fontWeight: '700',
-    color: '#00796b',
+    color: '#ff4500',
     textAlign: 'center',
     marginVertical: 20,
     letterSpacing: 1,
@@ -143,12 +143,12 @@ const styles = StyleSheet.create({
     elevation: 3, // for Android shadow
   },
   button: {
-    backgroundColor: '#00796b',
+    backgroundColor: '#ff4500',
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: 'center',
     marginBottom: 20,
-    shadowColor: '#00796b',
+    shadowColor: '#ff4500',
     shadowOpacity: 0.3,
     shadowRadius: 5,
     elevation: 2,

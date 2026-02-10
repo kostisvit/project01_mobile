@@ -287,11 +287,14 @@ const styles = StyleSheet.create({
   },
   reviewSection: {
     marginTop: 24,
+    backgroundColor: "#f0f4f8",
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: "700",
     marginBottom: 12,
+    marginLeft: 5,
+    marginTop: 8,
   },
 
   empty: {

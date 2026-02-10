@@ -6,3 +6,14 @@ clrar Pods
   pod install
   
 npm install react-native-config - hide sensitivite data to .env file like Dkjango
+
+
+
+
+
+
+start comamnds
+uv python manage.py runserver
+npx react-native start
+redis-server(~/desktop/projects/project01)
+celery -A config worker -l info (~/Desktop/projects/project01/backend)
