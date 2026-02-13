@@ -86,12 +86,13 @@ const OrganizationsMap: React.FC<Props> = ({ organizations }) => {
       </MapView>
 
       {/* Zoom Buttons */}
-      <View style={styles.buttons}>
-        <TouchableOpacity style={styles.button} onPress={zoomIn}>
-          <Text style={styles.buttonText}>+</Text>
+      <View style={styles.zoomContainer}>
+        <TouchableOpacity style={styles.zoomButton} onPress={zoomIn}>
+          <Text style={styles.zoomText}>+</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={zoomOut}>
-          <Text style={styles.buttonText}>−</Text>
+
+        <TouchableOpacity style={styles.zoomButton} onPress={zoomOut}>
+          <Text style={styles.zoomText}>−</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -112,22 +113,34 @@ const styles = StyleSheet.create({
   map: {
     ...StyleSheet.absoluteFillObject,
   },
-  buttons: {
+  zoomContainer: {
     position: 'absolute',
-    bottom: 50,
-    right: 10,
-    flexDirection: 'column',
+    right: 16,
+    bottom: 120, // adjust depending on your layout
+    alignItems: 'center',
   },
-  button: {
+
+  zoomButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     backgroundColor: '#fff',
-    borderRadius: 4,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    marginBottom: 8,
-    elevation: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
+
+    // shadow (iOS)
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+
+    // shadow (Android)
+    elevation: 5,
   },
-  buttonText: {
-    fontSize: 20,
+
+  zoomText: {
+    fontSize: 22,
     fontWeight: 'bold',
   },
 });
