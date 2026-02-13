@@ -7,6 +7,7 @@ export type RootStackParamList = {
   };
   Signup: undefined;
   Profile: undefined;
+  LocationPermission: undefined;
   Home: undefined;
   Tabs: undefined;
   Recovery: undefined;

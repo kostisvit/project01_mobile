@@ -106,6 +106,9 @@ const ProfileScreen: React.FC = () => {
         <TouchableOpacity style={styles.button} onPress={handleSave}>
           <Text style={styles.buttonText}>Αποθήκευση</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.buttonDelete} onPress={handleSave}>
+          <Text style={styles.buttonText}>Διαγραφή λογαριασμού</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -149,6 +152,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
     shadowColor: '#ff4500',
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 2,
+  },
+  buttonDelete: {
+    backgroundColor: 'red',
+    paddingVertical: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginBottom: 20,
+    shadowColor: 'red',
     shadowOpacity: 0.3,
     shadowRadius: 5,
     elevation: 2,

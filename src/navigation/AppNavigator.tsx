@@ -11,6 +11,7 @@ import OrgDetails from '../screens/OrgDetailsScreen';
 import RecoveryScreen from '../screens/RecoveryScreen';
 import ScrollableTabs from '../components/ScrollableTabs';
 import ResetPasswordScreen from '../screens/ResetPasswordScreen';
+import LocationPermissionScreen from '../screens/LocationPermScreen';
 import Config from 'react-native-config';
 import { UserProvider } from '../context/UserContext';
 
@@ -30,6 +31,10 @@ export default function AppNavigator() {
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="OrgDetail" component={OrgDetails} />
         <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen
+          name="LocationPermission"
+          component={LocationPermissionScreen}
+        />
         <Stack.Screen
           name="Tabs"
           options={{ title: 'Categories' }}

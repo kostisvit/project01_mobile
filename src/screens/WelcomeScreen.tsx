@@ -22,7 +22,7 @@ const WelcomeScreen: React.FC<Props> = ({ navigation, route }) => {
 
       <TouchableOpacity
         style={styles.loginButton}
-        onPress={() => navigation.navigate('Home')}
+        onPress={() => navigation.navigate('LocationPermission')}
       >
         <Text style={styles.loginText}>Συνέχεια ως επισκέπτης</Text>
       </TouchableOpacity>

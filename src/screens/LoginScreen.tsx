@@ -40,7 +40,7 @@ export default function LoginScreen({ navigation }: Props) {
       Alert.alert(
         'Success',
         `Welcome ${user.first_name || user.email}`,
-        [{ text: 'OK', onPress: () => navigation.replace('Home') }]
+        [{ text: 'OK', onPress: () => navigation.replace('LocationPermission') }]
       );
     } catch (err: any) {
       Alert.alert('Login Failed', err.message);
