@@ -29,7 +29,7 @@ const RecoveryScreen = () => {
 
   const recover = async () => {
     try {
-      await axios.post(`${API_URL}/password-reset/`, {
+      await axios.post(`${API_URL}/auth/password-reset/`, {
         email,
       });
 

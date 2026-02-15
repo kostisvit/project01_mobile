@@ -18,7 +18,7 @@ const linking = {
   prefixes: ["myapp://"],
   config: {
     screens: {
-      ResetPassword: "reset-password",
+      ResetPassword: "reset-password/:uid/:token",
     },
   },
 };

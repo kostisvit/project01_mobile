@@ -87,7 +87,7 @@ export default function LoginScreen({ navigation }: Props) {
         </Text>
       </TouchableOpacity>
 
-      < Text style={{ color: '#fff' }}>
+      < Text style={{ color: '#fff', textAlign: 'center' }}>
         Ξεχάσατε τον κωδικό σας;{' '}
         <Text
           style={{ textDecorationLine: 'underline', color: '#ff4500' }}

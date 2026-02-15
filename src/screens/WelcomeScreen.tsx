@@ -34,7 +34,7 @@ const WelcomeScreen: React.FC<Props> = ({ navigation, route }) => {
         <Text style={styles.signupText}>Είσοδος</Text>
       </TouchableOpacity>
 
-      <Text style={{ marginBottom: 16, color: '#444' }}>ή</Text>
+      <Text style={{ marginBottom: 16, color: '#fff' }}>ή</Text>
 
       <TouchableOpacity
         style={styles.registerButton}
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '300',
     letterSpacing: 1.2,
-    color: '#444',
+    color: '#fff',
     textAlign: 'center',
     marginTop: 8,
     marginBottom: 40,

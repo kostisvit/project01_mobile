@@ -43,7 +43,7 @@ export default function ResetPasswordScreen() {
 
     try {
       const res = await fetch(
-        "{API_URL}/password-reset-confirm/",
+        "{API_URL}/auth/password-reset-confirm/",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
