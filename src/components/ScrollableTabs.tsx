@@ -19,6 +19,8 @@ import OrganizationsMap from './OrganizationsMap';
 import { OrgCard } from './OrgCard';
 import Slider from '@react-native-community/slider';
 
+import MaterialIcons from '@react-native-vector-icons/material-icons';
+
 const API_URL = Config.API_URL;
 const Tab = createMaterialTopTabNavigator();
 const { width } = Dimensions.get('window');

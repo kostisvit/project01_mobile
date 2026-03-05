@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { logout } from '../api/auth';
+import MaterialIcons from '@react-native-vector-icons/material-icons';
 
 interface Props {
   user: any;
@@ -42,19 +43,26 @@ const AppHeader = ({ user, loading }: Props) => {
           style={styles.menuBtn}
           onPress={() => setMenuVisible(true)}
         >
-          <Text style={styles.menuIcon}>☰</Text>
+          <MaterialIcons name="menu" size={28} color="#fff" />
         </TouchableOpacity>
 
-        <Text style={styles.brand} onPress={() => {
-          navigation.navigate('Home');
-        }}>NearMe</Text>
+        <Text
+          style={styles.brand}
+          onPress={() => navigation.navigate('Home')}
+        >
+          NearMe
+        </Text>
 
         {loading ? (
-          <ActivityIndicator color="#fff" style={{ marginTop: 4 }} />
+          <ActivityIndicator size="small" color="#000" />
         ) : user ? (
-          <Text style={styles.userEmail}>{user.email}</Text>
+          <Text style={styles.userEmail} numberOfLines={1}>
+            {user.email}
+          </Text>
         ) : (
-          <Text style={styles.userEmail}>Περιηγείστε ως επισκέπτης</Text>
+          <Text style={styles.userEmail} numberOfLines={1}>
+            Περιηγείστε ως επισκέπτης
+          </Text>
         )}
       </View>
 
@@ -166,7 +174,7 @@ const styles = StyleSheet.create({
   },
   menuIcon: {
     fontSize: 26,
-    color: '#ff4500',
+    color: '#fff',
   },
   overlay: {
     flex: 1,

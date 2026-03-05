@@ -11,6 +11,8 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../types/navigation';
 import { useAuth } from '../context/AuthContext';
+import MaterialIcons from '@react-native-vector-icons/material-icons';
+
 
 type OrgCardProps = {
   org: any; // replace with proper type if you have one
@@ -58,13 +60,15 @@ export const OrgCard: React.FC<OrgCardProps> = ({ org, width }) => {
               {org.name}
             </Text>
             <Text style={styles.rating}>
-              ⭐ {org.average_rating?.toFixed(1) ?? '4.5'}
+              <MaterialIcons name="star" size={14} color="#f59e0b" />
+              {org.average_rating?.toFixed(1) ?? '4.5'}
             </Text>
           </View>
 
           <View style={styles.middleRow}>
             <Text style={styles.orgAddress} numberOfLines={2}>
-              📍 {org.address ?? '123 Main Street, New York'}
+              <MaterialIcons name="location-on" size={14} color="#e53e3e" />
+              {org.address ?? '123 Main Street, New York'}
             </Text>
             <Text style={styles.comments}>
               ({org.review_count ?? 120}) reviews
@@ -73,7 +77,8 @@ export const OrgCard: React.FC<OrgCardProps> = ({ org, width }) => {
 
           <View style={styles.footerRow}>
             <Text style={styles.orgPhone}>
-              📞 {org.phone ?? '+1 234 567 890'}
+              <MaterialIcons name="phone" size={14} color="#38a169" />
+              {org.phone ?? '+1 234 567 890'}
             </Text>
             <Text style={styles.statusOpen}>🟢 Open</Text>
           </View>
