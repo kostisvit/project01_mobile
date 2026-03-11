@@ -27,4 +27,7 @@ export type Organization = {
   latitude: number;
   longitude: number;
   images: OrganizationImage[];
+  average_rating?: number;
+  open_status?: string;
+
 };

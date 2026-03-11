@@ -59,28 +59,46 @@ export const OrgCard: React.FC<OrgCardProps> = ({ org, width }) => {
             <Text style={styles.orgName} numberOfLines={1}>
               {org.name}
             </Text>
-            <Text style={styles.rating}>
-              <MaterialIcons name="star" size={14} color="#f59e0b" />
-              {org.average_rating?.toFixed(1) ?? '4.5'}
-            </Text>
+
+            <View style={styles.ratingRow}>
+              <MaterialIcons
+                name="star"
+                size={14}
+                color="#f59e0b"
+                style={styles.star}
+              />
+              <Text style={styles.ratingText}>
+                {org.average_rating?.toFixed(1) ?? '4.5'}
+              </Text>
+            </View>
           </View>
 
           <View style={styles.middleRow}>
-            <Text style={styles.orgAddress} numberOfLines={2}>
+            <View style={styles.addressRow}>
               <MaterialIcons name="location-on" size={14} color="#e53e3e" />
-              {org.address ?? '123 Main Street, New York'}
-            </Text>
+              <Text style={styles.orgAddress} numberOfLines={2}>
+                {org.address ?? '123 Main Street, New York'}
+              </Text>
+            </View>
+
             <Text style={styles.comments}>
-              ({org.review_count ?? 120}) reviews
+              ({org.review_count ?? 120}) Αξιολογήσεις
             </Text>
           </View>
 
           <View style={styles.footerRow}>
-            <Text style={styles.orgPhone}>
+            <View style={styles.phoneRow}>
               <MaterialIcons name="phone" size={14} color="#38a169" />
-              {org.phone ?? '+1 234 567 890'}
+              <Text style={styles.orgPhone}>
+                {org.phone ?? '+1 234 567 890'}
+              </Text>
+            </View>
+
+            <Text
+              style={org.open_status === 'Open' ? styles.statusOpen : styles.statusClosed}
+            >
+              {org.open_status}
             </Text>
-            <Text style={styles.statusOpen}>🟢 Open</Text>
           </View>
         </View>
       </View>
@@ -103,6 +121,9 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 4 },
   },
+  star: {
+    marginRight: 4,
+  },
   cardImage: {
     width: '100%',
     height: 180,
@@ -114,11 +135,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 4,
+    marginTop: 8,
   },
   orgName: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#1a202c',
     flex: 1,
     marginRight: 8,
   },
@@ -126,15 +148,23 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#444',
   },
+  ratingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+
+  ratingText: {
+    fontSize: 14,
+    color: '#1a202c',
+  },
   comments: {
-    fontSize: 13,
-    color: '#666',
-    marginLeft: 4,
+    fontSize: 12,
+    color: '#718096',
   },
   orgAddress: {
     fontSize: 14,
-    color: '#666',
-    marginVertical: 6,
+    color: '#1a202c',
   },
   footerRow: {
     flexDirection: 'row',
@@ -148,13 +178,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 8,
   },
+  addressRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4, // adds 4px space between icon and text
+  },
   orgPhone: {
     fontSize: 14,
-    color: '#444',
+    color: '#1a202c',
+  },
+  phoneRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4, // space between phone icon and number
   },
   statusOpen: {
-    fontSize: 13,
-    color: '#2e7d32',
-    fontWeight: '500',
+    fontSize: 12,
+    color: '#38a169',
+    fontWeight: '600',
   },
+  statusClosed: {
+    fontSize: 12,
+    color: '#e53e3e',
+    fontWeight: '600',
+  },
+
 });

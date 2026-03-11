@@ -12,6 +12,7 @@ import { useNavigation } from '@react-navigation/native';
 import { logout } from '../api/auth';
 import MaterialIcons from '@react-native-vector-icons/material-icons';
 
+
 interface Props {
   user: any;
   loading: boolean;
@@ -37,13 +38,14 @@ const AppHeader = ({ user, loading }: Props) => {
 
   return (
     <>
+
       {/* HEADER */}
       <View style={styles.header}>
         <TouchableOpacity
-          style={styles.menuBtn}
-          onPress={() => setMenuVisible(true)}
+          style={styles.searchBtn}
+          onPress={() => navigation.navigate('Search')}
         >
-          <MaterialIcons name="menu" size={28} color="#fff" />
+          <MaterialIcons name="search" size={26} color="#fff" />
         </TouchableOpacity>
 
         <Text
@@ -53,8 +55,15 @@ const AppHeader = ({ user, loading }: Props) => {
           NearMe
         </Text>
 
+        <TouchableOpacity
+          style={styles.menuBtn}
+          onPress={() => setMenuVisible(true)}
+        >
+          <MaterialIcons name="menu" size={28} color="#fff" />
+        </TouchableOpacity>
+
         {loading ? (
-          <ActivityIndicator size="small" color="#000" />
+          <ActivityIndicator size="small" color="#fff" />
         ) : user ? (
           <Text style={styles.userEmail} numberOfLines={1}>
             {user.email}
@@ -154,6 +163,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#0F172A',
+  },
+  searchBtn: {
+    position: 'absolute',
+    left: 16,
+    top: 16,
   },
   brand: {
     fontSize: 32,

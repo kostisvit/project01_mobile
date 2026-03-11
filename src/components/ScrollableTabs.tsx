@@ -18,15 +18,15 @@ import { api } from '../api/client';
 import OrganizationsMap from './OrganizationsMap';
 import { OrgCard } from './OrgCard';
 import Slider from '@react-native-community/slider';
+import { Image } from 'react-native';
 
-import MaterialIcons from '@react-native-vector-icons/material-icons';
 
 const API_URL = Config.API_URL;
 const Tab = createMaterialTopTabNavigator();
 const { width } = Dimensions.get('window');
 
 type OrganizationImage = { image_url: string };
-type OrganizationType = { id: number; name: string; slug: string };
+type OrganizationType = { id: number; name: string; slug: string; icon: string; };
 type Organization = {
   id: number;
   name: string;
@@ -112,7 +112,7 @@ const TabScreen: React.FC<{ typeSlug: string }> = ({ typeSlug }) => {
   if (loading)
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" />
+        <ActivityIndicator size="large" color="#FF4500" />
       </View>
     );
 
@@ -197,7 +197,29 @@ const ScrollableTabs: React.FC<{ apiUrl: string }> = ({ apiUrl }) => {
       }}
     >
       {types.map((type) => (
-        <Tab.Screen key={type.slug} name={type.name}>
+        <Tab.Screen
+          key={type.slug}
+          name={type.name}
+          options={{
+            tabBarIcon: () => <View />, // empty to satisfy TS
+            tabBarLabel: () => (
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Image
+                  source={{ uri: type.icon }}
+                  style={{
+                    width: 22,
+                    height: 22,
+                    marginRight: 6,
+                    resizeMode: 'contain', // keeps colors intact
+                  }}
+                />
+                <Text style={{ fontSize: 15, color: '#000' }}>{type.name}</Text>
+              </View>
+            ),
+            tabBarActiveTintColor: undefined, // prevent React Navigation from forcing blue
+            tabBarInactiveTintColor: undefined,
+          }}
+        >
           {() => <TabScreen typeSlug={type.slug} />}
         </Tab.Screen>
       ))}

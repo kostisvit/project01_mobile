@@ -64,26 +64,29 @@ const OrganizationsMap: React.FC<Props> = ({ organizations }) => {
   };
 
   return (
-    <View style={styles.mapWrapper}>
-      <MapView
-        ref={mapRef}
-        style={styles.map}
-        region={region || undefined}
-        onRegionChangeComplete={r => setRegion(r)}
-        zoomEnabled={true}       // pinch-to-zoom
-        scrollEnabled={true}     // move map
-      >
-        {organizations.map(org => (
-          <Marker
-            key={org.id}
-            coordinate={{
-              latitude: Number(org.latitude),
-              longitude: Number(org.longitude),
-            }}
-            title={org.name}
-          />
-        ))}
-      </MapView>
+    <View style={{ position: 'relative' }}>
+      {/* Map */}
+      <View style={styles.mapWrapper}>
+        <MapView
+          ref={mapRef}
+          style={styles.map}
+          region={region || undefined}
+          onRegionChangeComplete={r => setRegion(r)}
+          zoomEnabled={true}
+          scrollEnabled={true}
+        >
+          {organizations.map(org => (
+            <Marker
+              key={org.id}
+              coordinate={{
+                latitude: Number(org.latitude),
+                longitude: Number(org.longitude),
+              }}
+              title={org.name}
+            />
+          ))}
+        </MapView>
+      </View>
 
       {/* Zoom Buttons */}
       <View style={styles.zoomContainer}>
@@ -107,17 +110,18 @@ const styles = StyleSheet.create({
     height: 350,
     marginTop: 8,
     borderRadius: 16,
-    overflow: 'hidden',
+    overflow: 'hidden', // keep rounded corners
     alignSelf: 'center',
   },
   map: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
   },
   zoomContainer: {
     position: 'absolute',
     right: 16,
-    bottom: 120, // adjust depending on your layout
+    bottom: 16,  // distance from bottom of map
     alignItems: 'center',
+    zIndex: 10,  // ensures buttons sit above the map
   },
 
   zoomButton: {
@@ -127,20 +131,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 10,
-
-    // shadow (iOS)
+    marginBottom: 10, // spacing between + and −
+    bottom: 120,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
-
-    // shadow (Android)
     elevation: 5,
   },
 
   zoomText: {
     fontSize: 22,
     fontWeight: 'bold',
+    color: '#333',
   },
 });

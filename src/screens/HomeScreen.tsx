@@ -6,22 +6,18 @@ import Config from 'react-native-config';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation';
 import { logout } from '../api/auth';
-import AppHeader from '../components/AppHeader';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
+import DefaultLayout from '../layout/DefaultLayout';
+import { UserProfile } from '../types/user';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
 const API_URL = Config.API_URL;
 
-interface User {
-  email: string;
-  first_name?: string;
-  last_name?: string;
-}
+
+
 
 const HomeScreen = ({ navigation }: Props) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [menuVisible, setMenuVisible] = useState(false);
 
@@ -59,75 +55,25 @@ const HomeScreen = ({ navigation }: Props) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <AppHeader user={user} loading={loading} />
+    // <SafeAreaView style={styles.container}>
+    //   <AppHeader user={user} loading={loading} />
 
+    //   <View style={styles.tabSection}>
+    //     <ScrollableTabs apiUrl={`${API_URL}/org-types/`} />
+    //   </View>
+    // </SafeAreaView>
+    <DefaultLayout user={user} loading={loading}>
       <View style={styles.tabSection}>
         <ScrollableTabs apiUrl={`${API_URL}/org-types/`} />
       </View>
-    </SafeAreaView>
+    </DefaultLayout>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0F172A' },
-  header: { height: 95, justifyContent: 'center', alignItems: 'center' },
-  brand: {
-    fontSize: 32,
-    fontWeight: '700',
-    color: 'ghostwhite',
-    letterSpacing: 2,
-  },
-  userEmail: {
-    fontSize: 16,
-    color: '#fff',
-    marginTop: 4,
-    fontWeight: '500',
-  },
-  tabSection: { flex: 1 },
-  content: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' },
 
-  logoutBtn: {
-    position: 'absolute',
-    top: 16,
-    right: 16,
-    backgroundColor: '#ef4444',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
-  },
-  logoutText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 14,
-  },
-  menuBtn: {
-    position: 'absolute',
-    top: 16,
-    right: 16,
-  },
-  menuIcon: {
-    fontSize: 26,
-    color: '#fff',
-  },
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.3)',
-    justifyContent: 'flex-end',
-  },
-  menu: {
-    backgroundColor: '#fff',
-    padding: 20,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-  },
-  menuItem: {
-    paddingVertical: 14,
-  },
-  menuEmail: {
-    fontWeight: '600',
-    marginBottom: 16,
-  },
+  tabSection: { flex: 1 },
+
 });
 
 export default HomeScreen;

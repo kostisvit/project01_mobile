@@ -1,16 +1,21 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import AppHeader from '../components/AppHeader';
-import { useUser } from '../context/UserContext';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { UserProfile } from "../types/User";
 
-const DefaultLayout = ({ children }: { children: React.ReactNode }) => {
-  const { user, loading } = useUser();
+type DefaultLayoutProps = {
+  children: React.ReactNode;
+  user: UserProfile | null;
+  loading: boolean;
+};
 
+const DefaultLayout = ({ children, user, loading }: DefaultLayoutProps) => {
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <AppHeader user={user} loading={loading} />
-      <View style={styles.content}>{children}</View>
-    </View>
+      {children}
+    </SafeAreaView>
   );
 };
 
@@ -19,9 +24,10 @@ export default DefaultLayout;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#0F172A'
   },
-  content: {
-    flex: 1,
-    backgroundColor: '#f9f9f9',
-  },
+  // content: {
+  //   flex: 1,
+  //   backgroundColor: '#f9f9f9',
+  // },
 });

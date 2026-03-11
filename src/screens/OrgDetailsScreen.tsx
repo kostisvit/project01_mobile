@@ -7,7 +7,6 @@ import {
   Pressable,
   Linking,
   StyleSheet,
-  ActivityIndicator,
 } from 'react-native';
 import axios from 'axios';
 import AppHeader from '../components/AppHeader';
@@ -18,8 +17,8 @@ import { RootStackParamList } from '../types/navigation';
 import { Organization } from '../types/organization';
 import { useAuth } from '../context/AuthContext';
 import { useNavigation } from "@react-navigation/native";
-
-
+import MaterialIcons from '@react-native-vector-icons/material-icons';
+import { ActivityIndicator } from 'react-native';
 
 const API_URL = Config.API_URL;
 
@@ -54,10 +53,9 @@ const ReplyItem = ({
         { marginLeft: level * 16 },
       ]}
     >
-      {/* 💬 COMMENT */}
       <Text style={styles.replyComment}>{displayText}</Text>
 
-      {/* 🔽 EXPAND TEXT */}
+
       {isLongText && (
         <Pressable onPress={() => setCollapsedText(!collapsedText)}>
           <Text style={styles.toggleText}>
@@ -65,14 +63,11 @@ const ReplyItem = ({
           </Text>
         </Pressable>
       )}
-
-      {/* 👤 META */}
       <Text style={styles.replyMeta}>
         από {reply.user_name ?? "Anonymous"} ·{" "}
         {new Date(reply.created).toLocaleDateString("el-GR")}
       </Text>
 
-      {/* 🔽 COLLAPSE THREAD */}
       {hasChildren && (
         <Pressable onPress={() => setCollapsedThread(!collapsedThread)}>
           <Text style={styles.toggleReplies}>
@@ -130,7 +125,13 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
       })
       .finally(() => setLoading(false));
   }, [orgId, token]);
-
+  if (loading) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator size="large" color="#FF4500" />
+      </View>
+    );
+  }
   if (!org) {
     return (
       <View style={styles.container}>
@@ -156,23 +157,60 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
           />
 
           {/* 🏷 NAME */}
-          <Text style={styles.name}>{org.name}</Text>
+          <View style={styles.headerRow}>
+            <Text style={styles.orgName} numberOfLines={1}>
+              {org.name}
+            </Text>
 
-          {/* 📍 ADDRESS */}
-          <Text style={styles.text}>📍 {org.address}</Text>
+            <View style={styles.ratingRow}>
+              <MaterialIcons
+                name="star"
+                size={14}
+                color="#f59e0b"
+                style={styles.star}
+              />
+              <Text style={styles.ratingText}>
+                {org.average_rating?.toFixed(1) ?? '4.5'}
+              </Text>
+            </View>
+          </View>
 
-          {/* 📞 PHONE */}
-          {org.phone && (
-            <Pressable onPress={() => Linking.openURL(`tel:${org.phone}`)}>
-              <Text style={styles.phone}>📞 {org.phone}</Text>
-            </Pressable>
-          )}
-          {/* 📝 DESCRIPTION */}
+          <View style={styles.middleRow}>
+            <View style={styles.addressRow}>
+              <MaterialIcons name="location-on" size={14} color="#e53e3e" />
+              <Text style={styles.orgAddress} numberOfLines={2}>
+                {org.address ?? '123 Main Street, New York'}
+              </Text>
+            </View>
+
+            <Text style={styles.comments}>
+              ({org.reviews?.length ?? 0}) Αξιολογήσεις
+            </Text>
+          </View>
+
+          <View style={styles.footerRow}>
+            <View style={styles.phoneRow}>
+              <MaterialIcons name="phone" size={14} color="#38a169" />
+              <Text style={styles.orgPhone}>
+                {org.phone ?? '+1 234 567 890'}
+              </Text>
+            </View>
+
+            <Text
+              style={org.open_status === 'Open' ? styles.statusOpen : styles.statusClosed}
+            >
+              {org.open_status}
+            </Text>
+          </View>
           {org.description && (
-            <Text style={styles.text}>{org.description}</Text>
+            <View style={styles.descriptionBox}>
+              <Text style={styles.descriptionTitle}>Σχετικά</Text>
+              <Text style={styles.descriptionText}>
+                {org.description}
+              </Text>
+            </View>
           )}
-          {/* 🌍 MAP LINK */}
-          {org.latitude && org.longitude && (
+          <View style={styles.mapCard}>
             <Pressable
               style={styles.mapButton}
               onPress={() =>
@@ -181,28 +219,29 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
                 )
               }
             >
-              <Text style={styles.mapButtonText}>Χάρτης</Text>
+              <MaterialIcons name="map" size={18} color="#fff" />
+              <Text style={styles.mapButtonText}>Άνοιγμα στο Χάρτη</Text>
             </Pressable>
-          )}
+          </View>
 
           {/* ⭐ REVIEWS */}
           <View style={styles.reviewSection}>
             <Text style={styles.sectionTitle}>Σχόλια</Text>
-            {user && (
+            {user ? (
               <Pressable
                 style={styles.addReviewButton}
-                onPress={() =>
-                  navigation.navigate("Login", { orgId })
-                }
+                onPress={() => navigation.navigate("Login", { orgId })}
               >
                 <Text style={styles.addReviewText}>✍️ Άφησε το σχόλιο σου.</Text>
               </Pressable>
-            ) || (
-                <Text style={styles.loginHint}
-                  onPress={() => navigation.navigate('Login')}>
-                  Συνδεθείτε για να αφήσετε το σχόλιο σας.
-                </Text>
-              )}
+            ) : (
+              <Text
+                style={styles.loginHint}
+                onPress={() => navigation.navigate('Login')}
+              >
+                Συνδεθείτε για να αφήσετε το σχόλιο σας.
+              </Text>
+            )}
             {(!org.reviews || org.reviews.length === 0) && (
               <Text style={styles.empty}>Κανένα σχόλιο.</Text>
             )}
@@ -236,8 +275,6 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
   );
 };
 
-// const HEADER_HEIGHT = 95; // same as AppHeader
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -259,10 +296,19 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginBottom: 16,
   },
-  name: {
-    fontSize: 22,
-    fontWeight: '700',
-    marginBottom: 4,
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 8,
+    marginBottom: 10,
+  },
+  orgName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    flex: 1,
+    marginRight: 8,
   },
   text: {
     fontSize: 16,
@@ -274,12 +320,18 @@ const styles = StyleSheet.create({
     color: '#007AFF',
     marginBottom: 8,
   },
+  mapCard: {
+    marginTop: 14
+  },
+
   mapButton: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 6,
     backgroundColor: '#FF4500',
     padding: 12,
-    borderRadius: 8,
-    marginTop: 12,
-    alignItems: 'center',
+    borderRadius: 10
   },
   mapButtonText: {
     color: '#fff',
@@ -290,8 +342,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#f0f4f8",
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: "700",
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#333",
     marginBottom: 12,
     marginLeft: 5,
     marginTop: 8,
@@ -308,19 +361,48 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 12,
   },
-
+  ratingText: {
+    fontSize: 14,
+    color: '#1a202c',
+  },
   rating: {
     fontSize: 15,
     fontWeight: "600",
     marginBottom: 4,
   },
-
+  ratingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  star: {
+    marginRight: 4,
+  },
+  middleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 8,
+    marginBottom: 10,
+  },
+  addressRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  orgAddress: {
+    fontSize: 14,
+    color: '#1a202c',
+    marginLeft: 4,
+  },
   comment: {
     fontSize: 14,
     color: "#333",
     marginBottom: 6,
   },
-
+  comments: {
+    fontSize: 12,
+    color: '#718096',
+  },
   meta: {
     fontSize: 12,
     color: "#888",
@@ -380,10 +462,54 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginBottom: 4,
   },
+  footerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 8,
+  },
   toggleReplies: {
     color: "#007AFF",
     fontSize: 13,
     marginTop: 6,
+  },
+  orgPhone: {
+    fontSize: 14,
+    color: '#1a202c',
+  },
+  phoneRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4, // space between phone icon and number
+  },
+  statusOpen: {
+    fontSize: 12,
+    color: '#38a169',
+    fontWeight: '600',
+  },
+  statusClosed: {
+    fontSize: 12,
+    color: '#e53e3e',
+    fontWeight: '600',
+  },
+  descriptionBox: {
+    marginTop: 14,
+    padding: 12,
+    backgroundColor: '#f8fafc',
+    borderRadius: 10,
+  },
+
+  descriptionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 6,
+    color: '#333',
+  },
+
+  descriptionText: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: '#374151',
   },
 });
 
