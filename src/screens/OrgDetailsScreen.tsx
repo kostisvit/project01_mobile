@@ -20,6 +20,9 @@ import { useNavigation } from "@react-navigation/native";
 import MaterialIcons from '@react-native-vector-icons/material-icons';
 import { ActivityIndicator } from 'react-native';
 import type { OrgCardProps } from '../types/organization';
+import moment from 'moment';
+
+
 
 const API_URL = Config.API_URL;
 
@@ -220,7 +223,6 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
             </Pressable>
           </View>
 
-          {/* ⭐ REVIEWS */}
           <View style={styles.reviewSection}>
             <Text style={styles.sectionTitle}>Σχόλια</Text>
             {user ? (
@@ -228,7 +230,12 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
                 style={styles.addReviewButton}
                 onPress={() => navigation.navigate("Login", { orgId })}
               >
-                <Text style={styles.addReviewText}>✍️ Άφησε το σχόλιο σου.</Text>
+                <View style={styles.buttonContent}>
+                  <MaterialIcons name="comment" color="#fff" size={18} />
+                  <Text style={styles.addReviewText}>
+                    Άφησε το σχόλιο σου
+                  </Text>
+                </View>
               </Pressable>
             ) : (
               <Text
@@ -244,7 +251,9 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
 
             {org.reviews?.map(review => (
               <View key={review.id} style={styles.reviewCard}>
-                <Text style={styles.rating}>⭐ {review.rating}/5</Text>
+                <Text style={styles.rating}>
+                  <MaterialIcons name="star" size={18} color="gold" />
+                  {org.average_rating?.toFixed(1) ?? '0.0'}</Text>
                 <Text style={styles.comment}>{review.comment}</Text>
                 <Text style={styles.meta}>
                   από {review.user_name ?? "Anonymous"} ·{" "}
@@ -334,32 +343,38 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   reviewSection: {
-    marginTop: 24,
-    backgroundColor: "#f0f4f8",
+    marginTop: 14,
+    paddingHorizontal: 12,
   },
   sectionTitle: {
-    fontSize: 16,
-    fontWeight: "600",
+    fontSize: 18,
+    fontWeight: 'bold',
     color: "#333",
-    marginBottom: 12,
+    marginBottom: 10,
     marginLeft: 5,
     marginTop: 8,
   },
 
   empty: {
-    color: "#888",
-    fontStyle: "italic",
+    textAlign: 'center',
+    color: '#9ca3af',
+    marginTop: 10,
   },
 
   reviewCard: {
-    backgroundColor: "#F9F9F9",
-    borderRadius: 10,
-    padding: 12,
+    backgroundColor: '#fff',
+    padding: 14,
+    borderRadius: 12,
     marginBottom: 12,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  ratingText: {
+  addReviewText: {
+    color: '#fff',
+    fontWeight: '600',
     fontSize: 14,
-    color: '#1a202c',
   },
   rating: {
     fontSize: 15,
@@ -370,6 +385,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
+  },
+  ratingText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#b45309',
   },
   star: {
     marginRight: 4,
@@ -392,8 +412,9 @@ const styles = StyleSheet.create({
   },
   comment: {
     fontSize: 14,
-    color: "#333",
-    marginBottom: 6,
+    lineHeight: 20,
+    color: '#333',
+    marginTop: 6,
   },
   comments: {
     fontSize: 12,
@@ -411,16 +432,20 @@ const styles = StyleSheet.create({
   },
 
   addReviewButton: {
-    backgroundColor: "#34d399",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 8,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#FF4500',
+    padding: 12,
+    borderRadius: 10
+  },
+  buttonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6, // 👈 clean spacing (RN 0.71+)
   },
 
-  addReviewText: {
-    color: "#fff",
-    fontWeight: "600",
-  },
 
   loginHint: {
     color: "#777",
@@ -437,15 +462,17 @@ const styles = StyleSheet.create({
   },
 
   replyCard: {
-    marginTop: 6,
-    padding: 8,
-    backgroundColor: "#dcdcdc",
-    borderRadius: 6,
+    backgroundColor: '#f9fafb',
+    padding: 10,
+    borderRadius: 10,
+    marginTop: 8,
+    borderLeftWidth: 2,
+    borderLeftColor: '#e5e7eb',
   },
-
   replyComment: {
-    fontSize: 14,
-    color: "#333",
+    fontSize: 13,
+    color: '#444',
+    lineHeight: 18,
   },
 
   replyMeta: {
@@ -465,7 +492,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   toggleReplies: {
-    color: "#007AFF",
+    color: '#6b7280',
     fontSize: 13,
     marginTop: 6,
   },
@@ -479,14 +506,22 @@ const styles = StyleSheet.create({
     gap: 4, // space between phone icon and number
   },
   statusOpen: {
+    color: '#065f46',
+    backgroundColor: '#d1fae5',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 6,
     fontSize: 12,
-    color: '#38a169',
-    fontWeight: '600',
+    overflow: 'hidden',
   },
   statusClosed: {
+    color: '#991b1b',
+    backgroundColor: '#fee2e2',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 6,
     fontSize: 12,
-    color: '#e53e3e',
-    fontWeight: '600',
+    overflow: 'hidden',
   },
   descriptionBox: {
     marginTop: 14,

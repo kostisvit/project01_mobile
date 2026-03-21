@@ -149,8 +149,9 @@ const styles = StyleSheet.create({
   },
 
   ratingText: {
-    fontSize: 14,
-    color: '#1a202c',
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#b45309',
   },
   comments: {
     fontSize: 12,
@@ -187,14 +188,22 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   statusOpen: {
+    color: '#065f46',
+    backgroundColor: '#d1fae5',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 6,
     fontSize: 12,
-    color: '#38a169',
-    fontWeight: '600',
+    overflow: 'hidden',
   },
   statusClosed: {
+    color: '#991b1b',
+    backgroundColor: '#fee2e2',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 6,
     fontSize: 12,
-    color: '#e53e3e',
-    fontWeight: '600',
+    overflow: 'hidden',
   },
 
 });
