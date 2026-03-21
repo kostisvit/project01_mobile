@@ -12,19 +12,15 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../types/navigation';
 import { useAuth } from '../context/AuthContext';
 import MaterialIcons from '@react-native-vector-icons/material-icons';
+import type { OrgCardProps } from '../types/organization';
 
-
-type OrgCardProps = {
-  org: any; // replace with proper type if you have one
-  width: number;
-};
 
 export const OrgCard: React.FC<OrgCardProps> = ({ org, width }) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  const { isAuthenticated } = useAuth(); // ✅ get token from context
-
+  const { isAuthenticated } = useAuth();
+  const isOpen = org.open_status === true;
 
   const handlePress = () => {
     navigation.navigate("OrgDetail", { orgId: org.id });
@@ -68,7 +64,7 @@ export const OrgCard: React.FC<OrgCardProps> = ({ org, width }) => {
                 style={styles.star}
               />
               <Text style={styles.ratingText}>
-                {org.average_rating?.toFixed(1) ?? '4.5'}
+                {org.average_rating?.toFixed(1) ?? '0.0'}
               </Text>
             </View>
           </View>
@@ -77,7 +73,7 @@ export const OrgCard: React.FC<OrgCardProps> = ({ org, width }) => {
             <View style={styles.addressRow}>
               <MaterialIcons name="location-on" size={14} color="#e53e3e" />
               <Text style={styles.orgAddress} numberOfLines={2}>
-                {org.address ?? '123 Main Street, New York'}
+                {org.address ?? '-'}
               </Text>
             </View>
 
@@ -90,14 +86,12 @@ export const OrgCard: React.FC<OrgCardProps> = ({ org, width }) => {
             <View style={styles.phoneRow}>
               <MaterialIcons name="phone" size={14} color="#38a169" />
               <Text style={styles.orgPhone}>
-                {org.phone ?? '+1 234 567 890'}
+                {org.phone ?? '-'}
               </Text>
             </View>
 
-            <Text
-              style={org.open_status === 'Open' ? styles.statusOpen : styles.statusClosed}
-            >
-              {org.open_status}
+            <Text style={isOpen ? styles.statusOpen : styles.statusClosed}>
+              {isOpen ? 'Ανοιχτά' : 'Κλειστά'}
             </Text>
           </View>
         </View>
@@ -181,7 +175,7 @@ const styles = StyleSheet.create({
   addressRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4, // adds 4px space between icon and text
+    gap: 4,
   },
   orgPhone: {
     fontSize: 14,
@@ -190,7 +184,7 @@ const styles = StyleSheet.create({
   phoneRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4, // space between phone icon and number
+    gap: 4,
   },
   statusOpen: {
     fontSize: 12,

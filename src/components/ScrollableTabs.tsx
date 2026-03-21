@@ -18,8 +18,7 @@ import { api } from '../api/client';
 import OrganizationsMap from './OrganizationsMap';
 import { OrgCard } from './OrgCard';
 import Slider from '@react-native-community/slider';
-import { Image } from 'react-native';
-
+import MaterialIcons from '@react-native-vector-icons/material-icons';
 
 const API_URL = Config.API_URL;
 const Tab = createMaterialTopTabNavigator();
@@ -104,7 +103,6 @@ const TabScreen: React.FC<{ typeSlug: string }> = ({ typeSlug }) => {
     }
   };
 
-  // Fetch when typeSlug, location, or radius changes
   useEffect(() => {
     fetchOrganizations();
   }, [typeSlug, location, radius]);
@@ -125,7 +123,6 @@ const TabScreen: React.FC<{ typeSlug: string }> = ({ typeSlug }) => {
 
   return (
     <View style={{ flex: 1 }}>
-      {/* Radius Slider */}
       <View style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
         <Text>Εύρος αναζήτησης {radius} km</Text>
         <Slider
@@ -143,6 +140,8 @@ const TabScreen: React.FC<{ typeSlug: string }> = ({ typeSlug }) => {
       <FlatList
         data={organizations}
         keyExtractor={(item) => item.id.toString()}
+        refreshing={loading}
+        onRefresh={fetchOrganizations}
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
@@ -194,6 +193,8 @@ const ScrollableTabs: React.FC<{ apiUrl: string }> = ({ apiUrl }) => {
         tabBarIndicatorStyle: { backgroundColor: '#ff4500' },
         tabBarLabelStyle: { fontSize: 16, fontWeight: 'bold' },
         tabBarStyle: { elevation: 0, shadowOpacity: 0 },
+        tabBarActiveTintColor: '#ff4500',
+        tabBarInactiveTintColor: '#999',
       }}
     >
       {types.map((type) => (
@@ -201,22 +202,15 @@ const ScrollableTabs: React.FC<{ apiUrl: string }> = ({ apiUrl }) => {
           key={type.slug}
           name={type.name}
           options={{
-            tabBarIcon: () => <View />, // empty to satisfy TS
+            tabBarIcon: ({ color }) => (
+              <MaterialIcons name={type.icon} size={20} color={color} />
+            ),
             tabBarLabel: () => (
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Image
-                  source={{ uri: type.icon }}
-                  style={{
-                    width: 22,
-                    height: 22,
-                    marginRight: 6,
-                    resizeMode: 'contain', // keeps colors intact
-                  }}
-                />
-                <Text style={{ fontSize: 15, color: '#000' }}>{type.name}</Text>
+                <Text style={{ fontSize: 15, marginLeft: 6 }}>{type.name}</Text>
               </View>
             ),
-            tabBarActiveTintColor: undefined, // prevent React Navigation from forcing blue
+            tabBarActiveTintColor: undefined,
             tabBarInactiveTintColor: undefined,
           }}
         >
@@ -227,7 +221,7 @@ const ScrollableTabs: React.FC<{ apiUrl: string }> = ({ apiUrl }) => {
   );
 };
 
-// ------------------ Styles ------------------
+
 const styles = StyleSheet.create({
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
 });

@@ -1,4 +1,4 @@
-export type OrganizationImage = { image_url: string };
+export type OrganizationImage = { image_url: string; };
 
 export type OrganizationReview = {
   id: number;
@@ -26,8 +26,13 @@ export type Organization = {
   reviews: OrganizationReview[];
   latitude: number;
   longitude: number;
-  images: OrganizationImage[];
+  image_url: OrganizationImage[];
   average_rating?: number;
   open_status?: string;
 
+};
+
+export type OrgCardProps = {
+  org: any; // replace with proper type if you have one
+  width: number;
 };

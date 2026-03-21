@@ -19,6 +19,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigation } from "@react-navigation/native";
 import MaterialIcons from '@react-native-vector-icons/material-icons';
 import { ActivityIndicator } from 'react-native';
+import type { OrgCardProps } from '../types/organization';
 
 const API_URL = Config.API_URL;
 
@@ -77,8 +78,6 @@ const ReplyItem = ({
           </Text>
         </Pressable>
       )}
-
-      {/* 🔁 CHILD REPLIES */}
       {!collapsedThread && hasChildren && (
         <View>
           {reply.children.map((child: any) => (
@@ -97,18 +96,17 @@ const ReplyItem = ({
 const OrgDetailScreen: React.FC<Props> = ({ route }) => {
   const navigation = useNavigation<any>();
   const { orgId } = route.params;
-  const { user, token } = useAuth(); // ✅ get token here
-
-  //const [user, setUser] = useState<any>(null);
+  const { user, token } = useAuth();
   const [org, setOrg] = useState<Organization | null>(null);
   const [loading, setLoading] = useState(true);
+  const isOpen = org?.open_status;
 
   useEffect(() => {
     axios
       .get<Organization>(`${API_URL}/organizations/${orgId}/`, {
         headers: token
           ? { Authorization: `Bearer ${token}` }
-          : undefined, // 👈 allow anonymous
+          : undefined,
       })
       .then(res => {
         setOrg({
@@ -170,7 +168,7 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
                 style={styles.star}
               />
               <Text style={styles.ratingText}>
-                {org.average_rating?.toFixed(1) ?? '4.5'}
+                {org.average_rating?.toFixed(1) ?? '0.0'}
               </Text>
             </View>
           </View>
@@ -179,7 +177,7 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
             <View style={styles.addressRow}>
               <MaterialIcons name="location-on" size={14} color="#e53e3e" />
               <Text style={styles.orgAddress} numberOfLines={2}>
-                {org.address ?? '123 Main Street, New York'}
+                {org.address ?? '-'}
               </Text>
             </View>
 
@@ -192,14 +190,12 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
             <View style={styles.phoneRow}>
               <MaterialIcons name="phone" size={14} color="#38a169" />
               <Text style={styles.orgPhone}>
-                {org.phone ?? '+1 234 567 890'}
+                {org.phone ?? '-'}
               </Text>
             </View>
 
-            <Text
-              style={org.open_status === 'Open' ? styles.statusOpen : styles.statusClosed}
-            >
-              {org.open_status}
+            <Text style={isOpen ? styles.statusOpen : styles.statusClosed}>
+              {isOpen ? 'Ανοιχτά' : 'Κλειστά'}
             </Text>
           </View>
           {org.description && (
