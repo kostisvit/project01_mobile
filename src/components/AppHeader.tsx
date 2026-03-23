@@ -118,7 +118,11 @@ const AppHeader = ({ user, loading }: Props) => {
                   <Text>Ρυθμίσεις</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.menuItem}>
+                <TouchableOpacity style={styles.menuItem}
+                  onPress={() => {
+                    setMenuVisible(false);
+                    navigation.navigate('Feedback');
+                  }}>
                   <Text>Στείλτε μας την γνώμη σας</Text>
                 </TouchableOpacity>
 
