@@ -29,6 +29,7 @@ export type Organization = {
   image_url: OrganizationImage[];
   average_rating?: number;
   open_status?: string;
+  images: OrganizationImage[];
 
 };
 

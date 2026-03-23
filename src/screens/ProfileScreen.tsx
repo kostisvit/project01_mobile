@@ -13,6 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import AppHeader from "../components/AppHeader";
 import { getProfile, updateProfile } from "../api/user";
 import { UserProfile } from "../types/user";
+import { ScrollView } from "react-native-gesture-handler";
 
 const ProfileScreen: React.FC = () => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -68,109 +69,121 @@ const ProfileScreen: React.FC = () => {
     <SafeAreaView style={styles.container}>
       <AppHeader user={profile} loading={loading} />
 
-      <View style={styles.profile_container}>
+      <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.header}>Προφίλ χρήστη</Text>
 
-        <TextInput
-          value={profile.first_name}
-          style={styles.input}
-          placeholder="First name"
-          onChangeText={(v) => handleChange("first_name", v)}
-        />
+        {/* PROFILE CARD */}
+        <View style={styles.card}>
+          <Text style={styles.label}>Όνομα</Text>
+          <TextInput
+            value={profile.first_name}
+            style={styles.input}
+            placeholderTextColor="#9ca3af"
+            onChangeText={(v) => handleChange("first_name", v)}
+          />
 
-        <TextInput
-          value={profile.last_name}
-          style={styles.input}
-          placeholder="Last name"
-          onChangeText={(v) => handleChange("last_name", v)}
-        />
+          <Text style={styles.label}>Επώνυμο</Text>
+          <TextInput
+            value={profile.last_name}
+            style={styles.input}
+            placeholderTextColor="#9ca3af"
+            onChangeText={(v) => handleChange("last_name", v)}
+          />
 
-        <TextInput
-          placeholder="Email"
-          value={profile.email}
-          style={styles.input}
-          autoCapitalize="none"
-          keyboardType="email-address"
-          autoCorrect={false}
-          placeholderTextColor="#888"
-        />
+          <Text style={styles.label}>Email</Text>
+          <TextInput
+            value={profile.email}
+            style={[styles.input, { backgroundColor: "#f3f4f6" }]}
+            editable={false}
+          />
 
-        <TextInput
-          value={profile.phone}
-          style={styles.input}
-          placeholder="Phone"
-          keyboardType="phone-pad"
-          onChangeText={(v) => handleChange("phone", v)}
-        />
+          <Text style={styles.label}>Τηλέφωνο</Text>
+          <TextInput
+            value={profile.phone}
+            style={styles.input}
+            placeholderTextColor="#9ca3af"
+            keyboardType="phone-pad"
+            onChangeText={(v) => handleChange("phone", v)}
+          />
+        </View>
 
         <TouchableOpacity style={styles.button} onPress={handleSave}>
           <Text style={styles.buttonText}>Αποθήκευση</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonDelete} onPress={handleSave}>
+
+        <TouchableOpacity style={styles.buttonDelete}>
           <Text style={styles.buttonText}>Διαγραφή λογαριασμού</Text>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#0F172A" },
-  profile_container: {
+  container: {
     flex: 1,
-    backgroundColor: "#fff",
-    padding: 16,
+    backgroundColor: "#0F172A",
   },
+
+  content: {
+    padding: 16,
+    paddingBottom: 40,
+  },
+
   header: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#ff4500',
-    textAlign: 'center',
-    marginVertical: 20,
-    letterSpacing: 1,
-    textShadowColor: 'rgba(0,0,0,0.2)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
+    fontSize: 26,
+    fontWeight: "700",
+    color: "#ff4500",
+    textAlign: "center",
+    marginBottom: 20,
   },
-  input: {
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderRadius: 12,
-    borderColor: '#ddd',
+
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 16,
     padding: 16,
     marginBottom: 20,
-    fontSize: 16,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOpacity: 0.05,
-    shadowRadius: 5,
-    elevation: 3, // for Android shadow
+    shadowRadius: 8,
+    elevation: 3,
   },
+
+  label: {
+    fontSize: 13,
+    color: "#6b7280",
+    marginBottom: 6,
+  },
+
+  input: {
+    backgroundColor: "#f9fafb",
+    borderRadius: 10,
+    padding: 14,
+    marginBottom: 14,
+    fontSize: 15,
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+  },
+
   button: {
-    backgroundColor: '#ff4500',
+    backgroundColor: "#ff4500",
     paddingVertical: 16,
     borderRadius: 12,
-    alignItems: 'center',
-    marginBottom: 20,
-    shadowColor: '#ff4500',
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 2,
+    alignItems: "center",
+    marginBottom: 12,
   },
+
   buttonDelete: {
-    backgroundColor: 'red',
+    backgroundColor: "#ef4444",
     paddingVertical: 16,
     borderRadius: 12,
-    alignItems: 'center',
-    marginBottom: 20,
-    shadowColor: 'red',
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 2,
+    alignItems: "center",
   },
+
   buttonText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 18,
+    color: "#fff",
+    fontWeight: "600",
+    fontSize: 16,
   },
 });
 

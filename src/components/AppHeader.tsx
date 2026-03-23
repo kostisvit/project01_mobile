@@ -36,6 +36,11 @@ const AppHeader = ({ user, loading }: Props) => {
     ]);
   };
 
+  const displayName =
+    user?.first_name && user?.last_name
+      ? `${user.first_name} ${user.last_name}`
+      : user?.email;
+
   return (
     <>
 
@@ -65,11 +70,18 @@ const AppHeader = ({ user, loading }: Props) => {
         {loading ? (
           <ActivityIndicator size="small" color="#fff" />
         ) : user ? (
-          <Text style={styles.userEmail} numberOfLines={1}>
-            {user.email}
-          </Text>
+          <View>
+            <Text style={styles.welcomeText}>
+              Καλώς ήρθες
+            </Text>
+            <Text style={styles.userCred} numberOfLines={1}>
+              {user.first_name && user.last_name
+                ? `${user.first_name} ${user.last_name}`
+                : user.first_name || user.email}
+            </Text>
+          </View>
         ) : (
-          <Text style={styles.userEmail} numberOfLines={1}>
+          <Text style={styles.userCred} numberOfLines={1}>
             Περιηγείστε ως επισκέπτης
           </Text>
         )}
@@ -104,6 +116,10 @@ const AppHeader = ({ user, loading }: Props) => {
 
                 <TouchableOpacity style={styles.menuItem}>
                   <Text>Ρυθμίσεις</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.menuItem}>
+                  <Text>Στείλτε μας την γνώμη σας</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -175,11 +191,16 @@ const styles = StyleSheet.create({
     color: '#ff4500',
     letterSpacing: 2,
   },
-  userEmail: {
-    fontSize: 16,
-    color: '#fff',
-    marginTop: 4,
-    fontWeight: '500',
+  welcomeText: {
+    color: "#9ca3af",
+    fontSize: 12,
+  },
+
+  userCred: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "600",
+    maxWidth: 180,
   },
   menuBtn: {
     position: 'absolute',

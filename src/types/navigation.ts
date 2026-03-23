@@ -13,4 +13,5 @@ export type RootStackParamList = {
   Recovery: undefined;
   ResetPassword: { uid: string; token: string };
   OrgDetail: { orgId: number };
+  AddReview: undefined;
 };

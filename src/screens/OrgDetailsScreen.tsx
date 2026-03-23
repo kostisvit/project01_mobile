@@ -19,8 +19,6 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigation } from "@react-navigation/native";
 import MaterialIcons from '@react-native-vector-icons/material-icons';
 import { ActivityIndicator } from 'react-native';
-import type { OrgCardProps } from '../types/organization';
-import moment from 'moment';
 
 
 
@@ -228,7 +226,7 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
             {user ? (
               <Pressable
                 style={styles.addReviewButton}
-                onPress={() => navigation.navigate("Login", { orgId })}
+                onPress={() => navigation.navigate("AddReview", { orgId: org.id })}
               >
                 <View style={styles.buttonContent}>
                   <MaterialIcons name="comment" color="#fff" size={18} />
