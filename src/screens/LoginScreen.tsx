@@ -25,25 +25,24 @@ export default function LoginScreen({ navigation }: Props) {
   const { setToken } = useAuth();
 
   const handleLogin = async () => {
-    if (!email || !password) return Alert.alert('Error', 'Please enter email and password');
+    if (!email || !password) return Alert.alert('Σφάλμα', 'Συμπληρώστε Email και Κωδικό');
     setLoading(true);
 
     try {
       const { token, user } = await login(email, password);
 
-      // ✅ Save token in context (and AsyncStorage)
       await setToken(token);
 
       const storedToken = await AsyncStorage.getItem("accessToken");
       console.log("Stored token:", storedToken);
 
       Alert.alert(
-        'Success',
-        `Welcome ${user.first_name || user.email}`,
+        'Συνδεθήκατε με επιτυχία',
+        `Καλώς ήλθατε ${user.first_name || user.email} ${user.last_name || user.email}`,
         [{ text: 'OK', onPress: () => navigation.replace('LocationPermission') }]
       );
     } catch (err: any) {
-      Alert.alert('Login Failed', err.message);
+      Alert.alert('Αποτυχία σύνδεσης. Προσπαθήστε πάλι.', err.message);
     } finally {
       setLoading(false);
     }
@@ -116,7 +115,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOpacity: 0.05,
     shadowRadius: 5,
-    elevation: 3, // for Android shadow
+    elevation: 3,
   },
   button: {
     backgroundColor: '#ff4500',

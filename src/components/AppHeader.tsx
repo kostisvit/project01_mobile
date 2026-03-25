@@ -23,7 +23,7 @@ const AppHeader = ({ user, loading }: Props) => {
   const [menuVisible, setMenuVisible] = React.useState(false);
 
   const handleLogout = async () => {
-    Alert.alert('Logout', 'Are you sure?', [
+    Alert.alert('Αποσύνδεση', 'Είστε σίγουρος/η;', [
       { text: 'Cancel', style: 'cancel' },
       {
         text: 'Logout',

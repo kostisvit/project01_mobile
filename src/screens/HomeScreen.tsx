@@ -36,32 +36,25 @@ const HomeScreen = ({ navigation }: Props) => {
     loadUser();
   }, []);
 
-  const handleLogout = async () => {
-    Alert.alert(
-      'Logout',
-      'Are you sure you want to logout?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Logout',
-          style: 'destructive',
-          onPress: async () => {
-            await logout();
-            navigation.replace('Welcome');
-          },
-        },
-      ]
-    );
-  };
+  // const handleLogout = async () => {
+  //   Alert.alert(
+  //     'Αποσύνδεση',
+  //     'Είστε σίγουρος/η;',
+  //     [
+  //       { text: 'Cancel', style: 'cancel' },
+  //       {
+  //         text: 'Logout',
+  //         style: 'destructive',
+  //         onPress: async () => {
+  //           await logout();
+  //           navigation.replace('Welcome');
+  //         },
+  //       },
+  //     ]
+  //   );
+  // };
 
   return (
-    // <SafeAreaView style={styles.container}>
-    //   <AppHeader user={user} loading={loading} />
-
-    //   <View style={styles.tabSection}>
-    //     <ScrollableTabs apiUrl={`${API_URL}/org-types/`} />
-    //   </View>
-    // </SafeAreaView>
     <DefaultLayout user={user} loading={loading}>
       <View style={styles.tabSection}>
         <ScrollableTabs apiUrl={`${API_URL}/org-types/`} />

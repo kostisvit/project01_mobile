@@ -26,7 +26,7 @@ export const login = async (email: string, password: string) => {
   }
 
   if (!response.ok) {
-    throw new Error(data.detail || 'Login failed');
+    throw new Error(data.detail);
   }
 
   // ✅ Store tokens

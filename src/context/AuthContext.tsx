@@ -7,21 +7,17 @@ const API_URL = Config.API_URL;
 
 interface User {
   email: string;
-  // add other fields if needed
 }
 
 interface AuthContextType {
   token: string | null;
   user: User | null;
   loading: boolean;
-
-  // ✅ ADD THIS
   isAuthenticated: boolean;
 
   setToken: (token: string | null) => Promise<void>;
   setUser: (user: User | null) => void;
 
-  // ✅ OPTIONAL BUT NICE
   logout: () => Promise<void>;
 }
 
