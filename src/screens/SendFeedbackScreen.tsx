@@ -9,6 +9,7 @@ import {
   StyleSheet
 } from "react-native";
 import AppHeader from '../components/AppHeader';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import axios from "axios";
 import Config from "react-native-config";
 import { useAuth } from "../context/AuthContext";
@@ -23,6 +24,12 @@ const FeedbackScreen = ({ navigation }) => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const categories = [
+    { key: "bug", iconName: "bug-report", label: "Σφάλμα" },
+    { key: "suggestion", iconName: "lightbulb", label: "Πρόταση" },
+    { key: "other", iconName: "feedback", label: "Άλλο" },
+  ];
+
   const submitFeedback = async () => {
     if (!message.trim()) {
       Alert.alert("Σφάλμα", "Παρακαλώ γράψτε το μήνυμά σας.");
@@ -33,10 +40,7 @@ const FeedbackScreen = ({ navigation }) => {
     try {
       await axios.post(
         `${API_URL}/nearme/feedback/`,
-        {
-          category,
-          message,
-        },
+        { category, message },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -45,10 +49,9 @@ const FeedbackScreen = ({ navigation }) => {
         }
       );
 
-      Alert.alert("Επιτυχία", "Τα σχόλιά σας στάλθηκαν!");
+      Alert.alert("Το σχόλιο σας στάλθηκε με επιτυχία. \nΣας ευχαριστούμε.");
       setMessage("");
       navigation.goBack();
-
     } catch (err) {
       console.error(err.response?.data || err);
       Alert.alert("Σφάλμα", "Η αποστολή απέτυχε.");
@@ -64,14 +67,9 @@ const FeedbackScreen = ({ navigation }) => {
       <View style={{ flex: 1, padding: 16 }}>
         <Text style={styles.title}>Αποστολή Σχολίων</Text>
 
-        {/* CATEGORY */}
         <Text style={styles.label}>Κατηγορία</Text>
         <View style={{ flexDirection: "row", marginVertical: 10 }}>
-          {[
-            { key: "bug", label: "🐞 Σφάλμα" },
-            { key: "suggestion", label: "💡 Πρόταση" },
-            { key: "other", label: "📝 Άλλο" },
-          ].map((item) => (
+          {categories.map((item) => (
             <Pressable
               key={item.key}
               onPress={() => setCategory(item.key)}
@@ -80,12 +78,17 @@ const FeedbackScreen = ({ navigation }) => {
                 category === item.key && styles.categoryActive
               ]}
             >
+              <MaterialIcons
+                name={item.iconName}
+                size={20}
+                color="#fff"
+                style={{ marginRight: 6 }}
+              />
               <Text style={{ color: "#fff" }}>{item.label}</Text>
             </Pressable>
           ))}
         </View>
 
-        {/* MESSAGE */}
         <Text style={styles.label}>Μήνυμα</Text>
         <TextInput
           value={message}
@@ -97,11 +100,8 @@ const FeedbackScreen = ({ navigation }) => {
           style={styles.input}
         />
 
-        <Text style={styles.counter}>
-          {message.length} / 500 χαρακτήρες
-        </Text>
+        <Text style={styles.counter}>{message.length} / 500 χαρακτήρες</Text>
 
-        {/* SUBMIT */}
         <Pressable
           onPress={submitFeedback}
           disabled={loading}
@@ -162,6 +162,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold"
   },
   categoryBtn: {
+    flexDirection: "row", // icon + text
+    alignItems: "center",
     padding: 10,
     borderWidth: 1,
     borderColor: "#374151",

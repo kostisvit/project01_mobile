@@ -100,7 +100,8 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
   const { user, token } = useAuth();
   const [org, setOrg] = useState<Organization | null>(null);
   const [loading, setLoading] = useState(true);
-  const isOpen = org?.open_status;
+  const isOpen = org?.status_info?.is_open;
+  const message = org?.status_info?.message;
 
   useEffect(() => {
     axios
@@ -196,7 +197,7 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
             </View>
 
             <Text style={isOpen ? styles.statusOpen : styles.statusClosed}>
-              {isOpen ? 'Ανοιχτά' : 'Κλειστά'}
+              {message}
             </Text>
           </View>
           {org.description && (

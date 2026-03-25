@@ -5,7 +5,7 @@ export type OrganizationReview = {
   rating: number;
   comment: string;
   created: string;
-  user_name?: string; // if you send it
+  user_name?: string;
   replies?: OrganizationReviewReply[];
 };
 
@@ -13,7 +13,7 @@ export type OrganizationReviewReply = {
   id: number;
   comment: string;
   created: string;
-  user_name?: string; // if you send it
+  user_name?: string;
 };
 
 export type Organization = {
@@ -30,10 +30,11 @@ export type Organization = {
   average_rating?: number;
   open_status?: string;
   images: OrganizationImage[];
-
+  status_info?: string;
 };
 
 export type OrgCardProps = {
   org: any; // replace with proper type if you have one
   width: number;
+
 };

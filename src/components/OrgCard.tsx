@@ -20,7 +20,8 @@ export const OrgCard: React.FC<OrgCardProps> = ({ org, width }) => {
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const { isAuthenticated } = useAuth();
-  const isOpen = org.open_status === true;
+  const isOpen = org.status_info?.is_open;
+  const message = org.status_info?.message;
 
   const handlePress = () => {
     navigation.navigate("OrgDetail", { orgId: org.id });
@@ -91,7 +92,7 @@ export const OrgCard: React.FC<OrgCardProps> = ({ org, width }) => {
             </View>
 
             <Text style={isOpen ? styles.statusOpen : styles.statusClosed}>
-              {isOpen ? 'Ανοιχτά' : 'Κλειστά'}
+              {message}
             </Text>
           </View>
         </View>
