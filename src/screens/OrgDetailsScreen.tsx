@@ -7,6 +7,7 @@ import {
   Pressable,
   Linking,
   StyleSheet,
+  Modal,
 } from 'react-native';
 import axios from 'axios';
 import AppHeader from '../components/AppHeader';
@@ -19,7 +20,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigation } from "@react-navigation/native";
 import MaterialIcons from '@react-native-vector-icons/material-icons';
 import { ActivityIndicator } from 'react-native';
-
+import { OrgHour } from '../types/organization';
 
 
 const API_URL = Config.API_URL;
@@ -102,6 +103,27 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
   const [loading, setLoading] = useState(true);
   const isOpen = org?.status_info?.is_open;
   const message = org?.status_info?.message;
+  const [hoursModalVisible, setHoursModalVisible] = React.useState(false);
+  const [showDescriptionModalVisible, setDescriptionModalVisible] = React.useState(false);
+
+  const groupedHours = React.useMemo(() => {
+    if (!org?.hours) return {};
+
+    const map: Record<string, string[]> = {};
+
+    org.hours.forEach((h) => {
+      const timeRange = h.close ? `${h.open}-${h.close}` : 'Κλειστό';
+
+      if (!map[h.day]) {
+        map[h.day] = [];
+      }
+
+      map[h.day].push(timeRange);
+    });
+
+    return map;
+  }, [org]);
+
 
   useEffect(() => {
     axios
@@ -195,18 +217,22 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
                 {org.phone ?? '-'}
               </Text>
             </View>
+            <Pressable onPress={() => setHoursModalVisible(true)}>
+              <Text style={[isOpen ? styles.statusOpen : styles.statusClosed, { textDecorationLine: 'underline' }]}>
+                {message}
+              </Text>
+            </Pressable>
 
-            <Text style={isOpen ? styles.statusOpen : styles.statusClosed}>
-              {message}
-            </Text>
           </View>
           {org.description && (
-            <View style={styles.descriptionBox}>
-              <Text style={styles.descriptionTitle}>Σχετικά</Text>
-              <Text style={styles.descriptionText}>
-                {org.description}
-              </Text>
-            </View>
+            <Pressable onPress={() => setDescriptionModalVisible(true)}>
+              <View style={styles.descriptionBox}>
+                <Text style={styles.descriptionTitle}>Σχετικά</Text>
+                <Text style={styles.descriptionText} numberOfLines={2}>
+                  {org.description}
+                </Text>
+              </View>
+            </Pressable>
           )}
           <View style={styles.mapCard}>
             <Pressable
@@ -274,6 +300,60 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
             ))}
           </View>
         </ScrollView>
+        <Modal
+          visible={hoursModalVisible}
+          animationType="slide"
+          transparent
+          onRequestClose={() => setHoursModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Ώρες Λειτουργίας</Text>
+
+              {!org ? (
+                <ActivityIndicator />
+              ) : (
+                Object.entries(groupedHours).map(([day, times]) => (
+                  <View key={day} style={styles.row}>
+                    <Text style={styles.day}>{day}</Text>
+                    <Text style={styles.time}>
+                      {times.length ? times.join(', ') : 'Κλειστό'}
+                    </Text>
+                  </View>
+                ))
+              )}
+
+              <Pressable
+                style={styles.closeButton}
+                onPress={() => setHoursModalVisible(false)}
+              >
+                <Text style={styles.closeText}>Κλείσιμο</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+
+        <Modal
+          visible={showDescriptionModalVisible}
+          animationType="slide"
+          transparent
+          onRequestClose={() => setDescriptionModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.descriptionText}>
+                {org.description}
+              </Text>
+
+              <Pressable
+                style={styles.closeButton}
+                onPress={() => setDescriptionModalVisible(false)}
+              >
+                <Text style={styles.closeText}>Κλείσιμο</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
       </View>
     </SafeAreaView>
   );
@@ -502,7 +582,7 @@ const styles = StyleSheet.create({
   phoneRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4, // space between phone icon and number
+    gap: 4,
   },
   statusOpen: {
     color: '#065f46',
@@ -540,6 +620,54 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     color: '#374151',
+  },
+
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  modalContent: {
+    width: '90%',
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 20,
+  },
+
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 15,
+  },
+
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+
+  day: {
+    fontWeight: '600',
+  },
+
+  time: {
+    color: '#444',
+  },
+
+  closeButton: {
+    marginTop: 20,
+    alignSelf: 'center',
+    backgroundColor: '#0F172A',
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 6,
+  },
+
+  closeText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
 

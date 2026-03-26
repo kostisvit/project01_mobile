@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 14,
     fontWeight: "600",
-    maxWidth: 180,
+    maxWidth: 200,
   },
   menuBtn: {
     position: 'absolute',

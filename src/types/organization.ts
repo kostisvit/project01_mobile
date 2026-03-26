@@ -31,10 +31,17 @@ export type Organization = {
   open_status?: string;
   images: OrganizationImage[];
   status_info?: string;
+  hours?: OrgHour[];
 };
 
 export type OrgCardProps = {
-  org: any; // replace with proper type if you have one
+  org: any;
   width: number;
+};
 
+export type OrgHour = {
+  id: string;
+  day: string;
+  open: string;
+  close?: string | null;
 };
