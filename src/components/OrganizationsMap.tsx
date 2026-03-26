@@ -1,94 +1,89 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
-import MapView, { Marker, Region } from 'react-native-maps';
-
-import { Dimensions, } from 'react-native';
-
-const { width } = Dimensions.get('window');
-
-type Organization = {
-  id: number;
-  name: string;
-  latitude: number | string;
-  longitude: number | string;
-};
+import React, { useRef, useState, useCallback } from "react";
+import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import MapView, { Marker, Region } from "react-native-maps";
+import { useFocusEffect } from "@react-navigation/native";
 
 type Props = {
-  organizations: Organization[];
+  organizations: any[];
 };
 
 const OrganizationsMap: React.FC<Props> = ({ organizations }) => {
   const mapRef = useRef<MapView>(null);
-  const [region, setRegion] = useState<Region | null>(null);
 
-  // Fit map to all markers when organizations change
-  useEffect(() => {
-    if (!mapRef.current || !organizations.length) return;
+  const [region, setRegion] = useState<Region>({
+    latitude: Number(organizations[0]?.latitude ?? 35.3387),
+    longitude: Number(organizations[0]?.longitude ?? 25.1442),
+    latitudeDelta: 0.05,
+    longitudeDelta: 0.05,
+  });
 
-    const coords = organizations.map(o => ({
-      latitude: Number(o.latitude),
-      longitude: Number(o.longitude),
-    }));
+  useFocusEffect(
+    useCallback(() => {
+      if (!mapRef.current || !organizations.length) return;
 
-    mapRef.current.fitToCoordinates(coords, {
-      edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
-      animated: true,
-    });
+      const coords = organizations.map((o) => ({
+        latitude: Number(o.latitude),
+        longitude: Number(o.longitude),
+      }));
 
-    // Set initial region to first org
-    setRegion({
-      latitude: coords[0].latitude,
-      longitude: coords[0].longitude,
-      latitudeDelta: 0.05,
-      longitudeDelta: 0.05,
-    });
-  }, [organizations]);
+      setTimeout(() => {
+        mapRef.current?.fitToCoordinates(coords, {
+          edgePadding: { top: 80, right: 80, bottom: 80, left: 80 },
+          animated: true,
+        });
+      }, 300);
+    }, [organizations])
+  );
 
-  // Zoom in/out handlers
   const zoomIn = () => {
     if (!region) return;
-    setRegion({
-      ...region,
-      latitudeDelta: region.latitudeDelta / 2,
-      longitudeDelta: region.longitudeDelta / 2,
-    });
+
+    mapRef.current?.animateToRegion(
+      {
+        ...region,
+        latitudeDelta: Math.max(0.002, region.latitudeDelta / 2),
+        longitudeDelta: Math.max(0.002, region.longitudeDelta / 2),
+      },
+      300
+    );
   };
+
 
   const zoomOut = () => {
     if (!region) return;
-    setRegion({
-      ...region,
-      latitudeDelta: region.latitudeDelta * 2,
-      longitudeDelta: region.longitudeDelta * 2,
-    });
+
+    mapRef.current?.animateToRegion(
+      {
+        ...region,
+        latitudeDelta: Math.min(1, region.latitudeDelta * 2),
+        longitudeDelta: Math.min(1, region.longitudeDelta * 2),
+      },
+      300
+    );
   };
 
   return (
-    <View style={{ position: 'relative' }}>
+    <View style={{ flex: 1, position: "relative" }}>
       {/* Map */}
-      <View style={styles.mapWrapper}>
-        <MapView
-          ref={mapRef}
-          style={styles.map}
-          region={region || undefined}
-          onRegionChangeComplete={r => setRegion(r)}
-          zoomEnabled={true}
-          scrollEnabled={true}
-        >
-          {organizations.map(org => (
-            <Marker
-              key={org.id}
-              coordinate={{
-                latitude: Number(org.latitude),
-                longitude: Number(org.longitude),
-              }}
-              title={org.name}
-            />
-          ))}
-        </MapView>
-      </View>
+      <MapView
+        ref={mapRef}
+        style={{ flex: 1 }}
+        initialRegion={region}
+        onRegionChangeComplete={(r) => setRegion(r)}
+      >
+        {organizations.map((org) => (
+          <Marker
+            key={org.id}
+            coordinate={{
+              latitude: Number(org.latitude),
+              longitude: Number(org.longitude),
+            }}
+            title={org.name}
+          />
+        ))}
+      </MapView>
 
-      {/* Zoom Buttons */}
+      {/* Zoom buttons */}
       <View style={styles.zoomContainer}>
         <TouchableOpacity style={styles.zoomButton} onPress={zoomIn}>
           <Text style={styles.zoomText}>+</Text>
@@ -102,47 +97,24 @@ const OrganizationsMap: React.FC<Props> = ({ organizations }) => {
   );
 };
 
-export default OrganizationsMap;
-
 const styles = StyleSheet.create({
-  mapWrapper: {
-    width,
-    height: 350,
-    marginTop: 8,
-    borderRadius: 16,
-    overflow: 'hidden', // keep rounded corners
-    alignSelf: 'center',
-  },
-  map: {
-    ...StyleSheet.absoluteFill,
-  },
   zoomContainer: {
-    position: 'absolute',
-    right: 16,
-    bottom: 16,  // distance from bottom of map
-    alignItems: 'center',
-    zIndex: 10,  // ensures buttons sit above the map
+    position: "absolute",
+    right: 10,
+    bottom: 50,
+    flexDirection: "column",
   },
-
   zoomButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 10, // spacing between + and −
-    bottom: 120,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 5,
+    backgroundColor: "#fff",
+    padding: 10,
+    borderRadius: 6,
+    marginBottom: 10,
+    elevation: 3,
   },
-
   zoomText: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 20,
+    fontWeight: "bold",
   },
 });
+
+export default OrganizationsMap;

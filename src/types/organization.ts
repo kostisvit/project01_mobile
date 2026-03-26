@@ -45,3 +45,7 @@ export type OrgHour = {
   open: string;
   close?: string | null;
 };
+
+export type Props = {
+  organizations: Organization[];
+};
