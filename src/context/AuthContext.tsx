@@ -59,6 +59,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   // ✅ convenience helper
   const logout = async () => {
     await setToken(null);
+    setUser(null);
   };
 
   const setUser = (newUser: User | null) => {

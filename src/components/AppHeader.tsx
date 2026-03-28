@@ -9,27 +9,29 @@ import {
   StyleSheet,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { logout } from '../api/auth';
 import MaterialIcons from '@react-native-vector-icons/material-icons';
-
+import { useAuth } from '../context/AuthContext';
 
 interface Props {
   user: any;
   loading: boolean;
 }
 
-const AppHeader = ({ user, loading }: Props) => {
+
+const AppHeader = ({ loading }: { loading: boolean }) => {
   const navigation = useNavigation<any>();
   const [menuVisible, setMenuVisible] = React.useState(false);
+  const { user, logout } = useAuth();
 
   const handleLogout = async () => {
-    Alert.alert('Αποσύνδεση', 'Είστε σίγουρος/η;', [
+    Alert.alert('Αποσύνδεση!', 'Είστε σίγουρος/η;', [
       { text: 'Cancel', style: 'cancel' },
       {
         text: 'Logout',
         style: 'destructive',
         onPress: async () => {
           await logout();
+          setMenuVisible(false);
           navigation.replace('Welcome');
         },
       },
@@ -43,7 +45,6 @@ const AppHeader = ({ user, loading }: Props) => {
 
   return (
     <>
-
       {/* HEADER */}
       <View style={styles.header}>
         <TouchableOpacity
@@ -71,13 +72,9 @@ const AppHeader = ({ user, loading }: Props) => {
           <ActivityIndicator size="small" color="#fff" />
         ) : user ? (
           <View>
-            <Text style={styles.welcomeText}>
-              Καλώς ήρθες
-            </Text>
+            <Text style={styles.welcomeText}>Καλώς ήρθες</Text>
             <Text style={styles.userCred} numberOfLines={1}>
-              {user.first_name && user.last_name
-                ? `${user.first_name} ${user.last_name}`
-                : user.first_name || user.email}
+              {displayName}
             </Text>
           </View>
         ) : (
@@ -118,11 +115,13 @@ const AppHeader = ({ user, loading }: Props) => {
                   <Text>Ρυθμίσεις</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.menuItem}
+                <TouchableOpacity
+                  style={styles.menuItem}
                   onPress={() => {
                     setMenuVisible(false);
                     navigation.navigate('Feedback');
-                  }}>
+                  }}
+                >
                   <Text>Στείλτε μας την γνώμη σας</Text>
                 </TouchableOpacity>
 
@@ -155,6 +154,18 @@ const AppHeader = ({ user, loading }: Props) => {
                   }}
                 >
                   <Text style={{ fontWeight: '600' }}>Εγγραφή</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.menuItem}
+                  onPress={() => {
+                    setMenuVisible(false);
+                    navigation.navigate('Feedback');
+                  }}
+                >
+                  <Text style={{ fontWeight: '600' }}>
+                    Στείλτε μας την γνώμη σας
+                  </Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity

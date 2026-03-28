@@ -62,7 +62,7 @@ const FeedbackScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <AppHeader user={user} loading={loading} />
+      <AppHeader user={user && !loading ? user : null} loading={loading} />
 
       <View style={{ flex: 1, padding: 16 }}>
         <Text style={styles.title}>Αποστολή Σχολίων</Text>
