@@ -94,7 +94,7 @@ const TabScreen: React.FC<{ typeSlug: string }> = ({ typeSlug }) => {
         params.radius = radius;
       }
 
-      const res = await api.get<Organization[]>('/organizations/', { params });
+      const res = await api.get<Organization[]>('api/organizations/', { params });
       setOrganizations(res.data);
     } catch (err) {
       console.error('Error fetching organizations:', err);
@@ -166,7 +166,7 @@ const ScrollableTabs: React.FC<{ apiUrl: string }> = ({ apiUrl }) => {
 
   useEffect(() => {
     api
-      .get<OrganizationType[]>(apiUrl.replace('http://127.0.0.1:8000/api', ''))
+      .get<OrganizationType[]>(apiUrl.replace(`${API_URL}`, ''))
       .then((res) => setTypes(res.data))
       .catch((err) => console.error('Error fetching types:', err))
       .finally(() => setLoading(false));

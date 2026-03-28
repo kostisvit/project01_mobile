@@ -15,4 +15,5 @@ export type RootStackParamList = {
   OrgDetail: { orgId: number };
   AddReview: undefined;
   Feedback: undefined;
+  EmailVerified: undefined;
 };

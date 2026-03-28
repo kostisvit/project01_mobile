@@ -127,7 +127,7 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
 
   useEffect(() => {
     axios
-      .get<Organization>(`${API_URL}/organizations/${orgId}/`, {
+      .get<Organization>(`${API_URL}api/organizations/${orgId}/`, {
         headers: token
           ? { Authorization: `Bearer ${token}` }
           : undefined,

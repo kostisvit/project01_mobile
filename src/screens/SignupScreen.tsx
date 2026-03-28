@@ -44,7 +44,7 @@ const RegisterScreen = () => {
     setError('');
 
     try {
-      const response = await axios.post(`${API_URL}/register/`, {
+      const response = await axios.post(`${API_URL}auth/register/`, {
         email,
         password,
       });
@@ -67,14 +67,24 @@ const RegisterScreen = () => {
       );
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
+
+        if (__DEV__) {
+          console.log('FULL ERROR:', error.response?.data);
+        }
+
         Alert.alert(
-          'Error',
-          error.response?.data?.message || 'Something went wrong'
+          'Σφάλμα',
+          error.response?.data?.message ||
+          'Κάτι πήγε στραβά. Προσπαθήστε ξανά.'
         );
       } else if (error instanceof Error) {
-        Alert.alert('Error', error.message);
+        if (__DEV__) {
+          console.log('ERROR:', error.message);
+        }
+
+        Alert.alert('Σφάλμα', 'Παρουσιάστηκε πρόβλημα.');
       } else {
-        Alert.alert('Error', 'Something went wrong');
+        Alert.alert('Σφάλμα', 'Κάτι πήγε στραβά.');
       }
     }
   };

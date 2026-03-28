@@ -14,6 +14,7 @@ import ResetPasswordScreen from '../screens/ResetPasswordScreen';
 import LocationPermissionScreen from '../screens/LocationPermScreen';
 import AddReviewScreen from '../screens/AddReviewScreen';
 import FeedbackScreen from '../screens/SendFeedbackScreen';
+import EmailVerifiedScreen from '../screens/EmailVerifiedScreen';
 import Config from 'react-native-config';
 import { UserProvider } from '../context/UserContext';
 
@@ -35,6 +36,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="AddReview" component={AddReviewScreen} />
         <Stack.Screen name="Feedback" component={FeedbackScreen} />
+        <Stack.Screen name="EmailVerified" component={EmailVerifiedScreen} />
         <Stack.Screen
           name="LocationPermission"
           component={LocationPermissionScreen}

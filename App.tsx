@@ -15,9 +15,10 @@ import { AuthProvider } from "./src/context/AuthContext";
 enableScreens();
 
 const linking = {
-  prefixes: ["myapp://"],
+  prefixes: ["nearme://"],
   config: {
     screens: {
+      EmailVerified: "email-verified",
       ResetPassword: "reset-password/:uid/:token",
     },
   },
