@@ -6,7 +6,8 @@ import {
   TextInput,
   ActivityIndicator,
   Alert,
-  StyleSheet
+  StyleSheet,
+  ScrollView,
 } from "react-native";
 import AppHeader from '../components/AppHeader';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -22,6 +23,10 @@ const FeedbackScreen = ({ navigation }) => {
 
   const [category, setCategory] = useState("bug");
   const [message, setMessage] = useState("");
+  const [name, setName] = useState(
+    user?.first_name ? `${user.first_name} ${user.last_name || ""}` : ""
+  );
+  const [email, setEmail] = useState(user?.email || "");
   const [loading, setLoading] = useState(false);
 
   const categories = [
@@ -39,18 +44,25 @@ const FeedbackScreen = ({ navigation }) => {
     setLoading(true);
     try {
       await axios.post(
-        `${API_URL}/nearme/feedback/`,
-        { category, message },
+        `${API_URL}api/feedback/nearme`,
+        {
+          category,
+          message,
+          name: !user ? name || "Anonymous" : undefined,
+          email: !user ? email || "" : undefined,
+        },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         }
       );
 
       Alert.alert("Το σχόλιο σας στάλθηκε με επιτυχία. \nΣας ευχαριστούμε.");
       setMessage("");
+      setName(user?.first_name ? `${user.first_name} ${user.last_name || ""}` : "");
+      setEmail(user?.email || "");
       navigation.goBack();
     } catch (err) {
       console.error(err.response?.data || err);
@@ -64,7 +76,7 @@ const FeedbackScreen = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <AppHeader user={user && !loading ? user : null} loading={loading} />
 
-      <View style={{ flex: 1, padding: 16 }}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1, padding: 16 }}>
         <Text style={styles.title}>Αποστολή Σχολίων</Text>
 
         <Text style={styles.label}>Κατηγορία</Text>
@@ -89,6 +101,29 @@ const FeedbackScreen = ({ navigation }) => {
           ))}
         </View>
 
+        {/* Guest fields */}
+        {!user && (
+          <>
+            <Text style={styles.label}>Όνομα</Text>
+            <TextInput
+              placeholder="Όνομα (προαιρετικό)"
+              placeholderTextColor="#9CA3AF"
+              value={name}
+              onChangeText={setName}
+              style={styles.input_guest}
+            />
+            <Text style={styles.label}>Email</Text>
+            <TextInput
+              placeholder="Email (προαιρετικό)"
+              placeholderTextColor="#9CA3AF"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              style={styles.input_guest}
+            />
+          </>
+        )}
+
         <Text style={styles.label}>Μήνυμα</Text>
         <TextInput
           value={message}
@@ -99,16 +134,12 @@ const FeedbackScreen = ({ navigation }) => {
           placeholderTextColor="#9CA3AF"
           style={styles.input}
         />
-
         <Text style={styles.counter}>{message.length} / 500 χαρακτήρες</Text>
 
         <Pressable
           onPress={submitFeedback}
           disabled={loading}
-          style={[
-            styles.button,
-            { opacity: loading ? 0.6 : 1 }
-          ]}
+          style={[styles.button, { opacity: loading ? 0.6 : 1 }]}
         >
           {loading ? (
             <ActivityIndicator color="#fff" />
@@ -116,7 +147,7 @@ const FeedbackScreen = ({ navigation }) => {
             <Text style={styles.buttonText}>Αποστολή</Text>
           )}
         </Pressable>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -130,12 +161,12 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 16
+    marginBottom: 16,
   },
   label: {
     color: '#fff',
     fontWeight: 'bold',
-    marginBottom: 6
+    marginTop: 12,
   },
   input: {
     borderWidth: 1,
@@ -144,11 +175,20 @@ const styles = StyleSheet.create({
     padding: 10,
     minHeight: 120,
     marginTop: 10,
-    color: '#fff'
+    color: '#fff',
+  },
+  input_guest: {
+    borderWidth: 1,
+    borderColor: "#374151",
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 6,
+    marginTop: 10,
+    color: '#fff',
   },
   counter: {
     color: "#9CA3AF",
-    marginTop: 6
+    marginTop: 6,
   },
   button: {
     backgroundColor: "#FF4500",
@@ -159,10 +199,10 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "#fff",
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   categoryBtn: {
-    flexDirection: "row", // icon + text
+    flexDirection: "row",
     alignItems: "center",
     padding: 10,
     borderWidth: 1,
@@ -173,7 +213,7 @@ const styles = StyleSheet.create({
   categoryActive: {
     backgroundColor: "#FF4500",
     borderColor: "#FF4500",
-  }
+  },
 });
 
 export default FeedbackScreen;
