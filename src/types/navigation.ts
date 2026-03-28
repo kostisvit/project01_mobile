@@ -16,4 +16,5 @@ export type RootStackParamList = {
   AddReview: undefined;
   Feedback: undefined;
   EmailVerified: undefined;
+  Search: undefined;
 };

@@ -17,6 +17,7 @@ import FeedbackScreen from '../screens/SendFeedbackScreen';
 import EmailVerifiedScreen from '../screens/EmailVerifiedScreen';
 import Config from 'react-native-config';
 import { UserProvider } from '../context/UserContext';
+import SearchScreen from '../screens/SearchScreen';
 
 const API_URL = Config.API_URL;
 
@@ -37,6 +38,7 @@ export default function AppNavigator() {
         <Stack.Screen name="AddReview" component={AddReviewScreen} />
         <Stack.Screen name="Feedback" component={FeedbackScreen} />
         <Stack.Screen name="EmailVerified" component={EmailVerifiedScreen} />
+        <Stack.Screen name="Search" component={SearchScreen} />
         <Stack.Screen
           name="LocationPermission"
           component={LocationPermissionScreen}
