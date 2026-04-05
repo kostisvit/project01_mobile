@@ -34,7 +34,7 @@ const AddReviewScreen = ({ route, navigation }) => {
     setLoading(true);
     try {
       await axios.post(
-        `${API_URL}/reviews/`, // make sure matches your DRF URL
+        `${API_URL}api/reviews/`, // make sure matches your DRF URL
         { organization: orgId, rating, comment },
         {
           headers: {

@@ -16,6 +16,8 @@ export type OrganizationReviewReply = {
   user_name?: string;
 };
 
+
+
 export type Organization = {
   id: number;
   name: string;
@@ -32,6 +34,7 @@ export type Organization = {
   images: OrganizationImage[];
   status_info?: string;
   hours?: OrgHour[];
+  organization_type?: OrgType[];
 };
 
 export type OrgCardProps = {
@@ -48,4 +51,11 @@ export type OrgHour = {
 
 export type Props = {
   organizations: Organization[];
+};
+
+export type OrgType = {
+  id: number;
+  name: string;
+  icon: string;
+  slug: string;
 };

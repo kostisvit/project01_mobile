@@ -12,23 +12,17 @@ import debounce from "lodash.debounce";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Config from "react-native-config";
 import AppHeader from '../components/AppHeader';
-
+import MaterialIcons from "@react-native-vector-icons/material-icons";
+import { Organization } from "../types/organization";
 
 const API_URL = Config.API_URL;
 
-type Organization = {
-  id: number;
-  name: string;
-  category: string;
-  phone: string;
-  address: string;
-  description?: string;
-};
 
 const SearchScreen = ({ navigation }: any) => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Organization[]>([]);
   const [loading, setLoading] = useState(false);
+  const [org, setOrg] = useState<Organization | null>(null);
 
   // 🔍 API call
   const fetchResults = async (text: string) => {
@@ -78,29 +72,72 @@ const SearchScreen = ({ navigation }: any) => {
     <Pressable
       style={styles.card}
       onPress={() =>
-        navigation.navigate("HomeStack", {
-          screen: "OrgDetails",
-          params: { id: item.id },
-        })
+        navigation.navigate("OrgDetail", { orgId: item.id })
       }
     >
-      <Text style={styles.name}>{item.name}</Text>
+      <View style={styles.headerRow}>
+        <Text style={styles.orgName} numberOfLines={1}>
+          {item.name}
+        </Text>
 
-      <Text style={styles.category}>{item.category}</Text>
+        <View style={styles.ratingRow}>
+          <MaterialIcons
+            name="star"
+            size={14}
+            color="#f59e0b"
+            style={styles.star}
+          />
+          <Text style={styles.ratingText}>
+            {item.average_rating?.toFixed(1) ?? '0.0'}
+          </Text>
+        </View>
+      </View>
 
-      {item.address && (
-        <Text style={styles.info}>📍 {item.address}</Text>
-      )}
 
-      {item.phone && (
-        <Text style={styles.info}>📞 {item.phone}</Text>
+
+      {/* <Text style={styles.category}>
+        Κατηγορία: {item.organization_type?.name || "Καμία κατηγορία..."}
+      </Text> */}
+
+
+      <View style={styles.middleRow}>
+        <View style={styles.addressRow}>
+          {item.address && (
+            <Text style={styles.orgAddress}>
+              <MaterialIcons name="location-on" style={styles.location} size={14} color="#e53e3e" />
+              {item.address ?? '-'}</Text>
+          )}
+        </View>
+        {item.reviews && (
+          <Text style={styles.comments}>
+            ({item.reviews?.length ?? 0}) Αξιολογήσεις</Text>
+        )}
+      </View>
+
+      <View style={styles.footerRow}>
+        <View style={styles.phoneRow}>
+          {item.phone && (
+            <Text style={styles.orgPhone}>
+              <MaterialIcons name="phone" size={14} color="#38a169" />
+              {item.phone ?? '-'}
+            </Text>
+          )}
+        </View>
+      </View>
+      {/* {item.email ? (
+        <Text style={styles.info}>
+          <MaterialIcons name="email" size={14} color="#3182ce" />
+          {item.email}
+        </Text>
+      ) : (
+        <Text style={styles.info}>No email available</Text>
       )}
 
       {item.description && (
         <Text style={styles.description} numberOfLines={2}>
           {item.description}
         </Text>
-      )}
+      )} */}
     </Pressable>
   );
 
@@ -108,8 +145,8 @@ const SearchScreen = ({ navigation }: any) => {
     <SafeAreaView style={styles.container}>
       <AppHeader loading={loading} />
       <View style={styles.container}>
-        {/* 🔍 Search Input */}
         <View style={styles.searchBox}>
+          <MaterialIcons name="search" size={20} color="#9CA3AF" style={{ marginRight: 8 }} />
           <TextInput
             placeholder="Αναζήτηση επιχείρησεις ή κατηγορίας..."
             placeholderTextColor="#9CA3AF"
@@ -126,15 +163,14 @@ const SearchScreen = ({ navigation }: any) => {
           )}
         </View>
 
-        {/* ⏳ Loading */}
+        {/* Loading */}
         {loading && <ActivityIndicator style={{ marginTop: 20 }} />}
 
-        {/* 📭 Empty State */}
         {!loading && query.length > 2 && results.length === 0 && (
           <Text style={styles.empty}>Δεν βρέθηκαν αποτελέσματα</Text>
         )}
 
-        {/* 📋 Results */}
+        {/* Results */}
         <FlatList
           data={results}
           keyExtractor={(item) => item.id.toString()}
@@ -178,10 +214,19 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#eee",
   },
-
-  name: {
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 8,
+    marginBottom: 10,
+  },
+  orgName: {
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: '600',
+    color: '#333',
+    flex: 1,
+    marginRight: 8,
   },
 
   category: {
@@ -213,16 +258,63 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
 
-  info: {
-    fontSize: 13,
-    color: "#444",
-    marginTop: 4,
-  },
+
 
   description: {
     fontSize: 13,
     color: "#777",
     marginTop: 6,
+  },
+  middleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 8,
+    marginBottom: 10,
+  },
+  addressRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  star: {
+    marginRight: 4,
+  },
+  ratingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  ratingText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#b45309',
+  },
+  orgAddress: {
+    fontSize: 14,
+    color: '#1a202c',
+    marginRight: 4,
+  },
+  footerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  phoneRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  orgPhone: {
+    fontSize: 14,
+    color: '#1a202c',
+  },
+  location: {
+    marginRight: 4,
+  },
+  comments: {
+    fontSize: 12,
+    color: '#718096',
   },
 });
 
