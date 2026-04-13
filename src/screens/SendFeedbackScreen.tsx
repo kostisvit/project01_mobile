@@ -16,6 +16,7 @@ import Config from "react-native-config";
 import { useAuth } from "../context/AuthContext";
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+
 const API_URL = Config.API_URL;
 
 const FeedbackScreen = ({ navigation }) => {
@@ -65,7 +66,11 @@ const FeedbackScreen = ({ navigation }) => {
       setEmail(user?.email || "");
       navigation.goBack();
     } catch (err) {
-      console.error(err.response?.data || err);
+      if (axios.isAxiosError(err)) {
+        console.error(err.response?.data || err.message);
+      } else {
+        console.error(err);
+      }
       Alert.alert("Σφάλμα", "Η αποστολή απέτυχε.");
     } finally {
       setLoading(false);
@@ -74,7 +79,7 @@ const FeedbackScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <AppHeader user={user && !loading ? user : null} loading={loading} />
+      <AppHeader loading={loading} />
 
       <ScrollView contentContainerStyle={{ flexGrow: 1, padding: 16 }}>
         <Text style={styles.title}>Αποστολή Σχολίων</Text>
@@ -106,7 +111,7 @@ const FeedbackScreen = ({ navigation }) => {
           <>
             <Text style={styles.label}>Όνομα</Text>
             <TextInput
-              placeholder="Όνομα (προαιρετικό)"
+              placeholder="Όνομα (υποχρεωτικό)"
               placeholderTextColor="#9CA3AF"
               value={name}
               onChangeText={setName}
@@ -114,8 +119,9 @@ const FeedbackScreen = ({ navigation }) => {
             />
             <Text style={styles.label}>Email</Text>
             <TextInput
-              placeholder="Email (προαιρετικό)"
+              placeholder="Email (υποχρεωτικό)"
               placeholderTextColor="#9CA3AF"
+              autoCapitalize="none"
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"

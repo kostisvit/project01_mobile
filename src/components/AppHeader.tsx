@@ -11,9 +11,9 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import MaterialIcons from '@react-native-vector-icons/material-icons';
 import { useAuth } from '../context/AuthContext';
+import { User } from '../types/user';
 
 interface Props {
-  user: any;
   loading: boolean;
 }
 

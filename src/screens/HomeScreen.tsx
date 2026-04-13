@@ -36,24 +36,6 @@ const HomeScreen = ({ navigation }: Props) => {
     loadUser();
   }, []);
 
-  // const handleLogout = async () => {
-  //   Alert.alert(
-  //     'Αποσύνδεση',
-  //     'Είστε σίγουρος/η;',
-  //     [
-  //       { text: 'Cancel', style: 'cancel' },
-  //       {
-  //         text: 'Logout',
-  //         style: 'destructive',
-  //         onPress: async () => {
-  //           await logout();
-  //           navigation.replace('Welcome');
-  //         },
-  //       },
-  //     ]
-  //   );
-  // };
-
   return (
     <DefaultLayout user={user} loading={loading}>
       <View style={styles.tabSection}>

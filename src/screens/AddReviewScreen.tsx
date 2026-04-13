@@ -55,7 +55,7 @@ const AddReviewScreen = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <AppHeader user={user} loading={loading} />
+      <AppHeader loading={loading} />
       <View style={{ flex: 1, padding: 16 }}>
         <Text style={styles.rateText}>Βαθμολογία</Text>
         <View style={{ flexDirection: "row", marginVertical: 10 }}>

@@ -2,12 +2,10 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import Config from "react-native-config";
+import { User } from "../types/user";
 
 const API_URL = Config.API_URL;
 
-interface User {
-  email: string;
-}
 
 interface AuthContextType {
   token: string | null;
