@@ -171,12 +171,22 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
       <View style={styles.org_detail_container}>
         <ScrollView>
           {/* 🖼 IMAGE */}
-          <Image
-            source={{
-              uri: org.images?.[0]?.image_url || 'https://picsum.photos/600/400',
-            }}
-            style={styles.image}
-          />
+          <Pressable
+            onPress={() =>
+              navigation.navigate("OrgPhotos", {
+                images: org.images,
+              })
+            }
+          >
+            <Image
+              source={{
+                uri:
+                  org.images?.[0]?.image_url ||
+                  "https://picsum.photos/600/400",
+              }}
+              style={styles.image}
+            />
+          </Pressable>
 
           {/* 🏷 NAME */}
           <View style={styles.headerRow}>

@@ -17,4 +17,5 @@ export type RootStackParamList = {
   Feedback: undefined;
   EmailVerified: undefined;
   Search: undefined;
+  OrgPhotos: { images: { image_url: string }[] };
 };

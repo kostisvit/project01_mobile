@@ -122,6 +122,7 @@ const FeedbackScreen = ({ navigation }) => {
               placeholder="Email (υποχρεωτικό)"
               placeholderTextColor="#9CA3AF"
               autoCapitalize="none"
+              autoCorrect={false}
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
