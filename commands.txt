@@ -13,7 +13,9 @@ npm install react-native-config - hide sensitivite data to .env file like Dkjang
 
 
 start comamnds
-uv python manage.py runserver
+uv python backend/manage.py runserver --settings=config.development
 npx react-native start
-redis-server(~/desktop/projects/project01)
-celery -A config worker -l info (~/Desktop/projects/project01/backend)
+redis-server(~/desktop/projects/nearme_backend)
+celery -A config worker -l info (~/desktop/projects/nearme_backend - PYTHONPATH=. celery -A backend.config worker -l info) * activate venv
+stripe login (~/desktop/projects/nearme_backend)
+stripe listen --forward-to localhost:8000/organizations/webhooks/stripe/

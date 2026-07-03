@@ -30,11 +30,23 @@ target 'project01_mobile' do
     'LocationWhenInUse'
   ])
 
+
   post_install do |installer|
     react_native_post_install(
       installer,
       config[:reactNativePath],
       :mac_catalyst_enabled => false
     )
+
+    # ✅ FIX: Xcode 26 + fmt consteval issue workaround
+    installer.pods_project.targets.each do |target|
+      if target.name == 'RCT-Folly' || target.name == 'fmt'
+        target.build_configurations.each do |config|
+          config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
+          config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)']
+          config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'FMT_USE_CONSTEVAL=0'
+        end
+      end
+    end
   end
 end

@@ -102,7 +102,6 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
   const [org, setOrg] = useState<Organization | null>(null);
   const [loading, setLoading] = useState(true);
   const isOpen = org?.status_info?.is_open;
-  const message = org?.status_info?.message;
   const [hoursModalVisible, setHoursModalVisible] = React.useState(false);
   const [showDescriptionModalVisible, setDescriptionModalVisible] = React.useState(false);
 
@@ -189,6 +188,11 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
           </Pressable>
 
           {/* 🏷 NAME */}
+          <View style={styles.headerRowOrgType}>
+            <Text style={styles.orgType}>
+              {org.organization_type.name ? ` #${org.organization_type.name}` : ''}
+            </Text>
+          </View>
           <View style={styles.headerRow}>
             <Text style={styles.orgName} numberOfLines={1}>
               {org.name}
@@ -229,7 +233,7 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
             </View>
             <Pressable onPress={() => setHoursModalVisible(true)}>
               <Text style={[isOpen ? styles.statusOpen : styles.statusClosed, { textDecorationLine: 'underline' }]}>
-                {message}
+                {isOpen ? "Ανοιχτά" : "Κλειστά"}
               </Text>
             </Pressable>
 
@@ -390,6 +394,18 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginBottom: 16,
   },
+  headerRowOrgType: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  orgType: {
+    fontSize: 14,
+    color: '#718096',
+    flex: 1,
+    marginRight: 8,
+
+  },
   headerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -440,7 +456,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: "#333",
     marginBottom: 10,
-    marginLeft: 5,
     marginTop: 8,
   },
 

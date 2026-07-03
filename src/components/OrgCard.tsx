@@ -21,7 +21,6 @@ export const OrgCard: React.FC<OrgCardProps> = ({ org, width }) => {
 
   const { isAuthenticated } = useAuth();
   const isOpen = org.status_info?.is_open;
-  const message = org.status_info?.message;
 
   const handlePress = () => {
     navigation.navigate("OrgDetail", { orgId: org.id });
@@ -52,6 +51,11 @@ export const OrgCard: React.FC<OrgCardProps> = ({ org, width }) => {
         />
 
         <View style={styles.infoContainer}>
+          <View style={styles.headerRowOrgType}>
+            <Text style={styles.orgType}>
+              {org.organization_type.name ? ` #${org.organization_type.name}` : ''}
+            </Text>
+          </View>
           <View style={styles.headerRow}>
             <Text style={styles.orgName} numberOfLines={1}>
               {org.name}
@@ -92,7 +96,7 @@ export const OrgCard: React.FC<OrgCardProps> = ({ org, width }) => {
             </View>
 
             <Text style={isOpen ? styles.statusOpen : styles.statusClosed}>
-              {message}
+              {isOpen ? "Ανοιχτά" : "Κλειστά"}
             </Text>
           </View>
         </View>
@@ -125,6 +129,18 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     padding: 14,
+  },
+  headerRowOrgType: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  orgType: {
+    fontSize: 14,
+    color: '#718096',
+    flex: 1,
+    marginRight: 8,
+
   },
   headerRow: {
     flexDirection: 'row',

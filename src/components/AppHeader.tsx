@@ -122,7 +122,7 @@ const AppHeader = ({ loading }: { loading: boolean }) => {
                     navigation.navigate('Feedback');
                   }}
                 >
-                  <Text>Στείλτε μας την γνώμη σας</Text>
+                  <Text>Η γνώμη σας μετράει</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -164,7 +164,7 @@ const AppHeader = ({ loading }: { loading: boolean }) => {
                   }}
                 >
                   <Text style={{ fontWeight: '600' }}>
-                    Στείλτε μας την γνώμη σας
+                    Η γνώμη σας μετράει
                   </Text>
                 </TouchableOpacity>
 
