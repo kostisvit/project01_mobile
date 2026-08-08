@@ -36,78 +36,139 @@ type Organization = {
   images: OrganizationImage[];
 };
 
+type UserLocation = {
+  latitude: number;
+  longitude: number;
+};
+
+type TabScreenProps = {
+  typeSlug: string;
+  location: UserLocation | null;
+  locationLoading: boolean;
+};
+
 // ------------------ Hook: Get User Location ------------------
 const useUserLocation = () => {
-  const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [location, setLocation] = useState<UserLocation | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const requestLocation = async () => {
       try {
+        setLoading(true);
+        setError(null);
+
         if (Platform.OS === 'android') {
           const granted = await PermissionsAndroid.request(
             PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
             {
               title: 'Location Permission',
-              message: 'We use your location to show nearby organizations',
+              message:
+                'We use your location to show nearby organizations',
               buttonPositive: 'OK',
             }
           );
+
           if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-            Alert.alert('Permission denied', 'Cannot fetch nearby organizations without location.');
+            setError('Location permission denied');
+            setLoading(false);
             return;
           }
         }
 
         Geolocation.getCurrentPosition(
-          (pos) =>
-            setLocation({ latitude: pos.coords.latitude, longitude: pos.coords.longitude }),
-          (error) => console.error('Location error', error),
-          { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+          (pos) => {
+            setLocation({
+              latitude: pos.coords.latitude,
+              longitude: pos.coords.longitude,
+            });
+            setLoading(false);
+          },
+          (err) => {
+            console.error('Location error:', err);
+            setError(err.message || 'Unable to get location');
+            setLoading(false);
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 10000,
+          }
         );
       } catch (err) {
-        console.error(err);
+        console.error('Location permission error:', err);
+        setError('Unable to get location');
+        setLoading(false);
       }
     };
 
     requestLocation();
   }, []);
 
-  return location;
+  return {
+    location,
+    loading,
+    error,
+  };
 };
-
 // ------------------ TabScreen ------------------
-const TabScreen: React.FC<{ typeSlug: string }> = ({ typeSlug }) => {
+const TabScreen: React.FC<TabScreenProps> = ({
+  typeSlug,
+  location,
+  locationLoading,
+}) => {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [radius, setRadius] = useState(20); // default 20 km
   const [pendingRadius, setPendingRadius] = useState(20);
-  const location = useUserLocation();
 
-  const fetchOrganizations = useCallback(async () => {
-    if (!typeSlug) return;
-    setLoading(true);
+  const fetchOrganizations = useCallback(
+    async (isRefresh = false) => {
+      if (!typeSlug) return;
 
-    try {
-      const params: any = { type_slug: typeSlug };
-      if (location) {
-        params.lat = location.latitude;
-        params.lng = location.longitude;
-        params.radius = radius;
+      if (isRefresh) {
+        setRefreshing(true);
+      } else {
+        setLoading(true);
       }
 
-      const res = await api.get<Organization[]>('api/organizations/', { params });
-      setOrganizations(res.data);
-    } catch (err) {
-      console.error('Error fetching organizations:', err);
-    } finally {
-      setLoading(false);
-    }
-  }, [typeSlug, location, radius]);
+      try {
+        const params: any = {
+          type_slug: typeSlug,
+        };
+
+        if (location) {
+          params.lat = location.latitude;
+          params.lng = location.longitude;
+          params.radius = radius;
+        }
+
+        const res = await api.get<Organization[]>(
+          'api/organizations/',
+          { params }
+        );
+
+        setOrganizations(res.data);
+      } catch (err) {
+        console.error('Error fetching organizations:', err);
+      } finally {
+        if (isRefresh) {
+          setRefreshing(false);
+        } else {
+          setLoading(false);
+        }
+      }
+    },
+    [typeSlug, location, radius]
+  );
 
   useEffect(() => {
+    if (locationLoading) return;
+
     fetchOrganizations();
-  }, [fetchOrganizations]);
+  }, [locationLoading, fetchOrganizations]);
 
   if (loading)
     return (
@@ -144,7 +205,7 @@ const TabScreen: React.FC<{ typeSlug: string }> = ({ typeSlug }) => {
         data={organizations}
         keyExtractor={(item) => item.id.toString()}
         refreshing={refreshing}
-        onRefresh={fetchOrganizations}
+        onRefresh={() => fetchOrganizations(true)}
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
@@ -166,6 +227,12 @@ const TabScreen: React.FC<{ typeSlug: string }> = ({ typeSlug }) => {
 const ScrollableTabs: React.FC<{ apiUrl: string }> = ({ apiUrl }) => {
   const [types, setTypes] = useState<OrganizationType[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const {
+    location,
+    loading: locationLoading,
+    error: locationError,
+  } = useUserLocation();
 
   useEffect(() => {
     api
@@ -207,21 +274,31 @@ const ScrollableTabs: React.FC<{ apiUrl: string }> = ({ apiUrl }) => {
           options={{
             tabBarIcon: ({ color }) => (
               <MaterialIcons
-                name={type.icon as React.ComponentProps<typeof MaterialIcons>["name"]}
+                name={
+                  type.icon as React.ComponentProps<
+                    typeof MaterialIcons
+                  >['name']
+                }
                 size={20}
                 color={color}
               />
             ),
             tabBarLabel: () => (
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={{ fontSize: 15, marginLeft: 6 }}>{type.name}</Text>
+                <Text style={{ fontSize: 15, marginLeft: 6 }}>
+                  {type.name}
+                </Text>
               </View>
             ),
-            tabBarActiveTintColor: undefined,
-            tabBarInactiveTintColor: undefined,
           }}
         >
-          {() => <TabScreen typeSlug={type.slug} />}
+          {() => (
+            <TabScreen
+              typeSlug={type.slug}
+              location={location}
+              locationLoading={locationLoading}
+            />
+          )}
         </Tab.Screen>
       ))}
     </Tab.Navigator>
