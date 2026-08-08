@@ -1,5 +1,5 @@
 // components/ScrollableTabs.tsx
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -79,11 +79,12 @@ const useUserLocation = () => {
 const TabScreen: React.FC<{ typeSlug: string }> = ({ typeSlug }) => {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [radius, setRadius] = useState(20); // default 20 km
-  const [sliderValue, setSliderValue] = useState(20);
+  const [pendingRadius, setPendingRadius] = useState(20);
   const location = useUserLocation();
 
-  const fetchOrganizations = async () => {
+  const fetchOrganizations = useCallback(async () => {
     if (!typeSlug) return;
     setLoading(true);
 
@@ -102,11 +103,11 @@ const TabScreen: React.FC<{ typeSlug: string }> = ({ typeSlug }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [typeSlug, location, radius]);
 
   useEffect(() => {
     fetchOrganizations();
-  }, [typeSlug, location, radius]);
+  }, [fetchOrganizations]);
 
   if (loading)
     return (
@@ -125,16 +126,14 @@ const TabScreen: React.FC<{ typeSlug: string }> = ({ typeSlug }) => {
   return (
     <View style={{ flex: 1 }}>
       <View style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
-        <Text>Εύρος αναζήτησης {radius} .χλμ</Text>
+        <Text>Εύρος αναζήτησης {radius} χλμ.</Text>
         <Slider
-          value={sliderValue}
+          value={pendingRadius}
           minimumValue={1}
           maximumValue={50}
           step={1}
-          onValueChange={setSliderValue}
-          onSlidingComplete={(value) => {
-            setRadius(value);
-          }}
+          onValueChange={setPendingRadius}
+          onSlidingComplete={setRadius}
           minimumTrackTintColor="#ff4500"
           maximumTrackTintColor="#ccc"
         />
@@ -144,7 +143,7 @@ const TabScreen: React.FC<{ typeSlug: string }> = ({ typeSlug }) => {
       <FlatList
         data={organizations}
         keyExtractor={(item) => item.id.toString()}
-        refreshing={loading}
+        refreshing={refreshing}
         onRefresh={fetchOrganizations}
         horizontal
         pagingEnabled
