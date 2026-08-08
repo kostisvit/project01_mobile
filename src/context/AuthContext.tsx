@@ -6,7 +6,6 @@ import { User } from "../types/user";
 
 const API_URL = Config.API_URL;
 
-
 interface AuthContextType {
   token: string | null;
   user: User | null;
@@ -15,7 +14,6 @@ interface AuthContextType {
 
   setToken: (token: string | null) => Promise<void>;
   setUser: (user: User | null) => void;
-
   logout: () => Promise<void>;
 }
 
@@ -28,52 +26,65 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [user, setUserState] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // ✅ derived state (DO NOT store separately)
   const isAuthenticated = !!token;
 
   const setToken = async (newToken: string | null) => {
-    if (newToken) {
-      await AsyncStorage.setItem("accessToken", newToken);
-      setTokenState(newToken);
-
-      try {
-        const res = await axios.get(`${API_URL}/auth/profile/`, {
-          headers: { Authorization: `Bearer ${newToken}` },
-        });
-        setUserState(res.data);
-      } catch (err) {
-        console.error("Failed to fetch user info:", err);
-        await AsyncStorage.removeItem("accessToken");
-        setTokenState(null);
-        setUserState(null);
-      }
-    } else {
+    if (!newToken) {
       await AsyncStorage.removeItem("accessToken");
       setTokenState(null);
       setUserState(null);
+      return;
     }
-  };
 
-  // ✅ convenience helper
-  const logout = async () => {
-    await setToken(null);
-    setUser(null);
+    await AsyncStorage.setItem("accessToken", newToken);
+    setTokenState(newToken);
   };
 
   const setUser = (newUser: User | null) => {
     setUserState(newUser);
   };
 
+  const logout = async () => {
+    await AsyncStorage.multiRemove([
+      'accessToken',
+      'refreshToken',
+      'user',
+    ]);
+
+    setTokenState(null);
+    setUserState(null);
+  };
+
   useEffect(() => {
-    const loadToken = async () => {
-      const storedToken = await AsyncStorage.getItem("accessToken");
-      if (storedToken) {
-        await setToken(storedToken);
+    const loadAuth = async () => {
+      try {
+        const storedToken = await AsyncStorage.getItem("accessToken");
+
+        if (!storedToken) {
+          return;
+        }
+
+        setTokenState(storedToken);
+
+        const res = await axios.get(`${API_URL}/auth/profile/`, {
+          headers: {
+            Authorization: `Bearer ${storedToken}`,
+          },
+        });
+
+        setUserState(res.data);
+      } catch (err) {
+        console.error("Failed to restore authentication:", err);
+
+        await AsyncStorage.removeItem("accessToken");
+        setTokenState(null);
+        setUserState(null);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
-    loadToken();
+    loadAuth();
   }, []);
 
   return (
@@ -82,10 +93,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         token,
         user,
         loading,
-        isAuthenticated, // ✅ exposed
+        isAuthenticated,
         setToken,
         setUser,
-        logout, // ✅ exposed
+        logout,
       }}
     >
       {children}
@@ -95,8 +106,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
+
   if (!context) {
     throw new Error("useAuth must be used within AuthProvider");
   }
+
   return context;
 };

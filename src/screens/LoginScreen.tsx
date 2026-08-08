@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Alert,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+//import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation';
 import { login } from '../api/auth';
@@ -24,25 +24,46 @@ export default function LoginScreen({ navigation }: Props) {
   // <- Here we get setToken from the AuthContext
   const { setToken } = useAuth();
 
+
   const handleLogin = async () => {
-    if (!email || !password) return Alert.alert('Σφάλμα', 'Συμπληρώστε Email και Κωδικό');
+    const normalizedEmail = email.trim();
+
+    if (!normalizedEmail || !password) {
+      return Alert.alert(
+        'Σφάλμα',
+        'Συμπληρώστε Email και Κωδικό'
+      );
+    }
+
     setLoading(true);
 
     try {
-      const { token, user } = await login(email, password);
+      const { token, user } = await login(normalizedEmail, password);
 
       await setToken(token);
 
-      const storedToken = await AsyncStorage.getItem("accessToken");
-      console.log("Stored token:", storedToken);
+      const fullName = [user.first_name, user.last_name]
+        .filter(Boolean)
+        .join(' ');
 
       Alert.alert(
         'Συνδεθήκατε με επιτυχία',
         `Καλώς ήλθατε ${user.first_name} ${user.last_name || user.email}`,
         [{ text: 'OK', onPress: () => navigation.replace('LocationPermission') }]
       );
-    } catch (err: any) {
-      Alert.alert('Αποτυχία σύνδεσης. Προσπαθήστε πάλι.', err.message);
+    } catch (err: unknown) {
+      const error = err as any;
+
+      const message =
+        error?.response?.data?.detail ||
+        error?.response?.data?.message ||
+        error?.message ||
+        'Άγνωστο σφάλμα';
+
+      Alert.alert(
+        'Αποτυχία σύνδεσης. Προσπαθήστε πάλι.',
+        message
+      );
     } finally {
       setLoading(false);
     }
@@ -77,7 +98,7 @@ export default function LoginScreen({ navigation }: Props) {
       />
 
       <TouchableOpacity
-        style={styles.button}
+        style={[styles.button, loading && { opacity: 0.6 }]}
         onPress={handleLogin}
         disabled={loading}
       >
@@ -86,7 +107,7 @@ export default function LoginScreen({ navigation }: Props) {
         </Text>
       </TouchableOpacity>
 
-      < Text style={{ color: '#fff', textAlign: 'center' }}>
+      <Text style={{ color: '#fff', textAlign: 'center' }}>
         Ξεχάσατε τον κωδικό σας;{' '}
         <Text
           style={{ textDecorationLine: 'underline', color: '#ff4500' }}
@@ -127,18 +148,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 5,
     elevation: 2,
-  },
-  buttonGoogle: {
-    backgroundColor: '#4285F4',
-    padding: 16,
-    borderRadius: 8,
-    marginTop: 12,
-  },
-  buttonApple: {
-    backgroundColor: '#000000',
-    padding: 16,
-    borderRadius: 8,
-    marginTop: 12,
   },
   buttonText: {
     color: '#fff',
