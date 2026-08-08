@@ -11,11 +11,11 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import MaterialIcons from '@react-native-vector-icons/material-icons';
 import { useAuth } from '../context/AuthContext';
-import { User } from '../types/user';
+//import { User } from '../types/user';
 
-interface Props {
-  loading: boolean;
-}
+// interface Props {
+//   loading: boolean;
+// }
 
 
 const AppHeader = ({ loading }: { loading: boolean }) => {

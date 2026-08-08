@@ -80,6 +80,7 @@ const TabScreen: React.FC<{ typeSlug: string }> = ({ typeSlug }) => {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [loading, setLoading] = useState(true);
   const [radius, setRadius] = useState(20); // default 20 km
+  const [sliderValue, setSliderValue] = useState(20);
   const location = useUserLocation();
 
   const fetchOrganizations = async () => {
@@ -124,13 +125,16 @@ const TabScreen: React.FC<{ typeSlug: string }> = ({ typeSlug }) => {
   return (
     <View style={{ flex: 1 }}>
       <View style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
-        <Text>Εύρος αναζήτησης {radius} km</Text>
+        <Text>Εύρος αναζήτησης {radius} .χλμ</Text>
         <Slider
-          value={radius}
+          value={sliderValue}
           minimumValue={1}
           maximumValue={50}
           step={1}
-          onValueChange={setRadius}
+          onValueChange={setSliderValue}
+          onSlidingComplete={(value) => {
+            setRadius(value);
+          }}
           minimumTrackTintColor="#ff4500"
           maximumTrackTintColor="#ccc"
         />
@@ -203,7 +207,11 @@ const ScrollableTabs: React.FC<{ apiUrl: string }> = ({ apiUrl }) => {
           name={type.name}
           options={{
             tabBarIcon: ({ color }) => (
-              <MaterialIcons name={type.icon} size={20} color={color} />
+              <MaterialIcons
+                name={type.icon as React.ComponentProps<typeof MaterialIcons>["name"]}
+                size={20}
+                color={color}
+              />
             ),
             tabBarLabel: () => (
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>

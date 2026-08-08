@@ -38,7 +38,7 @@ export default function LoginScreen({ navigation }: Props) {
 
       Alert.alert(
         'Συνδεθήκατε με επιτυχία',
-        `Καλώς ήλθατε ${user.first_name || user.email} ${user.last_name || user.email}`,
+        `Καλώς ήλθατε ${user.first_name} ${user.last_name || user.email}`,
         [{ text: 'OK', onPress: () => navigation.replace('LocationPermission') }]
       );
     } catch (err: any) {
