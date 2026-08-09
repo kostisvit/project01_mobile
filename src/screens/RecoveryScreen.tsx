@@ -5,12 +5,14 @@ import {
   TouchableOpacity,
   Text,
   StyleSheet,
+  ActivityIndicator,
   Alert
 } from 'react-native';
 import axios from 'axios';
 import Config from 'react-native-config';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import EmailVerifiedScreen from './EmailVerifiedScreen';
 
 type RootStackParamList = {
   Recovery: undefined;
@@ -24,13 +26,36 @@ const API_URL = Config.API_URL;
 const RecoveryScreen = () => {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState('');
 
   const navigation = useNavigation<NavigationProp>();
 
   const recover = async () => {
+    setError('');
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const normalizedEmail = email.trim().toLowerCase();
+
+    if (!emailRegex) {
+      setError('Παρακαλώ εισάγετε το email σας.');
+      return
+    }
+
+    if (!emailRegex.test(normalizedEmail)) {
+      setError('Παρακαλώ εισάγετε έγκυρο email.');
+      return;
+    }
+
+    if (!API_URL) {
+      setError('Δεν έχει ρυθμιστεί το API URL.');
+      return;
+    }
+
     try {
+      setLoading(true);
+
       await axios.post(`${API_URL}/auth/password-reset/`, {
-        email,
+        email: emailRegex,
       });
 
       Alert.alert(
@@ -47,7 +72,11 @@ const RecoveryScreen = () => {
         ]
       );
     } catch (err) {
-      setError('Σφάλμα κατά την αποστολή του email επαναφοράς κωδικού.');
+      setError(
+        'Σφάλμα κατά την αποστολή του email επαναφοράς κωδικού.'
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -62,8 +91,16 @@ const RecoveryScreen = () => {
         autoCapitalize="none"
       />
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
-      <TouchableOpacity style={styles.button} onPress={recover}>
-        <Text style={styles.buttonText}>Αποστολή Συνδέσμου Επαναφοράς</Text>
+      <TouchableOpacity
+        style={[styles.button, loading && styles.buttonDisabled]}
+        onPress={recover}>
+        {loading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.buttonText}>
+            Αποστολή Συνδέσμου Επαναφοράς
+          </Text>
+        )}
       </TouchableOpacity>
 
     </View>
@@ -91,6 +128,11 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     borderRadius: 8,
     alignItems: 'center',
+    minHeight: 50,
+    justifyContent: 'center',
+  },
+  buttonDisabled: {
+    opacity: 0.6,
   },
   buttonText: {
     color: '#fff',

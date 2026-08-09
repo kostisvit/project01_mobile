@@ -15,14 +15,14 @@ import AppHeader from '../components/AppHeader';
 import MaterialIcons from "@react-native-vector-icons/material-icons";
 import { Organization } from "../types/organization";
 
-const API_URL = Config.API_URL;
+const API_URL = Config.API_URL?.replace(/\/+$/, "");
 
 
 const SearchScreen = ({ navigation }: any) => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Organization[]>([]);
   const [loading, setLoading] = useState(false);
-  const [org, setOrg] = useState<Organization | null>(null);
+  // const [org, setOrg] = useState<Organization | null>(null);
 
   // 🔍 API call
   const fetchResults = async (text: string) => {
@@ -30,7 +30,7 @@ const SearchScreen = ({ navigation }: any) => {
       setLoading(true);
 
       const res = await fetch(
-        `${API_URL}/api/organizations?search=${text}`
+        `${API_URL}/api/organizations?search=${encodeURIComponent(text)}`
       );
       const data = await res.json();
 
@@ -148,7 +148,7 @@ const SearchScreen = ({ navigation }: any) => {
         <View style={styles.searchBox}>
           <MaterialIcons name="search" size={20} color="#9CA3AF" style={{ marginRight: 8 }} />
           <TextInput
-            placeholder="Αναζήτηση επιχείρησεις ή κατηγορίας..."
+            placeholder="Αναζήτηση επιχείρησης ή κατηγορίας..."
             placeholderTextColor="#9CA3AF"
             value={query}
             onChangeText={handleChange}
@@ -157,7 +157,7 @@ const SearchScreen = ({ navigation }: any) => {
           />
 
           {query.length > 0 && (
-            <Pressable onPress={() => { setQuery(""); setResults([]); }}>
+            <Pressable onPress={() => { debouncedSearch.cancel(); setQuery(""); setResults([]); }}>
               <Text style={styles.clear}>✕</Text>
             </Pressable>
           )}
@@ -266,6 +266,7 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   middleRow: {
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

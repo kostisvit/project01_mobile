@@ -17,7 +17,7 @@ import { useAuth } from "../context/AuthContext";
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
-const API_URL = Config.API_URL;
+const API_URL = Config.API_URL?.replace(/\/+$/, "");
 
 const FeedbackScreen = ({ navigation }) => {
   const { user, token } = useAuth();
@@ -41,14 +41,25 @@ const FeedbackScreen = ({ navigation }) => {
       Alert.alert("Σφάλμα", "Παρακαλώ γράψτε το μήνυμά σας.");
       return;
     }
+    // Check guest name
+    if (!user && !name.trim()) {
+      Alert.alert("Σφάλμα", "Παρακαλώ συμπληρώστε το όνομά σας.");
+      return;
+    }
+
+    // Check guest email
+    if (!user && !email.trim()) {
+      Alert.alert("Σφάλμα", "Παρακαλώ συμπληρώστε το email σας.");
+      return;
+    }
 
     setLoading(true);
     try {
       await axios.post(
-        `${API_URL}api/feedback/nearme`,
+        `${API_URL}/api/feedback/nearme`,
         {
           category,
-          message,
+          message: message.trim(),
           name: !user ? name || "Anonymous" : undefined,
           email: !user ? email || "" : undefined,
         },
@@ -60,11 +71,16 @@ const FeedbackScreen = ({ navigation }) => {
         }
       );
 
-      Alert.alert("Το σχόλιο σας στάλθηκε με επιτυχία. \nΣας ευχαριστούμε.");
-      setMessage("");
-      setName(user?.first_name ? `${user.first_name} ${user.last_name || ""}` : "");
-      setEmail(user?.email || "");
-      navigation.goBack();
+      Alert.alert(
+        "Επιτυχία",
+        "Το σχόλιό σας στάλθηκε με επιτυχία.\nΣας ευχαριστούμε.",
+        [
+          {
+            text: "OK",
+            onPress: () => navigation.goBack(),
+          },
+        ]
+      );
     } catch (err) {
       if (axios.isAxiosError(err)) {
         console.error(err.response?.data || err.message);

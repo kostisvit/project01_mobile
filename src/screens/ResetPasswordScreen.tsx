@@ -1,28 +1,25 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, Alert, StyleSheet } from "react-native";
-import { useRoute, RouteProp } from "@react-navigation/native";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  Alert,
+  StyleSheet,
+} from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../types/navigation";
 import Config from "react-native-config";
 
 const API_URL = Config.API_URL;
 
-type RouteParams = {
-  params: {
-    uid: string;
-    token: string;
-  };
-};
-
 type Props = NativeStackScreenProps<
   RootStackParamList,
   "ResetPassword"
 >;
 
-export default function ResetPasswordScreen() {
-  const route = useRoute<RouteProp<RouteParams, "params">>();
-  const uid = route.params?.uid;
-  const token = route.params?.token;
+export default function ResetPasswordScreen({ route, navigation }: Props) {
+  const { uid, token } = route.params;
 
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -43,10 +40,12 @@ export default function ResetPasswordScreen() {
 
     try {
       const res = await fetch(
-        "{API_URL}/auth/password-reset-confirm/",
+        `${API_URL} /auth/password - reset - confirm / `,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify({
             uid,
             token,
@@ -58,12 +57,23 @@ export default function ResetPasswordScreen() {
       const data = await res.json();
 
       if (!res.ok) {
-        Alert.alert("Error", data.detail || "Invalid or expired link");
+        Alert.alert(
+          "Error",
+          data.detail || "Invalid or expired link"
+        );
         return;
       }
 
-      Alert.alert("Success", "Password updated. You can now log in.");
-      // navigate to Login screen
+      Alert.alert(
+        "Success",
+        "Password updated. You can now log in.",
+        [
+          {
+            text: "OK",
+            onPress: () => navigation.navigate("Login"),
+          },
+        ]
+      );
     } catch (err) {
       Alert.alert("Error", "Network error");
     } finally {
@@ -81,6 +91,7 @@ export default function ResetPasswordScreen() {
         value={password}
         onChangeText={setPassword}
         style={styles.input}
+        autoCapitalize="none"
       />
 
       <TextInput
@@ -89,6 +100,7 @@ export default function ResetPasswordScreen() {
         value={confirm}
         onChangeText={setConfirm}
         style={styles.input}
+        autoCapitalize="none"
       />
 
       <Button
@@ -101,8 +113,16 @@ export default function ResetPasswordScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 24, justifyContent: "center" },
-  title: { fontSize: 22, fontWeight: "bold", marginBottom: 20 },
+  container: {
+    flex: 1,
+    padding: 24,
+    justifyContent: "center",
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: "bold",
+    marginBottom: 20,
+  },
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
@@ -111,3 +131,4 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
 });
+

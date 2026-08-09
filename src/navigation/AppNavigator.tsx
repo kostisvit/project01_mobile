@@ -111,20 +111,9 @@ export default function AppNavigator() {
               name="Profile"
               component={ProfileScreen}
             />
-
-            <Stack.Screen
-              name="OrgDetail"
-              component={OrgDetails}
-            />
-
             <Stack.Screen
               name="AddReview"
               component={AddReviewScreen}
-            />
-
-            <Stack.Screen
-              name="Feedback"
-              component={FeedbackScreen}
             />
           </>
         )}
