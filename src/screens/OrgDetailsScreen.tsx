@@ -20,7 +20,6 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigation } from "@react-navigation/native";
 import MaterialIcons from '@react-native-vector-icons/material-icons';
 import { ActivityIndicator } from 'react-native';
-import { OrgHour } from '../types/organization';
 
 
 const API_URL = Config.API_URL;
@@ -42,7 +41,8 @@ const ReplyItem = ({
   const [collapsedText, setCollapsedText] = React.useState(true);
 
   const hasChildren = reply.children && reply.children.length > 0;
-  const isLongText = reply.comment.length > MAX_CHARS;
+  const comment = reply.comment ?? '';
+  const isLongText = comment.length > MAX_CHARS;
 
   const displayText =
     collapsedText && isLongText

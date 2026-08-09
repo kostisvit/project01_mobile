@@ -29,7 +29,52 @@ const RegisterScreen = () => {
 
   const navigation = useNavigation<NavigationProp>();
 
+
   const register = async () => {
+
+    const getPasswordError = (message: string): string => {
+      const lowerMessage = message.toLowerCase();
+
+      if (
+        lowerMessage.includes('too short') ||
+        lowerMessage.includes('at least 8')
+      ) {
+        return 'Ο κωδικός πρέπει να έχει τουλάχιστον 8 χαρακτήρες.';
+      }
+
+      if (lowerMessage.includes('too common')) {
+        return 'Ο κωδικός είναι πολύ συνηθισμένος. Επιλέξτε έναν πιο ασφαλή κωδικό.';
+      }
+
+      if (lowerMessage.includes('entirely numeric')) {
+        return 'Ο κωδικός δεν μπορεί να αποτελείται μόνο από αριθμούς.';
+      }
+
+      if (lowerMessage.includes('too similar')) {
+        return 'Ο κωδικός είναι πολύ παρόμοιος με τα προσωπικά σας στοιχεία.';
+      }
+
+      return 'Ο κωδικός δεν πληροί τις απαιτήσεις ασφαλείας.';
+    };
+
+
+
+    const normalizedEmail = email.trim().toLowerCase();
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+
+    if (!normalizedEmail) {
+      setError('Παρακαλώ εισάγετε το email σας');
+      return;
+    }
+
+    if (!emailRegex.test(normalizedEmail)) {
+      setError('Παρακαλώ εισάγετε ένα έγκυρο email');
+      return;
+    }
+
     // 🔴 validation
     if (password !== repeatPassword) {
       setError('Οι κωδικοί δεν ταιριάζουν');
@@ -44,14 +89,14 @@ const RegisterScreen = () => {
     setError('');
 
     try {
-      const response = await axios.post(`${API_URL}auth/register/`, {
-        email,
+      await axios.post(`${API_URL}auth/register/`, {
+        email: normalizedEmail,
         password,
       });
 
       Alert.alert(
-        'Εγγραφήκατε με επιτυχία',
-        'Για να ολοκληρώσετε την εγγραφή σας, παρακαλούμε ελέγξτε το email σας για έναν σύνδεσμο επιβεβαίωσης.',
+        'Η εγγραφή σας ολοκληρώθηκε με επιτυχία',
+        'Για να ολοκληρώσετε τη διαδικασία εγγραφής, παρακαλούμε ελέγξτε το email σας και κάντε κλικ στον σύνδεσμο επιβεβαίωσης που σας στείλαμε.',
         [
           {
             text: 'OK',
@@ -67,15 +112,36 @@ const RegisterScreen = () => {
       );
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
-
         if (__DEV__) {
           console.log('FULL ERROR:', error.response?.data);
         }
 
+        const data = error.response?.data;
+
+        // Django password validation error
+        if (data?.password) {
+          const message = Array.isArray(data.password)
+            ? data.password[0]
+            : data.password;
+
+          setError(getPasswordError(String(message)));
+          return;
+        }
+
+        // Django email validation error
+        if (data?.email) {
+          const message = Array.isArray(data.email)
+            ? data.email[0]
+            : data.email;
+
+          setError(String(message));
+          return;
+        }
+
+        // Generic backend message
         Alert.alert(
           'Σφάλμα',
-          error.response?.data?.message ||
-          'Κάτι πήγε στραβά. Προσπαθήστε ξανά.'
+          data?.message || 'Κάτι πήγε στραβά. Προσπαθήστε ξανά.'
         );
       } else if (error instanceof Error) {
         if (__DEV__) {
@@ -87,6 +153,8 @@ const RegisterScreen = () => {
         Alert.alert('Σφάλμα', 'Κάτι πήγε στραβά.');
       }
     }
+
+
   };
 
   return (
@@ -114,7 +182,7 @@ const RegisterScreen = () => {
       />
 
       <TextInput
-        placeholder="Επνάληψη Κωδικού"
+        placeholder="Επανάληψη Κωδικού"
         value={repeatPassword}
         onChangeText={setRepeatPassword}
         style={styles.input}
