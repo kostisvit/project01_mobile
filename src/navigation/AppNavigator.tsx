@@ -82,6 +82,10 @@ export default function AppNavigator() {
           component={OrgDetails}
         />
         <Stack.Screen
+          name="OrgPhotos"
+          component={OrgImagesScreen}
+        />
+        <Stack.Screen
           name="Search"
           component={SearchScreen}
         />
@@ -121,11 +125,6 @@ export default function AppNavigator() {
             <Stack.Screen
               name="Feedback"
               component={FeedbackScreen}
-            />
-
-            <Stack.Screen
-              name="OrgPhotos"
-              component={OrgImagesScreen}
             />
           </>
         )}

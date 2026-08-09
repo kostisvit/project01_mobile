@@ -23,16 +23,26 @@ const AppHeader = ({ loading }: { loading: boolean }) => {
   const [menuVisible, setMenuVisible] = React.useState(false);
   const { user, logout } = useAuth();
 
-  const handleLogout = async () => {
-    Alert.alert('Αποσύνδεση!', 'Είστε σίγουρος/η;', [
-      { text: 'Cancel', style: 'cancel' },
+  const handleLogout = () => {
+    Alert.alert('Αποσύνδεση', 'Είστε σίγουρος/η;', [
       {
-        text: 'Logout',
+        text: 'Ακύρωση',
+        style: 'cancel',
+      },
+      {
+        text: 'Έξοδος',
         style: 'destructive',
         onPress: async () => {
-          await logout();
-          setMenuVisible(false);
-          navigation.replace('Welcome');
+          try {
+            await logout();
+            setMenuVisible(false);
+            navigation.replace('Welcome');
+          } catch (error) {
+            Alert.alert(
+              'Σφάλμα',
+              'Δεν ήταν δυνατή η αποσύνδεση. Παρακαλώ δοκιμάστε ξανά.',
+            );
+          }
         },
       },
     ]);
@@ -91,11 +101,15 @@ const AppHeader = ({ loading }: { loading: boolean }) => {
         visible={menuVisible}
         onRequestClose={() => setMenuVisible(false)}
       >
-        <TouchableOpacity
-          style={styles.overlay}
-          activeOpacity={1}
-          onPress={() => setMenuVisible(false)}
-        >
+        <View style={styles.overlay}>
+          {/* Background — tapping here closes the menu */}
+          <TouchableOpacity
+
+            activeOpacity={1}
+            onPress={() => setMenuVisible(false)}
+          />
+
+          {/* Actual menu */}
           <View style={styles.menu}>
             {user ? (
               <>
@@ -111,7 +125,13 @@ const AppHeader = ({ loading }: { loading: boolean }) => {
                   <Text>Προφίλ Χρήστη</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.menuItem}>
+                <TouchableOpacity
+                  style={styles.menuItem}
+                  onPress={() => {
+                    setMenuVisible(false);
+                    // navigation.navigate('Settings');
+                  }}
+                >
                   <Text>Ρυθμίσεις</Text>
                 </TouchableOpacity>
 
@@ -180,7 +200,7 @@ const AppHeader = ({ loading }: { loading: boolean }) => {
               </>
             )}
           </View>
-        </TouchableOpacity>
+        </View>
       </Modal>
     </>
   );
@@ -221,10 +241,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 16,
     right: 16,
-  },
-  menuIcon: {
-    fontSize: 26,
-    color: '#fff',
   },
   overlay: {
     flex: 1,
