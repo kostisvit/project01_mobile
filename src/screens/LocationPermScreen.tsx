@@ -47,7 +47,7 @@ export default function LocationPermissionScreen({ navigation }: Props) {
       <Text style={{ marginBottom: 20 }}>
         Η τοποθεσία σας χρησιμοποιείται για την προβολή κοντινών επιχειρήσεων και εκδηλώσεων.
       </Text>
-      <Button title="Allow Location" onPress={askLocation} />
+      <Button title="Να επιτρέπεται η τοποθεσία" onPress={askLocation} />
     </View>
   );
 }
