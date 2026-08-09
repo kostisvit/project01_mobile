@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  ScrollView,
+  FlatList,
   View,
   Text,
   Image,
@@ -168,140 +168,217 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
     <SafeAreaView style={styles.container}>
       <AppHeader user={user} loading={loading} />
       <View style={styles.org_detail_container}>
-        <ScrollView>
-          {/* 🖼 IMAGE */}
-          <Pressable
-            onPress={() =>
-              navigation.navigate("OrgPhotos", {
-                images: org.images,
-              })
-            }
-          >
-            <Image
-              source={{
-                uri:
-                  org.images?.[0]?.image_url ||
-                  "https://picsum.photos/600/400",
-              }}
-              style={styles.image}
-            />
-          </Pressable>
+        <FlatList
+          data={org.reviews ?? []}
+          keyExtractor={(review) => review.id.toString()}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.content}
+          ListHeaderComponent={
+            <>
+              {/* 🖼 IMAGE */}
+              <Pressable
+                onPress={() =>
+                  navigation.navigate("OrgPhotos", {
+                    images: org.images,
+                  })
+                }
+              >
+                <Image
+                  source={{
+                    uri:
+                      org.images?.[0]?.image_url ||
+                      "https://picsum.photos/600/400",
+                  }}
+                  style={styles.image}
+                />
+              </Pressable>
 
-          {/* 🏷 NAME */}
-          <View style={styles.headerRowOrgType}>
-            <Text style={styles.orgType}>
-              {org.organization_type.name ? ` #${org.organization_type.name}` : ''}
-            </Text>
-          </View>
-          <View style={styles.headerRow}>
-            <Text style={styles.orgName} numberOfLines={1}>
-              {org.name}
-            </Text>
-
-            <View style={styles.ratingRow}>
-              <MaterialIcons
-                name="star"
-                size={14}
-                color="#f59e0b"
-                style={styles.star}
-              />
-              <Text style={styles.ratingText}>
-                {org.average_rating?.toFixed(1) ?? '0.0'}
-              </Text>
-            </View>
-          </View>
-
-          <View style={styles.middleRow}>
-            <View style={styles.addressRow}>
-              <MaterialIcons name="location-on" size={14} color="#e53e3e" />
-              <Text style={styles.orgAddress} numberOfLines={2}>
-                {org.address ?? '-'}
-              </Text>
-            </View>
-
-            <Text style={styles.comments}>
-              ({org.reviews?.length ?? 0}) Αξιολογήσεις
-            </Text>
-          </View>
-
-          <View style={styles.footerRow}>
-            <View style={styles.phoneRow}>
-              <MaterialIcons name="phone" size={14} color="#38a169" />
-              <Text style={styles.orgPhone}>
-                {org.phone ?? '-'}
-              </Text>
-            </View>
-            <Pressable onPress={() => setHoursModalVisible(true)}>
-              <Text style={[isOpen ? styles.statusOpen : styles.statusClosed, { textDecorationLine: 'underline' }]}>
-                {isOpen ? "Ανοιχτά" : "Κλειστά"}
-              </Text>
-            </Pressable>
-
-          </View>
-          {org.description && (
-            <Pressable onPress={() => setDescriptionModalVisible(true)}>
-              <View style={styles.descriptionBox}>
-                <Text style={styles.descriptionTitle}>Σχετικά</Text>
-                <Text style={styles.descriptionText} numberOfLines={2}>
-                  {org.description}
+              {/* 🏷 TYPE */}
+              <View style={styles.headerRowOrgType}>
+                <Text style={styles.orgType}>
+                  {org.organization_type?.name
+                    ? ` #${org.organization_type.name}`
+                    : ""}
                 </Text>
               </View>
-            </Pressable>
-          )}
-          <View style={styles.mapCard}>
-            <Pressable
-              style={styles.mapButton}
-              onPress={() =>
-                Linking.openURL(
-                  `https://www.google.com/maps/search/?api=1&query=${org.latitude},${org.longitude}`
-                )
-              }
-            >
-              <MaterialIcons name="map" size={18} color="#fff" />
-              <Text style={styles.mapButtonText}>Άνοιγμα στο Χάρτη</Text>
-            </Pressable>
-          </View>
 
-          <View style={styles.reviewSection}>
-            <Text style={styles.sectionTitle}>Σχόλια</Text>
-            {user ? (
-              <Pressable
-                style={styles.addReviewButton}
-                onPress={() => navigation.navigate("AddReview", { orgId: org.id })}
-              >
-                <View style={styles.buttonContent}>
-                  <MaterialIcons name="comment" color="#fff" size={18} />
-                  <Text style={styles.addReviewText}>
-                    Άφησε το σχόλιο σου
+              {/* NAME + RATING */}
+              <View style={styles.headerRow}>
+                <Text style={styles.orgName} numberOfLines={1}>
+                  {org.name}
+                </Text>
+
+                <View style={styles.ratingRow}>
+                  <MaterialIcons
+                    name="star"
+                    size={14}
+                    color="#f59e0b"
+                    style={styles.star}
+                  />
+                  <Text style={styles.ratingText}>
+                    {org.average_rating?.toFixed(1) ?? "0.0"}
                   </Text>
                 </View>
-              </Pressable>
-            ) : (
-              <Text
-                style={styles.loginHint}
-                onPress={() => navigation.navigate('Login')}
-              >
-                Συνδεθείτε για να αφήσετε το σχόλιο σας.
-              </Text>
-            )}
-            {(!org.reviews || org.reviews.length === 0) && (
-              <Text style={styles.empty}>Κανένα σχόλιο.</Text>
-            )}
+              </View>
 
-            {org.reviews?.map(review => (
-              <View key={review.id} style={styles.reviewCard}>
-                <Text style={styles.rating}>
-                  <MaterialIcons name="star" size={18} color="gold" />
-                  {org.average_rating?.toFixed(1) ?? '0.0'}</Text>
-                <Text style={styles.comment}>{review.comment}</Text>
-                <Text style={styles.meta}>
-                  από {review.user_name ?? "Anonymous"} ·{" "}
-                  {new Date(review.created).toLocaleDateString("el-GR")}
+              {/* ADDRESS + COMMENTS */}
+              <View style={styles.middleRow}>
+                <View style={styles.addressRow}>
+                  <MaterialIcons
+                    name="location-on"
+                    size={14}
+                    color="#e53e3e"
+                  />
+                  <Text style={styles.orgAddress} numberOfLines={2}>
+                    {org.address ?? "-"}
+                  </Text>
+                </View>
+
+                <Text style={styles.comments}>
+                  ({org.reviews?.length ?? 0}) Αξιολογήσεις
                 </Text>
-                {/* 💬 REPLIES */}
-                {review.replies && review.replies.length > 0 && (
+              </View>
+
+              {/* PHONE + OPEN/CLOSED */}
+              <View style={styles.footerRow}>
+                <View style={styles.phoneRow}>
+                  <MaterialIcons
+                    name="phone"
+                    size={14}
+                    color="#38a169"
+                  />
+                  <Text style={styles.orgPhone}>
+                    {org.phone ?? "-"}
+                  </Text>
+                </View>
+
+                <Pressable onPress={() => setHoursModalVisible(true)}>
+                  <Text
+                    style={[
+                      isOpen
+                        ? styles.statusOpen
+                        : styles.statusClosed,
+                      { textDecorationLine: "underline" },
+                    ]}
+                  >
+                    {isOpen ? "Ανοιχτά" : "Κλειστά"}
+                  </Text>
+                </Pressable>
+              </View>
+
+              {/* DESCRIPTION */}
+              {org.description && (
+                <Pressable
+                  onPress={() => setDescriptionModalVisible(true)}
+                >
+                  <View style={styles.descriptionBox}>
+                    <Text style={styles.descriptionTitle}>
+                      Σχετικά
+                    </Text>
+
+                    <Text
+                      style={styles.descriptionText}
+                      numberOfLines={2}
+                    >
+                      {org.description}
+                    </Text>
+                  </View>
+                </Pressable>
+              )}
+
+              {/* MAP */}
+              <View style={styles.mapCard}>
+                <Pressable
+                  style={styles.mapButton}
+                  onPress={() =>
+                    Linking.openURL(
+                      `https://www.google.com/maps/search/?api=1&query=${org.latitude},${org.longitude}`
+                    )
+                  }
+                >
+                  <MaterialIcons
+                    name="map"
+                    size={18}
+                    color="#fff"
+                  />
+
+                  <Text style={styles.mapButtonText}>
+                    Άνοιγμα στο Χάρτη
+                  </Text>
+                </Pressable>
+              </View>
+
+              {/* REVIEWS HEADER */}
+              <View style={styles.reviewSection}>
+                <Text style={styles.sectionTitle}>
+                  Σχόλια
+                </Text>
+
+                {user ? (
+                  <Pressable
+                    style={styles.addReviewButton}
+                    onPress={() =>
+                      navigation.navigate("AddReview", {
+                        orgId: org.id,
+                      })
+                    }
+                  >
+                    <View style={styles.buttonContent}>
+                      <MaterialIcons
+                        name="comment"
+                        color="#fff"
+                        size={18}
+                      />
+
+                      <Text style={styles.addReviewText}>
+                        Άφησε το σχόλιο σου
+                      </Text>
+                    </View>
+                  </Pressable>
+                ) : (
+                  <Text
+                    style={styles.loginHint}
+                    onPress={() => navigation.navigate("Login")}
+                  >
+                    Συνδεθείτε για να αφήσετε το σχόλιο σας.
+                  </Text>
+                )}
+
+                {(!org.reviews ||
+                  org.reviews.length === 0) && (
+                    <Text style={styles.empty}>
+                      Κανένα σχόλιο.
+                    </Text>
+                  )}
+              </View>
+            </>
+          }
+          renderItem={({ item: review }) => (
+            <View style={styles.reviewCard}>
+              <Text style={styles.rating}>
+                <MaterialIcons
+                  name="star"
+                  size={18}
+                  color="gold"
+                />
+
+                {review.rating?.toFixed(1) ?? "0.0"}
+              </Text>
+
+              <Text style={styles.comment}>
+                {review.comment}
+              </Text>
+
+              <Text style={styles.meta}>
+                από {review.user_name ?? "Anonymous"} ·{" "}
+                {new Date(review.created).toLocaleDateString("el-GR")}
+              </Text>
+
+              {/* 💬 REPLIES */}
+              {review.replies &&
+                review.replies.length > 0 && (
                   <View style={styles.replyContainer}>
-                    {review.replies.map(reply => (
+                    {review.replies.map((reply) => (
                       <ReplyItem
                         key={reply.id}
                         reply={reply}
@@ -310,10 +387,9 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
                     ))}
                   </View>
                 )}
-              </View>
-            ))}
-          </View>
-        </ScrollView>
+            </View>
+          )}
+        />
         <Modal
           visible={hoursModalVisible}
           animationType="slide"
