@@ -5,7 +5,6 @@ import ScrollableTabs from '../components/ScrollableTabs';
 import Config from 'react-native-config';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation';
-//import { logout } from '../api/auth';
 import DefaultLayout from '../layout/DefaultLayout';
 import { User } from '../types/user';
 
@@ -19,7 +18,6 @@ const API_URL = Config.API_URL;
 const HomeScreen = ({ navigation }: Props) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  //const [menuVisible, setMenuVisible] = useState(false);
 
   useEffect(() => {
     const loadUser = async () => {

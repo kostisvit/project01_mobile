@@ -1,10 +1,10 @@
 new react app
   npx @react-native-community/cli init project_name
-  
+
 clrar Pods
   rm -rf Pods Podfile.lock
   pod install
-  
+
 npm install react-native-config - hide sensitivite data to .env file like Dkjango
 
 
@@ -16,6 +16,6 @@ start comamnds
 uv python backend/manage.py runserver --settings=config.development
 npx react-native start
 redis-server(~/desktop/projects/nearme_backend)
-celery -A config worker -l info (~/desktop/projects/nearme_backend - PYTHONPATH=. celery -A backend.config worker -l info) * activate venv
+celery -A config worker -l info (~/desktop/projects/nearme_backend - PYTHONPATH=. celery -A backend.config worker -l info * activate venv
 stripe login (~/desktop/projects/nearme_backend)
 stripe listen --forward-to localhost:8000/organizations/webhooks/stripe/

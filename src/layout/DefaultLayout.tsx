@@ -2,11 +2,9 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import AppHeader from '../components/AppHeader';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { User } from "../types/User";
 
 type DefaultLayoutProps = {
   children: React.ReactNode;
-  user: User | null;
   loading: boolean;
 };
 

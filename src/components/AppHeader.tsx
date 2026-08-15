@@ -11,11 +11,6 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import MaterialIcons from '@react-native-vector-icons/material-icons';
 import { useAuth } from '../context/AuthContext';
-//import { User } from '../types/user';
-
-// interface Props {
-//   loading: boolean;
-// }
 
 
 const AppHeader = ({ loading }: { loading: boolean }) => {
@@ -104,7 +99,7 @@ const AppHeader = ({ loading }: { loading: boolean }) => {
         <View style={styles.overlay}>
           {/* Background — tapping here closes the menu */}
           <TouchableOpacity
-
+            style={styles.backdrop}
             activeOpacity={1}
             onPress={() => setMenuVisible(false)}
           />
@@ -246,6 +241,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.3)',
     justifyContent: 'flex-end',
+  },
+  backdrop: {
+    flex: 1,
   },
   menu: {
     backgroundColor: '#fff',

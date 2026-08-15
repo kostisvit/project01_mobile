@@ -22,7 +22,7 @@ export default function LoginScreen({ navigation }: Props) {
   const [loading, setLoading] = useState(false);
 
   // <- Here we get setToken from the AuthContext
-  const { setToken } = useAuth();
+  const { setToken, setUser } = useAuth();
 
 
   const handleLogin = async () => {
@@ -41,6 +41,7 @@ export default function LoginScreen({ navigation }: Props) {
       const { token, user } = await login(normalizedEmail, password);
 
       await setToken(token);
+      setUser(user);
 
       const fullName = [user.first_name, user.last_name]
         .filter(Boolean)
