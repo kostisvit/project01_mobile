@@ -16,7 +16,9 @@ export type OrganizationReviewReply = {
   user_name?: string;
 };
 
-
+type StatusInfo = {
+  is_open: boolean;
+};
 
 export type Organization = {
   id: number;
@@ -32,9 +34,10 @@ export type Organization = {
   average_rating?: number;
   open_status?: string;
   images: OrganizationImage[];
-  status_info?: string;
+  status_info?: StatusInfo;
   hours?: OrgHour[];
-  organization_type?: OrgType[];
+  organization_type?: OrgType;
+  is_verified?:boolean;
 };
 
 export type OrgCardProps = {

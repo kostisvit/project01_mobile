@@ -19,7 +19,7 @@ const OrgImagesScreen = ({ route }: any) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <AppHeader user={user} />
+      <AppHeader loading={!user} />
 
       <View style={styles.imgContainer}>
         {images.length === 0 ? (

@@ -156,7 +156,7 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
   if (!org) {
     return (
       <View style={styles.container}>
-        <AppHeader user={user} loading={loading} />
+        <AppHeader  loading={loading} />
         <View style={styles.center}>
           <Text>Organization not found</Text>
         </View>
@@ -166,13 +166,12 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <AppHeader user={user} loading={loading} />
+      <AppHeader  loading={loading} />
       <View style={styles.org_detail_container}>
         <FlatList
           data={org.reviews ?? []}
           keyExtractor={(review) => review.id.toString()}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.content}
           ListHeaderComponent={
             <>
               {/* 🖼 IMAGE */}
@@ -265,7 +264,24 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
                   </Text>
                 </Pressable>
               </View>
+              <View style={styles.footerRow}>
 
+              <View style={styles.emailRow}>
+                <MaterialIcons name="email" size={14} color="#3182ce" />
+                <Text style={styles.orgEmail}>
+                  {org.email ?? "-"}
+                </Text>
+
+                {org.is_verified && (
+                  <MaterialIcons
+                    name="verified"
+                    size={17}
+                    color="#3182ce"
+                    accessibilityLabel="Επιβεβαιωμένος οργανισμός"
+                  />
+                )}
+              </View>
+            </View>
               {/* DESCRIPTION */}
               {org.description && (
                 <Pressable
@@ -567,7 +583,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   ratingText: {
-    fontSize: 13,
+    fontSize: 16,
     fontWeight: '600',
     color: '#b45309',
   },
@@ -586,18 +602,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   orgAddress: {
-    fontSize: 14,
+    fontSize: 16,
     color: '#1a202c',
     marginLeft: 4,
   },
+  emailRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+
+  orgEmail: {
+    fontSize: 16,
+    color: '#1a202c',
+  },
   comment: {
-    fontSize: 14,
+    fontSize: 16,
     lineHeight: 20,
     color: '#333',
     marginTop: 6,
   },
   comments: {
-    fontSize: 12,
+    fontSize: 16,
     color: '#718096',
   },
   meta: {
@@ -691,7 +717,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 6,
-    fontSize: 12,
+    fontSize: 16,
     overflow: 'hidden',
   },
   statusClosed: {
@@ -700,7 +726,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 6,
-    fontSize: 12,
+    fontSize: 16,
     overflow: 'hidden',
   },
   descriptionBox: {
