@@ -30,7 +30,7 @@ const SearchScreen = ({ navigation }: any) => {
       setLoading(true);
 
       const res = await fetch(
-        `${API_URL}/api/organizations?search=${encodeURIComponent(text)}`
+        `${API_URL}/api/organizations/?search=${encodeURIComponent(text.trim())}`
       );
       const data = await res.json();
 
@@ -150,6 +150,7 @@ const SearchScreen = ({ navigation }: any) => {
           <TextInput
             placeholder="Αναζήτηση επιχείρησης ή κατηγορίας..."
             placeholderTextColor="#9CA3AF"
+            autoCapitalize="none"
             value={query}
             onChangeText={handleChange}
             autoFocus

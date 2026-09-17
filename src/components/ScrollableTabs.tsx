@@ -1,4 +1,3 @@
-// components/ScrollableTabs.tsx
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
@@ -9,7 +8,6 @@ import {
   Dimensions,
   Platform,
   PermissionsAndroid,
-  Alert,
 } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Config from 'react-native-config';
@@ -24,8 +22,17 @@ const API_URL = Config.API_URL;
 const Tab = createMaterialTopTabNavigator();
 const { width } = Dimensions.get('window');
 
-type OrganizationImage = { image_url: string };
-type OrganizationType = { id: number; name: string; slug: string; icon: string; };
+type OrganizationImage = {
+  image_url: string;
+};
+
+type OrganizationType = {
+  id: number;
+  name: string;
+  slug: string;
+  icon: string;
+};
+
 type Organization = {
   id: number;
   name: string;
@@ -48,6 +55,7 @@ type TabScreenProps = {
 };
 
 // ------------------ Hook: Get User Location ------------------
+
 const useUserLocation = () => {
   const [location, setLocation] = useState<UserLocation | null>(null);
   const [loading, setLoading] = useState(true);
@@ -65,9 +73,9 @@ const useUserLocation = () => {
             {
               title: 'Location Permission',
               message:
-                'We use your location to show nearby organizations',
+                'We use your location to show nearby organizations.',
               buttonPositive: 'OK',
-            }
+            },
           );
 
           if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
@@ -78,26 +86,32 @@ const useUserLocation = () => {
         }
 
         Geolocation.getCurrentPosition(
-          (pos) => {
+          position => {
             setLocation({
-              latitude: pos.coords.latitude,
-              longitude: pos.coords.longitude,
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
             });
+
             setLoading(false);
           },
-          (err) => {
-            console.error('Location error:', err);
-            setError(err.message || 'Unable to get location');
+          error => {
+            console.error('Location error:', error);
+
+            setError(
+              error.message || 'Unable to get your current location',
+            );
+
             setLoading(false);
           },
           {
             enableHighAccuracy: true,
             timeout: 15000,
             maximumAge: 10000,
-          }
+          },
         );
-      } catch (err) {
-        console.error('Location permission error:', err);
+      } catch (error) {
+        console.error('Location permission error:', error);
+
         setError('Unable to get location');
         setLoading(false);
       }
@@ -112,7 +126,9 @@ const useUserLocation = () => {
     error,
   };
 };
+
 // ------------------ TabScreen ------------------
+
 const TabScreen: React.FC<TabScreenProps> = ({
   typeSlug,
   location,
@@ -121,12 +137,16 @@ const TabScreen: React.FC<TabScreenProps> = ({
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [radius, setRadius] = useState(20); // default 20 km
+  const [error, setError] = useState<string | null>(null);
+
+  const [radius, setRadius] = useState(20);
   const [pendingRadius, setPendingRadius] = useState(20);
 
   const fetchOrganizations = useCallback(
     async (isRefresh = false) => {
-      if (!typeSlug) return;
+      if (!typeSlug) {
+        return;
+      }
 
       if (isRefresh) {
         setRefreshing(true);
@@ -134,8 +154,10 @@ const TabScreen: React.FC<TabScreenProps> = ({
         setLoading(true);
       }
 
+      setError(null);
+
       try {
-        const params: any = {
+        const params: Record<string, number | string> = {
           type_slug: typeSlug,
         };
 
@@ -145,129 +167,244 @@ const TabScreen: React.FC<TabScreenProps> = ({
           params.radius = radius;
         }
 
+        console.log('Fetching organizations:', params);
+
         const res = await api.get<Organization[]>(
           'api/organizations/',
-          { params }
+          {
+            params,
+          },
         );
 
+        console.log('Organizations:', res.data);
+
         setOrganizations(res.data);
-      } catch (err) {
-        console.error('Error fetching organizations:', err);
+      } catch (err: any) {
+        console.error(
+          'Error fetching organizations:',
+          err?.response?.data || err?.message || err,
+        );
+
+        setError(
+          err?.response?.data?.detail ||
+            err?.message ||
+            'Unable to load organizations.',
+        );
+
+        setOrganizations([]);
       } finally {
-        if (isRefresh) {
-          setRefreshing(false);
-        } else {
-          setLoading(false);
-        }
+        setLoading(false);
+        setRefreshing(false);
       }
     },
-    [typeSlug, location, radius]
+    [typeSlug, location, radius],
   );
 
   useEffect(() => {
-    if (locationLoading) return;
+    if (locationLoading) {
+      return;
+    }
 
     fetchOrganizations();
   }, [locationLoading, fetchOrganizations]);
 
-  if (loading)
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#FF4500" />
-      </View>
-    );
+  // ------------------ Loading ------------------
 
-  if (!organizations.length)
+  if (loading) {
     return (
       <View style={styles.center}>
-        <Text>Δεν βρέθηκαν αποτελέσματα.</Text>
+        <ActivityIndicator
+          size="large"
+          color="#FF4500"
+        />
       </View>
     );
+  }
+
+  // ------------------ Main content ------------------
 
   return (
-    <View style={{ flex: 1 }}>
-      <View style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
-        <Text>Εύρος αναζήτησης {radius} χλμ.</Text>
+    <View style={styles.container}>
+
+      {/* Radius selector - ALWAYS visible */}
+      <View style={styles.radiusContainer}>
+        <View style={styles.radiusHeader}>
+          <Text style={styles.radiusLabel}>
+            Εύρος αναζήτησης
+          </Text>
+
+          <Text style={styles.radiusValue}>
+            {radius} χλμ.
+          </Text>
+        </View>
+
         <Slider
           value={pendingRadius}
           minimumValue={1}
-          maximumValue={50}
+          maximumValue={100}
           step={1}
-          onValueChange={setPendingRadius}
-          onSlidingComplete={setRadius}
+          onValueChange={value => {
+            setPendingRadius(value);
+          }}
+          onSlidingComplete={value => {
+            setRadius(value);
+          }}
           minimumTrackTintColor="#ff4500"
           maximumTrackTintColor="#ccc"
+          thumbTintColor="#ff4500"
         />
       </View>
 
-      {/* Organization Cards */}
-      <FlatList
-        data={organizations}
-        keyExtractor={(item) => item.id.toString()}
-        refreshing={refreshing}
-        onRefresh={() => fetchOrganizations(true)}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        snapToAlignment="center"
-        decelerationRate="fast"
-        style={{ flexGrow: 0 }}
-        renderItem={({ item }) => <OrgCard org={item} width={width} />}
-      />
+      {/* Error */}
+      {error ? (
+        <View style={styles.messageContainer}>
+          <Text style={styles.errorText}>
+            {error}
+          </Text>
+        </View>
+      ) : null}
 
-      {/* Map */}
-      <View style={{ flex: 1 }}>
-        <OrganizationsMap organizations={organizations} />
-      </View>
+      {/* No results */}
+      {!error && organizations.length === 0 ? (
+        <View style={styles.messageContainer}>
+          <Text style={styles.emptyTitle}>
+            Δεν βρέθηκαν αποτελέσματα
+          </Text>
+
+          <Text style={styles.emptyText}>
+            Δεν υπάρχουν συνεργαζόμενες επιχειρήσεις σε ακτίνα {radius} χλμ.
+          </Text>
+
+          <Text style={styles.emptyHint}>
+            Δοκίμασε να αυξήσεις την ακτίνα αναζήτησης.
+          </Text>
+        </View>
+      ) : null}
+
+      {/* Results */}
+      {organizations.length > 0 ? (
+        <>
+          {/* Organization Cards */}
+          <FlatList
+            data={organizations}
+            keyExtractor={item => item.id.toString()}
+            refreshing={refreshing}
+            onRefresh={() => fetchOrganizations(true)}
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            snapToAlignment="center"
+            decelerationRate="fast"
+            style={styles.cardsList}
+            renderItem={({ item }) => (
+              <OrgCard
+                org={item}
+                width={width}
+              />
+            )}
+          />
+
+          {/* Map */}
+          <View style={styles.mapContainer}>
+            <OrganizationsMap
+              organizations={organizations}
+            />
+          </View>
+        </>
+      ) : null}
     </View>
   );
 };
 
 // ------------------ ScrollableTabs ------------------
-const ScrollableTabs: React.FC<{ apiUrl: string }> = ({ apiUrl }) => {
+
+const ScrollableTabs: React.FC<{ apiUrl: string }> = ({
+  apiUrl,
+}) => {
   const [types, setTypes] = useState<OrganizationType[]>([]);
   const [loading, setLoading] = useState(true);
 
   const {
     location,
     loading: locationLoading,
-    error: locationError,
   } = useUserLocation();
 
   useEffect(() => {
-    api
-      .get<OrganizationType[]>(apiUrl.replace(`${API_URL}`, ''))
-      .then((res) => setTypes(res.data))
-      .catch((err) => console.error('Error fetching types:', err))
-      .finally(() => setLoading(false));
+    const fetchTypes = async () => {
+      try {
+        const endpoint = apiUrl.replace(`${API_URL}`, '');
+
+        const res = await api.get<OrganizationType[]>(
+          endpoint,
+        );
+
+        console.log('Organization types:', res.data);
+
+        setTypes(res.data);
+      } catch (err: any) {
+        console.error(
+          'Error fetching types:',
+          err?.response?.data || err?.message || err,
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTypes();
   }, [apiUrl]);
 
-  if (loading)
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
+  // ------------------ Loading ------------------
 
-  if (!types.length)
+  if (loading) {
     return (
       <View style={styles.center}>
-        <Text>No organization types found</Text>
+        <ActivityIndicator
+          size="large"
+          color="#FF4500"
+        />
       </View>
     );
+  }
+
+  // ------------------ No types ------------------
+
+  if (!types.length) {
+    return (
+      <View style={styles.center}>
+        <Text>
+          No organization types found
+        </Text>
+      </View>
+    );
+  }
+
+  // ------------------ Tabs ------------------
 
   return (
     <Tab.Navigator
       screenOptions={{
         tabBarScrollEnabled: true,
-        tabBarIndicatorStyle: { backgroundColor: '#ff4500' },
-        tabBarLabelStyle: { fontSize: 16, fontWeight: 'bold' },
-        tabBarStyle: { elevation: 0, shadowOpacity: 0 },
+
+        tabBarIndicatorStyle: {
+          backgroundColor: '#ff4500',
+        },
+
+        tabBarLabelStyle: {
+          fontSize: 16,
+          fontWeight: 'bold',
+        },
+
+        tabBarStyle: {
+          elevation: 0,
+          shadowOpacity: 0,
+        },
+
         tabBarActiveTintColor: '#ff4500',
         tabBarInactiveTintColor: '#999',
       }}
     >
-      {types.map((type) => (
+      {types.map(type => (
         <Tab.Screen
           key={type.slug}
           name={type.name}
@@ -283,9 +420,10 @@ const ScrollableTabs: React.FC<{ apiUrl: string }> = ({ apiUrl }) => {
                 color={color}
               />
             ),
+
             tabBarLabel: () => (
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={{ fontSize: 15, marginLeft: 6 }}>
+              <View style={styles.tabLabel}>
+                <Text style={styles.tabLabelText}>
                   {type.name}
                 </Text>
               </View>
@@ -305,9 +443,93 @@ const ScrollableTabs: React.FC<{ apiUrl: string }> = ({ apiUrl }) => {
   );
 };
 
+// ------------------ Styles ------------------
 
 const styles = StyleSheet.create({
-  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  container: {
+    flex: 1,
+  },
+
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  radiusContainer: {
+    paddingHorizontal: 16,
+    paddingTop: 10,
+    paddingBottom: 6,
+    backgroundColor: '#fff',
+  },
+
+  radiusHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+
+  radiusLabel: {
+    fontSize: 15,
+    fontWeight: '500',
+  },
+
+  radiusValue: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#ff4500',
+  },
+
+  cardsList: {
+    flexGrow: 0,
+  },
+
+  mapContainer: {
+    flex: 1,
+  },
+
+  messageContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 30,
+  },
+
+  emptyTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+
+  emptyText: {
+    fontSize: 15,
+    textAlign: 'center',
+    color: '#555',
+    marginBottom: 6,
+  },
+
+  emptyHint: {
+    fontSize: 14,
+    textAlign: 'center',
+    color: '#888',
+  },
+
+  errorText: {
+    fontSize: 15,
+    color: '#cc0000',
+    textAlign: 'center',
+  },
+
+  tabLabel: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  tabLabelText: {
+    fontSize: 15,
+    marginLeft: 6,
+  },
 });
 
 export default ScrollableTabs;
