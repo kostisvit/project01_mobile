@@ -64,8 +64,6 @@ export const OrgCard: React.FC<OrgCardProps> = ({ org, width }) => {
             <View style={styles.ratingRow}>
               <MaterialIcons
                 name="star"
-                size={14}
-                color="#f59e0b"
                 style={styles.star}
               />
               <Text style={styles.ratingText}>
@@ -99,6 +97,23 @@ export const OrgCard: React.FC<OrgCardProps> = ({ org, width }) => {
               {isOpen ? "Ανοιχτά" : "Κλειστά"}
             </Text>
           </View>
+          <View style={styles.footerRow}>
+            <View style={styles.emailRow}>
+              <MaterialIcons name="email" size={14} color="#3182ce" />
+              <Text style={styles.orgEmail}>
+                {org.email ?? "-"}
+              </Text>
+
+              {org.is_verified && (
+                <MaterialIcons
+                  name="verified"
+                  size={17}
+                  color="#3182ce"
+                  accessibilityLabel="Επιβεβαιωμένος οργανισμός"
+                />
+              )}
+            </View>
+            </View>
         </View>
       </View>
     </Pressable>
@@ -120,9 +135,6 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 4 },
   },
-  star: {
-    marginRight: 4,
-  },
   cardImage: {
     width: '100%',
     height: 180,
@@ -130,6 +142,7 @@ const styles = StyleSheet.create({
   infoContainer: {
     padding: 14,
   },
+  // Styles for header row
   headerRowOrgType: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -149,11 +162,16 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   orgName: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '700',
     color: '#1a202c',
     flex: 1,
     marginRight: 8,
+  },
+  star: {
+    marginRight: 4,
+    fontSize: 14,
+    color: "#f59e0b"
   },
   rating: {
     fontSize: 14,
@@ -164,14 +182,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 4,
   },
-
   ratingText: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '600',
     color: '#b45309',
   },
+  // Styles for middle row
   comments: {
-    fontSize: 12,
+    fontSize: 14,
     color: '#718096',
   },
   orgAddress: {
@@ -195,6 +213,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 4,
   },
+    // Styles for footer row
   orgPhone: {
     fontSize: 14,
     color: '#1a202c',
@@ -210,7 +229,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 6,
-    fontSize: 12,
+    fontSize: 14,
     overflow: 'hidden',
   },
   statusClosed: {
@@ -219,8 +238,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 6,
-    fontSize: 12,
+    fontSize: 14,
     overflow: 'hidden',
   },
+  emailRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
 
+  orgEmail: {
+    fontSize: 14,
+    color: '#1a202c',
+  },
 });

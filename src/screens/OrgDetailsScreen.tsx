@@ -496,7 +496,6 @@ const styles = StyleSheet.create({
     color: '#718096',
     flex: 1,
     marginRight: 8,
-
   },
   headerRow: {
     flexDirection: 'row',
@@ -583,7 +582,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   ratingText: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
     color: '#b45309',
   },
@@ -602,7 +601,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   orgAddress: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#1a202c',
     marginLeft: 4,
   },
@@ -610,10 +609,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
+
   },
 
   orgEmail: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#1a202c',
   },
   comment: {
@@ -623,7 +623,7 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   comments: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#718096',
   },
   meta: {
@@ -717,7 +717,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 6,
-    fontSize: 16,
+    fontSize: 14,
     overflow: 'hidden',
   },
   statusClosed: {
@@ -726,7 +726,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 6,
-    fontSize: 16,
+    fontSize: 14,
     overflow: 'hidden',
   },
   descriptionBox: {

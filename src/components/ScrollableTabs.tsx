@@ -8,6 +8,8 @@ import {
   Dimensions,
   Platform,
   PermissionsAndroid,
+  TouchableOpacity,
+  Modal,
 } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Config from 'react-native-config';
@@ -138,9 +140,22 @@ const TabScreen: React.FC<TabScreenProps> = ({
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
+  const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [radius, setRadius] = useState(20);
   const [pendingRadius, setPendingRadius] = useState(20);
+
+
+  //---------------Filter Options----------------
+  const [selectedRating, setSelectedRating] = useState<number | null>(null);
+  const [appliedRating, setAppliedRating] = useState<number | null>(null);
+  const resetFilters = () => {
+    setSelectedRating(null);
+    setAppliedRating(null);
+    setPendingRadius(20);
+    setRadius(20);
+    setFilterModalVisible(false);
+  }
+
 
   const fetchOrganizations = useCallback(
     async (isRefresh = false) => {
@@ -165,6 +180,9 @@ const TabScreen: React.FC<TabScreenProps> = ({
           params.lat = location.latitude;
           params.lng = location.longitude;
           params.radius = radius;
+        }
+        if (appliedRating !== null) {
+          params.min_rating = appliedRating;
         }
 
         console.log('Fetching organizations:', params);
@@ -197,7 +215,7 @@ const TabScreen: React.FC<TabScreenProps> = ({
         setRefreshing(false);
       }
     },
-    [typeSlug, location, radius],
+    [typeSlug, location, appliedRating,radius],
   );
 
   useEffect(() => {
@@ -238,21 +256,122 @@ const TabScreen: React.FC<TabScreenProps> = ({
           </Text>
         </View>
 
-        <Slider
-          value={pendingRadius}
-          minimumValue={1}
-          maximumValue={100}
-          step={1}
-          onValueChange={value => {
-            setPendingRadius(value);
-          }}
-          onSlidingComplete={value => {
-            setRadius(value);
-          }}
-          minimumTrackTintColor="#ff4500"
-          maximumTrackTintColor="#ccc"
-          thumbTintColor="#ff4500"
-        />
+        <View style={styles.radiusRow}>
+          <Slider
+            style={styles.slider}
+            value={pendingRadius}
+            minimumValue={1}
+            maximumValue={100}
+            step={1}
+            onValueChange={value => {
+              setPendingRadius(value);
+            }}
+            onSlidingComplete={value => {
+              setRadius(value);
+            }}
+            minimumTrackTintColor="#ff4500"
+            maximumTrackTintColor="#ccc"
+            thumbTintColor="#ff4500"
+          />
+
+          <TouchableOpacity
+            style={styles.filterButton}
+            onPress={() => setFilterModalVisible(true)}
+          >
+            <MaterialIcons
+              name="filter-alt"
+              size={24}
+              color="#ff4500"
+            />
+          </TouchableOpacity>
+        </View>
+          <Modal
+              visible={filterModalVisible}
+              animationType="slide"
+              transparent
+              onRequestClose={() => setFilterModalVisible(false)}
+            >
+          <View style={styles.modalOverlay}>
+            <View style={styles.filterModal}>
+
+              {/* Header */}
+              <View style={styles.filterHeader}>
+                <Text style={styles.filterTitle}>
+                  Φίλτρα
+                </Text>
+
+                <TouchableOpacity
+                  onPress={() => setFilterModalVisible(false)}
+                >
+                  <MaterialIcons
+                    name="close"
+                    size={26}
+                    color="#555"
+                  />
+                </TouchableOpacity>
+              </View>
+              {/* Rating */}
+              <Text style={styles.sectionTitle}>
+                Αξιολόγηση
+              </Text>
+
+                <View style={styles.optionsRow}>
+                  {[4, 3, 2].map(rating => (
+                    <TouchableOpacity
+                      key={rating}
+                      style={[
+                        styles.optionButton,
+                        selectedRating === rating &&
+                          styles.optionButtonActive,
+                      ]}
+                      onPress={() => {
+                        setSelectedRating(
+                          selectedRating === rating
+                            ? null
+                            : rating,
+                        );
+                      }}
+                    >
+                      <Text
+                        style={[
+                          styles.optionText,
+                          selectedRating === rating &&
+                            styles.optionTextActive,
+                        ]}
+                      >
+                        ⭐ {rating}+
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+
+              {/* Apply */}
+              <View style={styles.filterActions}>
+                <TouchableOpacity
+                  style={styles.resetButton}
+                  onPress={resetFilters}
+                >
+                  <Text style={styles.resetButtonText}>
+                    Επαναφορά
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.applyButton}
+                  onPress={() => {
+                    setAppliedRating(selectedRating);
+                    setFilterModalVisible(false);
+                  }}
+                >
+                  <Text style={styles.applyButtonText}>
+                    Εφαρμογή
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+            </View>
+          </View>
+        </Modal>
       </View>
 
       {/* Error */}
@@ -455,14 +574,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-
   radiusContainer: {
-    paddingHorizontal: 16,
-    paddingTop: 10,
-    paddingBottom: 6,
-    backgroundColor: '#fff',
+    paddingHorizontal: 20,
+    marginTop: 10,
   },
-
+// ------------------ Radius Selector ------------------
   radiusHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -471,15 +587,92 @@ const styles = StyleSheet.create({
 
   radiusLabel: {
     fontSize: 15,
-    fontWeight: '500',
+    fontWeight: '600',
   },
-
+  radiusRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
   radiusValue: {
     fontSize: 15,
     fontWeight: '700',
     color: '#ff4500',
   },
+  // sliderWrapper: {
+  //   width: '75%',       // makes it shorter
+  //   alignSelf: 'center',
+  // },
+  slider: {
+    flex: 1,
+    height: 40,
+  },
 
+  //-------------------- Filter Modal ------------------
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    justifyContent: 'flex-end',
+  },
+  filterModal: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 20,
+    minHeight: '50%',
+  },
+  filterHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  filterButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 12,
+    height: 38,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    backgroundColor: '#fff',
+  },
+  filterIcon: {
+    fontSize: 20,
+    marginRight: 5,
+    color: '#ff4500',
+  },
+  filterTitle: {
+    fontSize: 22,
+    fontWeight: '700',
+  },
+
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginTop: 15,
+    marginBottom: 10,
+  },
+
+  applyButton: {
+    flex: 1,
+    backgroundColor: '#ff4500',
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: 'center',
+  },
+
+  applyButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  filterText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+  },
   cardsList: {
     flexGrow: 0,
   },
@@ -529,6 +722,55 @@ const styles = StyleSheet.create({
   tabLabelText: {
     fontSize: 15,
     marginLeft: 6,
+  },
+
+  optionsRow: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+
+  optionButton: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    backgroundColor: '#fff',
+  },
+
+  optionButtonActive: {
+    backgroundColor: '#ff4500',
+    borderColor: '#ff4500',
+  },
+
+  optionText: {
+    color: '#333',
+    fontWeight: '600',
+  },
+
+  optionTextActive: {
+    color: '#fff',
+  },
+  filterActions: {
+    flexDirection: 'row',
+    gap: 10,
+    marginTop: 30,
+  },
+
+  resetButton: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
+
+  resetButtonText: {
+    color: '#555',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
 
