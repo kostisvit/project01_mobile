@@ -52,12 +52,12 @@ const AppHeader = ({ loading }: { loading: boolean }) => {
     <>
       {/* HEADER */}
       <View style={styles.header}>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.searchBtn}
           onPress={() => navigation.navigate('Search')}
         >
           <MaterialIcons name="search" size={26} color="#fff" />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <Text
           style={styles.brand}
