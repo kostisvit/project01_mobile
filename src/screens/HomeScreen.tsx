@@ -37,7 +37,7 @@ const HomeScreen = ({ navigation }: Props) => {
   return (
     <DefaultLayout user={user} loading={loading}>
       <View style={styles.tabSection}>
-        <ScrollableTabs apiUrl={`${API_URL}api/org-types/`} />
+        <ScrollableTabs apiUrl={`${API_URL}api/organization/type/`} />
       </View>
     </DefaultLayout>
   );
