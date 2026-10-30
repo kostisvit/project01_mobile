@@ -2012,7 +2012,7 @@ PODS:
     - SocketRocket
     - SwiftUIIntrospect (~> 1.0)
     - Yoga
-  - react-native-safe-area-context (5.6.2):
+  - react-native-safe-area-context (5.11.0):
     - boost
     - DoubleConversion
     - fast_float
@@ -2030,8 +2030,8 @@ PODS:
     - React-graphics
     - React-ImageManager
     - React-jsi
-    - react-native-safe-area-context/common (= 5.6.2)
-    - react-native-safe-area-context/fabric (= 5.6.2)
+    - react-native-safe-area-context/common (= 5.11.0)
+    - react-native-safe-area-context/fabric (= 5.11.0)
     - React-NativeModulesApple
     - React-RCTFabric
     - React-renderercss
@@ -2042,7 +2042,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - react-native-safe-area-context/common (5.6.2):
+  - react-native-safe-area-context/common (5.11.0):
     - boost
     - DoubleConversion
     - fast_float
@@ -2070,7 +2070,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - react-native-safe-area-context/fabric (5.6.2):
+  - react-native-safe-area-context/fabric (5.11.0):
     - boost
     - DoubleConversion
     - fast_float
@@ -2798,7 +2798,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - RNScreens (4.19.0):
+  - RNScreens (4.25.0):
     - boost
     - DoubleConversion
     - fast_float
@@ -2825,10 +2825,10 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - RNScreens/common (= 4.19.0)
+    - RNScreens/common (= 4.25.0)
     - SocketRocket
     - Yoga
-  - RNScreens/common (4.19.0):
+  - RNScreens/common (4.25.0):
     - boost
     - DoubleConversion
     - fast_float
@@ -3216,7 +3216,7 @@ SPEC CHECKSUMS:
   react-native-geolocation-service: 32b2c2a3b91e70ce2a8d0c684801aaeb0a07e0ec
   react-native-maps: 48cbc77581f2ffc121a296f9abe071fe4a7ea4ee
   react-native-pager-view: d7d2aa47f54343bf55fdcee3973503dd27c2bd37
-  react-native-safe-area-context: c00143b4823773bba23f2f19f85663ae89ceb460
+  react-native-safe-area-context: da26698373415353dbe2380067b54ed2418d35a7
   react-native-slider: 34064ca1a6864d7b263e44dd76a2d794e8d26744
   react-native-vector-icons-material-icons: 2fe75632937d07937bfe8ca953e1b5d06eef3a1d
   React-NativeModulesApple: a2c3d2cbec893956a5b3e4060322db2984fff75b
@@ -3255,7 +3255,7 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: 29f0230e1a25f36c20b05f65e2eb8958d6526e82
   RNGestureHandler: cd4be101cfa17ea6bbd438710caa02e286a84381
   RNPermissions: 7de5e2c12bde9a12ab6ff910c505f7864e80490b
-  RNScreens: ffbb0296608eb3560de641a711bbdb663ed1f6b4
+  RNScreens: 82303e628dc897156e686705597f2bbcbfa027c3
   RNVectorIcons: 791f13226ec4a3fd13062eda9e892159f0981fae
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   SwiftUIIntrospect: fee9aa07293ee280373a591e1824e8ddc869ba5d

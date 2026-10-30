@@ -1,4 +1,20 @@
 // src/types/navigation.ts
+import { NavigatorScreenParams } from '@react-navigation/native';
+
+export type HomeStackParamList = {
+  Home: undefined;
+  OrgDetail: { orgId: number };
+  OrgPhotos: { orgId: number };
+};
+
+export type TabParamList = {
+  HomeTab: NavigatorScreenParams<HomeStackParamList>;
+  Search: undefined;
+  Categories: undefined;
+  Profile: undefined;
+};
+
+
 export type RootStackParamList = {
   Welcome: undefined;
   Login?: {

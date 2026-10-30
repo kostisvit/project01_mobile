@@ -11,6 +11,7 @@ import AppNavigator from './src/navigation/AppNavigator';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { enableScreens } from 'react-native-screens';
 import { AuthProvider } from "./src/context/AuthContext";
+import BottomTabNavigator from './src/navigation/BottomTabNavigator';
 
 enableScreens();
 
@@ -29,7 +30,7 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <AuthProvider>
         <NavigationContainer linking={linking}>
-          <AppNavigator />
+          <BottomTabNavigator />
         </NavigationContainer>
       </AuthProvider>
     </GestureHandlerRootView>
