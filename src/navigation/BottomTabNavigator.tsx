@@ -5,14 +5,24 @@ import HomeStackNavigator from './HomeStackNavigator';
 import SearchScreen from '../screens/SearchScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import ScrollableTabs from '../components/ScrollableTabs';
+import LoginScreen from '../screens/LoginScreen';
+import { useAuth } from '../context/AuthContext';
 
 import Config from 'react-native-config';
 
 const Tab = createBottomTabNavigator();
 
+
+
 const API_URL = Config.API_URL;
 
 export default function BottomTabNavigator() {
+
+    const { isAuthenticated, loading } = useAuth();
+
+    if (loading) {
+      return null; // replace this with a loading screen
+    }
   return (
     <Tab.Navigator
       screenOptions={{
@@ -54,14 +64,19 @@ export default function BottomTabNavigator() {
       </Tab.Screen>
 
       <Tab.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="person" size={size} color={color} />
-          ),
-        }}
-      />
+          name="Profile"
+          component={isAuthenticated ? ProfileScreen : LoginScreen}
+          options={{
+            tabBarLabel: isAuthenticated ? "Profile" : "Login",
+            tabBarIcon: ({ color, size }) => (
+              <MaterialIcons
+                name={isAuthenticated ? "person" : "login"}
+                size={size}
+                color={color}
+              />
+            ),
+          }}
+        />
     </Tab.Navigator>
   );
 }

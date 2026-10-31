@@ -36,7 +36,7 @@ const HomeScreen = ({ navigation }: Props) => {
 
   return (
     <DefaultLayout user={user} loading={loading}>
-      <View style={styles.tabSection}>
+      <View style={styles.container}>
         <ScrollableTabs apiUrl={`${API_URL}api/organization/type/`} />
       </View>
     </DefaultLayout>
@@ -44,9 +44,12 @@ const HomeScreen = ({ navigation }: Props) => {
 };
 
 const styles = StyleSheet.create({
-
-  tabSection: { flex: 1 },
-
+  container: {
+    flex: 1,
+    width: '100%',
+    marginBottom: 0,
+    paddingBottom: 0,
+  },
 });
 
 export default HomeScreen;

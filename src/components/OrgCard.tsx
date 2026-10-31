@@ -5,7 +5,6 @@ import {
   Image,
   Pressable,
   StyleSheet,
-  Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -19,12 +18,13 @@ export const OrgCard: React.FC<OrgCardProps> = ({ org, width }) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  const { isAuthenticated } = useAuth();
   const isOpen = org.status_info?.is_open;
 
   const handlePress = () => {
     navigation.navigate("OrgDetail", { orgId: org.id });
   };
+
+  const cardWidth = Math.min(width * 0.85, 420)
 
   return (
     <Pressable
@@ -37,7 +37,10 @@ export const OrgCard: React.FC<OrgCardProps> = ({ org, width }) => {
       <View
         style={[
           styles.card,
-          { width: width * 0.85, marginHorizontal: width * 0.075 },
+          {
+            width: cardWidth,
+            marginHorizontal: (width - cardWidth) / 2,
+          }
         ]}
       >
         <Image
@@ -93,14 +96,28 @@ export const OrgCard: React.FC<OrgCardProps> = ({ org, width }) => {
               </Text>
             </View>
 
-            <Text style={isOpen ? styles.statusOpen : styles.statusClosed}>
-              {isOpen ? "Ανοιχτά" : "Κλειστά"}
+            <Text
+              style={
+                isOpen === undefined
+                  ? styles.statusUnknown
+                  : isOpen
+                    ? styles.statusOpen
+                    : styles.statusClosed
+              }
+            >
+              {isOpen === undefined
+                ? 'Ωράριο μη διαθέσιμο'
+                : isOpen
+                  ? 'Ανοιχτά'
+                  : 'Κλειστά'}
             </Text>
           </View>
           <View style={styles.footerRow}>
             <View style={styles.emailRow}>
               <MaterialIcons name="email" size={14} color="#3182ce" />
-              <Text style={styles.orgEmail}>
+              <Text style={styles.orgEmail}
+                    numberOfLines={1}
+                    ellipsizeMode='tail'>
                 {org.email ?? "-"}
               </Text>
 
@@ -137,7 +154,7 @@ const styles = StyleSheet.create({
   },
   cardImage: {
     width: '100%',
-    height: 180,
+    height: 190,
   },
   infoContainer: {
     padding: 14,
@@ -162,7 +179,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   orgName: {
-    fontSize: 14,
+    fontSize: 17,
     fontWeight: '700',
     color: '#1a202c',
     flex: 1,
@@ -239,6 +256,15 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     borderRadius: 6,
     fontSize: 14,
+    overflow: 'hidden',
+  },
+  statusUnknown: {
+    color: '#4a5568',
+    backgroundColor: '#edf2f7',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+    fontSize: 12,
     overflow: 'hidden',
   },
   emailRow: {

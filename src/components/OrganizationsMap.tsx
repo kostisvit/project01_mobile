@@ -1,7 +1,12 @@
-import React, { useRef, useState, useCallback } from "react";
-import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
-import MapView, { Marker, Region } from "react-native-maps";
-import { useFocusEffect } from "@react-navigation/native";
+
+import React, { useRef, useState, useEffect, useMemo } from 'react';
+import {
+  View,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+} from 'react-native';
+import MapView, { Marker, Region } from 'react-native-maps';
 
 type Organization = {
   id: string | number;
@@ -24,10 +29,27 @@ const DEFAULT_REGION: Region = {
 const OrganizationsMap: React.FC<Props> = ({ organizations }) => {
   const mapRef = useRef<MapView>(null);
 
-  const validOrganizations = organizations.filter(
-    (org) =>
-      Number.isFinite(Number(org.latitude)) &&
-      Number.isFinite(Number(org.longitude))
+  const [mapReady, setMapReady] = useState(false);
+  const [mapLaidOut, setMapLaidOut] = useState(false);
+
+  const validOrganizations = useMemo(
+    () =>
+      organizations.filter(org => {
+        const lat = Number(org.latitude);
+        const lng = Number(org.longitude);
+
+        return (
+          org.latitude !== '' &&
+          org.longitude !== '' &&
+          Number.isFinite(lat) &&
+          Number.isFinite(lng) &&
+          lat >= -90 &&
+          lat <= 90 &&
+          lng >= -180 &&
+          lng <= 180
+        );
+      }),
+    [organizations],
   );
 
   const [region, setRegion] = useState<Region>(() => {
@@ -35,61 +57,69 @@ const OrganizationsMap: React.FC<Props> = ({ organizations }) => {
 
     return first
       ? {
-        latitude: Number(first.latitude),
-        longitude: Number(first.longitude),
-        latitudeDelta: 0.05,
-        longitudeDelta: 0.05,
-      }
+          latitude: Number(first.latitude),
+          longitude: Number(first.longitude),
+          latitudeDelta: 0.05,
+          longitudeDelta: 0.05,
+        }
       : DEFAULT_REGION;
   });
 
-  useFocusEffect(
-    useCallback(() => {
-      if (!mapRef.current || validOrganizations.length === 0) {
-        return;
-      }
+  // Fit markers only after the native map is ready and laid out.
+  useEffect(() => {
+    if (!mapReady || !mapLaidOut || !mapRef.current) {
+      return;
+    }
 
-      const coords = validOrganizations.map((org) => ({
-        latitude: Number(org.latitude),
-        longitude: Number(org.longitude),
-      }));
+    if (validOrganizations.length === 0) {
+      return;
+    }
 
-      const timeout = setTimeout(() => {
-        mapRef.current?.fitToCoordinates(coords, {
-          edgePadding: {
-            top: 80,
-            right: 80,
-            bottom: 80,
-            left: 80,
-          },
-          animated: true,
-        });
-      }, 300);
+    const coordinates = validOrganizations.map(org => ({
+      latitude: Number(org.latitude),
+      longitude: Number(org.longitude),
+    }));
 
-      return () => clearTimeout(timeout);
-    }, [organizations])
-  );
+    if (coordinates.length === 1) {
+      mapRef.current.animateToRegion(
+        {
+          ...coordinates[0],
+          latitudeDelta: 0.02,
+          longitudeDelta: 0.02,
+        },
+        500,
+      );
+    } else {
+      mapRef.current.fitToCoordinates(coordinates, {
+        edgePadding: {
+          top: 60,
+          right: 60,
+          bottom: 60,
+          left: 60,
+        },
+        animated: true,
+      });
+    }
+  }, [mapReady, mapLaidOut, validOrganizations]);
 
   const zoomIn = () => {
-    mapRef.current?.animateToRegion(
-      {
-        ...region,
-        latitudeDelta: Math.max(0.002, region.latitudeDelta / 2),
-        longitudeDelta: Math.max(0.002, region.longitudeDelta / 2),
-      },
-      300
-    );
+    const nextRegion = {
+      ...region,
+      latitudeDelta: Math.max(0.002, region.latitudeDelta / 2),
+      longitudeDelta: Math.max(0.002, region.longitudeDelta / 2),
+    };
+
+    mapRef.current?.animateToRegion(nextRegion, 300);
   };
 
   const zoomOut = () => {
-    mapRef.current?.animateToRegion(
-      {
-        ...region,
-        latitudeDelta: Math.min(1, region.latitudeDelta * 2),
-        longitudeDelta: Math.min(1, region.longitudeDelta * 2),
-      },
-      300
-    );
+    const nextRegion = {
+      ...region,
+      latitudeDelta: Math.min(1, region.latitudeDelta * 2),
+      longitudeDelta: Math.min(1, region.longitudeDelta * 2),
+    };
+
+    mapRef.current?.animateToRegion(nextRegion, 300);
   };
 
   return (
@@ -98,11 +128,13 @@ const OrganizationsMap: React.FC<Props> = ({ organizations }) => {
         ref={mapRef}
         style={styles.map}
         initialRegion={region}
+        onMapReady={() => setMapReady(true)}
+        onLayout={() => setMapLaidOut(true)}
         onRegionChangeComplete={setRegion}
       >
-        {validOrganizations.map((org) => (
+        {validOrganizations.map(org => (
           <Marker
-            key={org.id}
+            key={String(org.id)}
             coordinate={{
               latitude: Number(org.latitude),
               longitude: Number(org.longitude),
@@ -136,40 +168,38 @@ const OrganizationsMap: React.FC<Props> = ({ organizations }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    position: "relative",
+    width: '100%',
+    alignSelf: 'stretch',
   },
 
   map: {
-    flex: 1,
+    ...StyleSheet.absoluteFillObject,
   },
 
   zoomContainer: {
-    position: "absolute",
+    position: 'absolute',
     right: 10,
-    bottom: 50,
+    bottom: 20,
   },
 
   zoomButton: {
     width: 45,
     height: 45,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderRadius: 6,
     marginBottom: 10,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     elevation: 3,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
   },
 
   zoomText: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
 });
 

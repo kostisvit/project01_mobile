@@ -13,10 +13,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import AppHeader from "../components/AppHeader";
 import { getProfile, updateProfile } from "../api/user";
-import { UserProfile } from "../types/user";
+import { User } from "../types/user";
 
 const ProfileScreen: React.FC = () => {
-  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [profile, setProfile] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [saving, setSaving] = useState<boolean>(false);
 
@@ -42,9 +42,9 @@ const ProfileScreen: React.FC = () => {
     }
   };
 
-  const handleChange = <K extends keyof UserProfile>(
+  const handleChange = <K extends keyof User>(
     key: K,
-    value: UserProfile[K]
+    value: User[K]
   ) => {
     if (!profile) return;
 
@@ -98,10 +98,6 @@ const ProfileScreen: React.FC = () => {
           text: "Διαγραφή",
           style: "destructive",
           onPress: async () => {
-            // TODO:
-            // await deleteProfile();
-            // await logout();
-            // navigation.replace("Login");
           },
         },
       ]

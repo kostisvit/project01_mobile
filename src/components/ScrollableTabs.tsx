@@ -599,10 +599,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#ff4500',
   },
-  // sliderWrapper: {
-  //   width: '75%',       // makes it shorter
-  //   alignSelf: 'center',
-  // },
   slider: {
     flex: 1,
     height: 40,
