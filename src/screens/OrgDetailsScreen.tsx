@@ -178,13 +178,19 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <AppHeader  loading={loading} />
       <View style={styles.org_detail_container}>
+
         <FlatList
           data={org.reviews ?? []}
           keyExtractor={(review) => review.id.toString()}
           showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            flexGrow: 1,
+            padding: 16,
+            paddingBottom: 24,
+          }}
           ListHeaderComponent={
             <>
               {/* 🖼 IMAGE */}
@@ -204,7 +210,7 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
                   style={styles.image}
                 />
               </Pressable>
-
+              <View style={styles.org_detail_card}>
               {/* 🏷 TYPE */}
               <View style={styles.headerRowOrgType}>
                 <Text style={styles.orgType}>
@@ -314,6 +320,7 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
                     accessibilityLabel="Επιβεβαιωμένος οργανισμός"
                   />
                 )}
+              </View>
               </View>
             </View>
               {/* DESCRIPTION */}
@@ -505,9 +512,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#0F172A',
   },
   org_detail_container: {
-
+    flex: 1,
     backgroundColor: "#fff",
-    padding: 16,
+
+  },
+  org_detail_card: {
+backgroundColor: '#f8fafc',
   },
   center: {
     flex: 1,
