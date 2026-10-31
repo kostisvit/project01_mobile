@@ -46,8 +46,8 @@ const ReplyItem = ({
 
   const displayText =
     collapsedText && isLongText
-      ? reply.comment.slice(0, MAX_CHARS) + "…"
-      : reply.comment;
+      ? comment.slice(0, MAX_CHARS) + "…"
+      : comment;
 
   return (
     <View
@@ -125,12 +125,21 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
 
 
   useEffect(() => {
+    const controller = new AbortController();
+
+    setLoading(true);
+    setOrg(null);
+
     axios
-      .get<Organization>(`${API_URL}api/organizations/${orgId}/`, {
-        headers: token
-          ? { Authorization: `Bearer ${token}` }
-          : undefined,
-      })
+      .get<Organization>(
+        `${API_URL}api/organizations/${orgId}/`,
+        {
+          headers: token
+            ? { Authorization: `Bearer ${token}` }
+            : undefined,
+          signal: controller.signal,
+        }
+      )
       .then(res => {
         setOrg({
           ...res.data,
@@ -138,13 +147,17 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
         });
       })
       .catch(err => {
-        console.error(
-          "Error fetching org:",
-          err.response?.status,
-          err.response?.data
-        );
+        if (!axios.isCancel(err)) {
+          console.error('Error fetching organization:', err);
+        }
       })
-      .finally(() => setLoading(false));
+      .finally(() => {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
+      });
+
+    return () => controller.abort();
   }, [orgId, token]);
   if (loading) {
     return (
@@ -158,7 +171,7 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
       <View style={styles.container}>
         <AppHeader  loading={loading} />
         <View style={styles.center}>
-          <Text>Organization not found</Text>
+          <Text>Δεν βρέθηκε καμία επιχείρηση</Text>
         </View>
       </View>
     );
@@ -246,9 +259,18 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
                     size={14}
                     color="#38a169"
                   />
+                  <Pressable
+                    onPress={() => {
+                      if (org.phone) {
+                        Linking.openURL(`tel:${org.phone}`);
+                      }
+                    }}
+                    disabled={!org.phone}
+                    >
                   <Text style={styles.orgPhone}>
                     {org.phone ?? "-"}
                   </Text>
+                  </Pressable>
                 </View>
 
                 <Pressable onPress={() => setHoursModalVisible(true)}>
@@ -260,7 +282,11 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
                       { textDecorationLine: "underline" },
                     ]}
                   >
-                    {isOpen ? "Ανοιχτά" : "Κλειστά"}
+                    {isOpen === undefined
+                      ? "Άγνωστο"
+                      : isOpen
+                        ? "Ανοιχτά"
+                        : "Κλειστά"}
                   </Text>
                 </Pressable>
               </View>
@@ -268,10 +294,18 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
 
               <View style={styles.emailRow}>
                 <MaterialIcons name="email" size={14} color="#3182ce" />
+                  <Pressable
+                    onPress={() => {
+                      if (org.email) {
+                        Linking.openURL(`mailto:${org.email}`);
+                      }
+                    }}
+                    disabled={!org.email}
+                    >
                 <Text style={styles.orgEmail}>
                   {org.email ?? "-"}
                 </Text>
-
+                </Pressable>
                 {org.is_verified && (
                   <MaterialIcons
                     name="verified"
@@ -471,7 +505,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#0F172A',
   },
   org_detail_container: {
-    flex: 1,
+
     backgroundColor: "#fff",
     padding: 16,
   },
