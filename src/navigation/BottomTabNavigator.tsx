@@ -27,7 +27,7 @@ export default function BottomTabNavigator() {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#2563EB',
+        tabBarActiveTintColor: '#0F172A',
         tabBarInactiveTintColor: '#9CA3AF',
       }}
     >
@@ -35,7 +35,7 @@ export default function BottomTabNavigator() {
         name="HomeTab"
         component={HomeStackNavigator}
         options={{
-          title: 'Home',
+          title: 'Αρχική',
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="home" size={size} color={color} />
           ),
@@ -46,6 +46,7 @@ export default function BottomTabNavigator() {
         name="Search"
         component={SearchScreen}
         options={{
+          title:'Αναζήτηση',
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="search" size={size} color={color} />
           ),
@@ -53,10 +54,11 @@ export default function BottomTabNavigator() {
       />
 
       <Tab.Screen
-        name="Categories"
+        name="Favorites"
         options={{
+          title: 'Αγαπημένα',
           tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="grid" size={size} color={color} />
+            <MaterialIcons name="favorite" size={size} color={color} />
           ),
         }}
       >

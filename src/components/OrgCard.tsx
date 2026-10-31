@@ -54,11 +54,11 @@ export const OrgCard: React.FC<OrgCardProps> = ({ org, width }) => {
         />
 
         <View style={styles.infoContainer}>
-          <View style={styles.headerRowOrgType}>
+          {/* <View style={styles.headerRowOrgType}>
             <Text style={styles.orgType}>
               {org.organization_type.name ? ` #${org.organization_type.name}` : ''}
             </Text>
-          </View>
+          </View> */}
           <View style={styles.headerRow}>
             <Text style={styles.orgName} numberOfLines={1}>
               {org.name}
@@ -112,7 +112,7 @@ export const OrgCard: React.FC<OrgCardProps> = ({ org, width }) => {
                   : 'Κλειστά'}
             </Text>
           </View>
-          <View style={styles.footerRow}>
+          {/* <View style={styles.footerRow}>
             <View style={styles.emailRow}>
               <MaterialIcons name="email" size={14} color="#3182ce" />
               <Text style={styles.orgEmail}
@@ -130,7 +130,7 @@ export const OrgCard: React.FC<OrgCardProps> = ({ org, width }) => {
                 />
               )}
             </View>
-            </View>
+            </View> */}
         </View>
       </View>
     </Pressable>
@@ -160,11 +160,6 @@ const styles = StyleSheet.create({
     padding: 14,
   },
   // Styles for header row
-  headerRowOrgType: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
   orgType: {
     fontSize: 14,
     color: '#718096',
@@ -213,12 +208,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#1a202c',
   },
-  footerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 8,
-  },
+
   middleRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -267,14 +257,20 @@ const styles = StyleSheet.create({
     fontSize: 12,
     overflow: 'hidden',
   },
-  emailRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
+  footerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 8,
   },
+//   emailRow: {
+//     flexDirection: "row",
+//     alignItems: "center",
+//     gap: 4,
+//   },
 
-  orgEmail: {
-    fontSize: 14,
-    color: '#1a202c',
-  },
+// orgEmail: {
+//     fontSize: 14,
+//     color: '#1a202c',
+//   },
 });
