@@ -66,19 +66,30 @@ export default function BottomTabNavigator() {
       </Tab.Screen>
 
       <Tab.Screen
-          name="Profile"
-          component={isAuthenticated ? ProfileScreen : LoginScreen}
-          options={{
-            tabBarLabel: isAuthenticated ? "Profile" : "Login",
-            tabBarIcon: ({ color, size }) => (
-              <MaterialIcons
-                name={isAuthenticated ? "person" : "login"}
-                size={size}
-                color={color}
-              />
-            ),
-          }}
-        />
+        name="Profile"
+        component={ProfileScreen}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            if (!isAuthenticated) {
+              e.preventDefault();
+
+              navigation.getParent()?.navigate('Login');
+            }
+          },
+        })}
+        options={{
+          title: 'Profile',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons
+              name="person"
+              size={size}
+              color={color}
+            />
+          ),
+        }}
+      />
     </Tab.Navigator>
   );
 }
+
+
