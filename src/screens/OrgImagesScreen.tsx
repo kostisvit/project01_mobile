@@ -18,7 +18,7 @@ const OrgImagesScreen = ({ route }: any) => {
   const { user } = useAuth();
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <AppHeader loading={!user} />
 
       <View style={styles.imgContainer}>

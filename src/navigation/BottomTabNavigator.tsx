@@ -21,7 +21,7 @@ export default function BottomTabNavigator() {
     const { isAuthenticated, loading } = useAuth();
 
     if (loading) {
-      return null; // replace this with a loading screen
+      return null;
     }
   return (
     <Tab.Navigator

@@ -66,7 +66,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
         setTokenState(storedToken);
 
-        const res = await axios.get(`${API_URL}/auth/profile/`, {
+        const res = await axios.get(`${API_URL}/api/auth/profile/`, {
           headers: {
             Authorization: `Bearer ${storedToken}`,
           },

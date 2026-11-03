@@ -4,6 +4,9 @@ import { createNativeStackNavigator } from
 
 import BottomTabNavigator from './BottomTabNavigator';
 import LoginScreen from '../screens/LoginScreen';
+import FeedbackScreen from '../screens/SendFeedbackScreen';
+import LocationPermissionScreen from '../screens/LocationPermScreen';
+import HomeScreen from '../screens/HomeScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -19,6 +22,20 @@ export default function RootNavigator() {
         name="Login"
         component={LoginScreen}
       />
+
+      <Stack.Screen
+        name="Feedback"
+        component={FeedbackScreen}
+      />
+
+      <Stack.Screen
+        name='LocationPermission'
+        component={LocationPermissionScreen}
+      />
+
+      <Stack.Screen
+        name="Home"
+        component={HomeScreen} />
     </Stack.Navigator>
   );
 }

@@ -21,7 +21,9 @@ export const OrgCard: React.FC<OrgCardProps> = ({ org, width }) => {
   const isOpen = org.status_info?.is_open;
 
   const handlePress = () => {
-    navigation.navigate("OrgDetail", { orgId: org.id });
+    navigation.navigate("OrgDetail", {
+      orgId: org.id,
+    });
   };
 
   const cardWidth = Math.min(width * 0.85, 420)

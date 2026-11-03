@@ -12,6 +12,13 @@ type Props = NativeStackScreenProps<
 
 export default function LocationPermissionScreen({ navigation }: Props) {
 
+  const goToMainTabs = () => {
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'MainTabs' }],
+    });
+  };
+
   const askLocation = async () => {
     const permission = await request(
       Platform.OS === 'ios'
@@ -24,18 +31,23 @@ export default function LocationPermissionScreen({ navigation }: Props) {
         (position) => {
           const { latitude, longitude } = position.coords;
 
-          // Save location (context / redux / backend)
           console.log(latitude, longitude);
 
-          navigation.replace('Home');
+          goToMainTabs();
         },
         (error) => {
           Alert.alert('Error getting location');
+          goToMainTabs();
         },
-        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+        {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 10000,
+        }
       );
     } else {
-      navigation.replace('Home'); // continue without location
+      // Continue without location
+      goToMainTabs();
     }
   };
 
@@ -44,10 +56,15 @@ export default function LocationPermissionScreen({ navigation }: Props) {
       <Text style={{ fontSize: 20, marginBottom: 12 }}>
         Να επιτρέπεται η πρόσβαση στην τοποθεσία σας;
       </Text>
+
       <Text style={{ marginBottom: 20 }}>
         Η τοποθεσία σας χρησιμοποιείται για την προβολή κοντινών επιχειρήσεων και εκδηλώσεων.
       </Text>
-      <Button title="Να επιτρέπεται η τοποθεσία" onPress={askLocation} />
+
+      <Button
+        title="Να επιτρέπεται η τοποθεσία"
+        onPress={askLocation}
+      />
     </View>
   );
 }

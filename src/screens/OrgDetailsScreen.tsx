@@ -330,7 +330,7 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
                 >
                   <View style={styles.descriptionBox}>
                     <Text style={styles.descriptionTitle}>
-                      Σχετικά
+                      Πληροφορίες
                     </Text>
 
                     <Text
@@ -549,7 +549,7 @@ backgroundColor: '#f8fafc',
     marginBottom: 10,
   },
   orgName: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: '600',
     color: '#333',
     flex: 1,
