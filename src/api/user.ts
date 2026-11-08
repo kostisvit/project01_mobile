@@ -1,14 +1,14 @@
 import { api } from "./client";
-import { UserProfile } from "../types/user";
+import { User } from "../types/user";
 
-export const getProfile = async (): Promise<UserProfile> => {
-  const response = await api.get<UserProfile>("auth/profile/");
+export const getProfile = async (): Promise<User> => {
+  const response = await api.get<User>("api/auth/profile/");
   return response.data;
 };
 
 export const updateProfile = async (
-  data: Partial<UserProfile>
-): Promise<UserProfile> => {
-  const response = await api.patch<UserProfile>("auth/profile/", data);
+  data: Partial<User>
+): Promise<User> => {
+  const response = await api.patch<User>("api/auth/profile/", data);
   return response.data;
 };

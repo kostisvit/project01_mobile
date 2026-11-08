@@ -27,3 +27,10 @@ npx react-native start
 
 stripe login (~/desktop/projects/nearme_backend)
 stripe listen --forward-to localhost:8000/organizations/webhooks/stripe/
+
+
+
+
+npx react-native run-ios --device "iPhone14"
+
+px react-native start --reset-cache

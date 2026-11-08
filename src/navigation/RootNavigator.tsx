@@ -7,6 +7,7 @@ import LoginScreen from '../screens/LoginScreen';
 import FeedbackScreen from '../screens/SendFeedbackScreen';
 import LocationPermissionScreen from '../screens/LocationPermScreen';
 import HomeScreen from '../screens/HomeScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -21,6 +22,11 @@ export default function RootNavigator() {
       <Stack.Screen
         name="Login"
         component={LoginScreen}
+      />
+
+      <Stack.Screen
+        name="Profile"
+        component={ProfileScreen}
       />
 
       <Stack.Screen

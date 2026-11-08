@@ -40,6 +40,7 @@ export type Organization = {
   is_verified?:boolean;
 };
 
+
 export type OrgCardProps = {
   org: any;
   width: number;

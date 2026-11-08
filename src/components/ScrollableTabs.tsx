@@ -12,38 +12,37 @@ import {
   Modal,
 } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import Config from 'react-native-config';
 import Geolocation from 'react-native-geolocation-service';
-import { api } from '../api/client';
 import OrganizationsMap from './OrganizationsMap';
 import { OrgCard } from './OrgCard';
 import Slider from '@react-native-community/slider';
 import MaterialIcons from '@react-native-vector-icons/material-icons';
+import { OrgType, Organization } from '../types/organization';
+import { getOrganizations, getOrganizationTypes } from '../services/organizationService';
 
-const API_URL = Config.API_URL;
 const Tab = createMaterialTopTabNavigator();
 const { width } = Dimensions.get('window');
 
-type OrganizationImage = {
-  image_url: string;
-};
+// type OrganizationImage = {
+//   image_url: string;
+// };
 
-type OrganizationType = {
-  id: number;
-  name: string;
-  slug: string;
-  icon: string;
-};
+// type OrganizationType = {
+//   id: number;
+//   name: string;
+//   slug: string;
+//   icon: string;
+// };
 
-type Organization = {
-  id: number;
-  name: string;
-  phone: string;
-  address: string;
-  latitude: number;
-  longitude: number;
-  images: OrganizationImage[];
-};
+// type Organization = {
+//   id: number;
+//   name: string;
+//   phone: string;
+//   address: string;
+//   latitude: number;
+//   longitude: number;
+//   images: OrganizationImage[];
+// };
 
 type UserLocation = {
   latitude: number;
@@ -187,12 +186,7 @@ const TabScreen: React.FC<TabScreenProps> = ({
 
         console.log('Fetching organizations:', params);
 
-        const res = await api.get<Organization[]>(
-          'api/organizations/',
-          {
-            params,
-          },
-        );
+        const res = await getOrganizations();
 
         console.log('Organizations:', res.data);
 
@@ -437,11 +431,10 @@ const TabScreen: React.FC<TabScreenProps> = ({
 
 // ------------------ ScrollableTabs ------------------
 
-const ScrollableTabs: React.FC<{ apiUrl: string }> = ({
-  apiUrl,
-}) => {
-  const [types, setTypes] = useState<OrganizationType[]>([]);
+const ScrollableTabs: React.FC = () => {
+  const [types, setTypes] = useState<OrgType[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const {
     location,
@@ -451,19 +444,19 @@ const ScrollableTabs: React.FC<{ apiUrl: string }> = ({
   useEffect(() => {
     const fetchTypes = async () => {
       try {
-        const endpoint = apiUrl.replace(`${API_URL}`, '');
+        setLoading(true);
+        setError(null);
 
-        const res = await api.get<OrganizationType[]>(
-          endpoint,
-        );
-
-        console.log('Organization types:', res.data);
+        const res = await getOrganizationTypes();
 
         setTypes(res.data);
       } catch (err: any) {
-        console.error(
-          'Error fetching types:',
-          err?.response?.data || err?.message || err,
+        console.error('Error fetching types:', err);
+
+        setError(
+          err?.response?.data?.detail ||
+          err?.message ||
+          'Unable to load organization types.'
         );
       } finally {
         setLoading(false);
@@ -471,54 +464,41 @@ const ScrollableTabs: React.FC<{ apiUrl: string }> = ({
     };
 
     fetchTypes();
-  }, [apiUrl]);
-
-  // ------------------ Loading ------------------
+  }, []);
 
   if (loading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator
-          size="large"
-          color="#FF4500"
-        />
+        <ActivityIndicator size="large" color="#FF4500" />
       </View>
     );
   }
 
-  // ------------------ No types ------------------
-
-  if (!types.length) {
+  if (error || !types.length) {
     return (
       <View style={styles.center}>
         <Text>
-          No organization types found
+          {error || 'Δεν βρέθηκαν κατηγορίες Εταιρειών.'}
         </Text>
       </View>
     );
   }
 
-  // ------------------ Tabs ------------------
-
   return (
     <Tab.Navigator
       screenOptions={{
         tabBarScrollEnabled: true,
-
         tabBarIndicatorStyle: {
           backgroundColor: '#ff4500',
         },
-
         tabBarLabelStyle: {
           fontSize: 16,
           fontWeight: 'bold',
         },
-
         tabBarStyle: {
           elevation: 0,
           shadowOpacity: 0,
         },
-
         tabBarActiveTintColor: '#ff4500',
         tabBarInactiveTintColor: '#999',
       }}
@@ -539,7 +519,6 @@ const ScrollableTabs: React.FC<{ apiUrl: string }> = ({
                 color={color}
               />
             ),
-
             tabBarLabel: () => (
               <View style={styles.tabLabel}>
                 <Text style={styles.tabLabelText}>

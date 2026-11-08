@@ -1892,9 +1892,9 @@ PODS:
     - React-RCTFBReactNativeSpec
     - ReactCommon/turbomodule/core
     - SocketRocket
-  - react-native-config (1.6.1):
-    - react-native-config/App (= 1.6.1)
-  - react-native-config/App (1.6.1):
+  - react-native-config (1.7.2):
+    - react-native-config/App (= 1.7.2)
+  - react-native-config/App (1.7.2):
     - boost
     - DoubleConversion
     - fast_float
@@ -1924,9 +1924,9 @@ PODS:
     - Yoga
   - react-native-geolocation-service (5.3.1):
     - React
-  - react-native-maps (1.26.20):
-    - react-native-maps/Maps (= 1.26.20)
-  - react-native-maps/Generated (1.26.20):
+  - react-native-maps (1.29.11):
+    - react-native-maps/Maps (= 1.29.11)
+  - react-native-maps/Generated (1.29.11):
     - boost
     - DoubleConversion
     - fast_float
@@ -1954,7 +1954,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - react-native-maps/Maps (1.26.20):
+  - react-native-maps/Maps (1.29.11):
     - boost
     - DoubleConversion
     - fast_float
@@ -1983,7 +1983,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - react-native-pager-view (8.0.0):
+  - react-native-pager-view (8.0.5):
     - boost
     - DoubleConversion
     - fast_float
@@ -2012,7 +2012,7 @@ PODS:
     - SocketRocket
     - SwiftUIIntrospect (~> 1.0)
     - Yoga
-  - react-native-safe-area-context (5.11.0):
+  - react-native-safe-area-context (5.11.1):
     - boost
     - DoubleConversion
     - fast_float
@@ -2030,8 +2030,8 @@ PODS:
     - React-graphics
     - React-ImageManager
     - React-jsi
-    - react-native-safe-area-context/common (= 5.11.0)
-    - react-native-safe-area-context/fabric (= 5.11.0)
+    - react-native-safe-area-context/common (= 5.11.1)
+    - react-native-safe-area-context/fabric (= 5.11.1)
     - React-NativeModulesApple
     - React-RCTFabric
     - React-renderercss
@@ -2042,7 +2042,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - react-native-safe-area-context/common (5.11.0):
+  - react-native-safe-area-context/common (5.11.1):
     - boost
     - DoubleConversion
     - fast_float
@@ -2070,7 +2070,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - react-native-safe-area-context/fabric (5.11.0):
+  - react-native-safe-area-context/fabric (5.11.1):
     - boost
     - DoubleConversion
     - fast_float
@@ -2099,7 +2099,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - react-native-slider (5.1.2):
+  - react-native-slider (5.2.2):
     - boost
     - DoubleConversion
     - fast_float
@@ -2117,7 +2117,7 @@ PODS:
     - React-graphics
     - React-ImageManager
     - React-jsi
-    - react-native-slider/common (= 5.1.2)
+    - react-native-slider/common (= 5.2.2)
     - React-NativeModulesApple
     - React-RCTFabric
     - React-renderercss
@@ -2128,7 +2128,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - react-native-slider/common (5.1.2):
+  - react-native-slider/common (5.2.2):
     - boost
     - DoubleConversion
     - fast_float
@@ -2156,7 +2156,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - react-native-vector-icons-material-icons (12.4.1)
+  - react-native-vector-icons-material-icons (12.5.0)
   - React-NativeModulesApple (0.83.1):
     - boost
     - DoubleConversion
@@ -2742,7 +2742,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - RNGestureHandler (2.30.0):
+  - RNGestureHandler (2.33.1):
     - boost
     - DoubleConversion
     - fast_float
@@ -2770,7 +2770,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - RNPermissions (5.4.4):
+  - RNPermissions (5.6.3):
     - boost
     - DoubleConversion
     - fast_float
@@ -3212,13 +3212,13 @@ SPEC CHECKSUMS:
   React-logger: b8483fa08e0d62e430c76d864309d90576ca2f68
   React-Mapbuffer: 7b72a669e94662359dad4f42b5af005eb24b4e83
   React-microtasksnativemodule: cdc02da075f2857803ed63f24f5f72fc40e094c0
-  react-native-config: 2249b7e68644c86ea68358f5a0d746d1c648f900
+  react-native-config: 38b7d74c3d2d3aa5759280f745ccb6b591d45fac
   react-native-geolocation-service: 32b2c2a3b91e70ce2a8d0c684801aaeb0a07e0ec
-  react-native-maps: 48cbc77581f2ffc121a296f9abe071fe4a7ea4ee
-  react-native-pager-view: d7d2aa47f54343bf55fdcee3973503dd27c2bd37
-  react-native-safe-area-context: da26698373415353dbe2380067b54ed2418d35a7
-  react-native-slider: 34064ca1a6864d7b263e44dd76a2d794e8d26744
-  react-native-vector-icons-material-icons: 2fe75632937d07937bfe8ca953e1b5d06eef3a1d
+  react-native-maps: a83f314867ef761439385f3280a433c2c9b258de
+  react-native-pager-view: 8e26c20fc7bb3053e8a6895e888b26ae65299307
+  react-native-safe-area-context: 15f8baae0e81916b53ee1e8f41de5e07b324f4ac
+  react-native-slider: a89d87299884a35b697eb458d39876d39ecb491e
+  react-native-vector-icons-material-icons: 8717ed6d0adafdea7a20475dababba112992a372
   React-NativeModulesApple: a2c3d2cbec893956a5b3e4060322db2984fff75b
   React-networking: 3f98bd96893a294376e7e03730947a08d474c380
   React-oscompat: 80166b66da22e7af7fad94474e9997bd52d4c8c6
@@ -3253,8 +3253,8 @@ SPEC CHECKSUMS:
   ReactCodegen: 3d48510bcef445f6403c0004047d4d9cbb915435
   ReactCommon: ac934cb340aee91282ecd6f273a26d24d4c55cae
   RNCAsyncStorage: 29f0230e1a25f36c20b05f65e2eb8958d6526e82
-  RNGestureHandler: cd4be101cfa17ea6bbd438710caa02e286a84381
-  RNPermissions: 7de5e2c12bde9a12ab6ff910c505f7864e80490b
+  RNGestureHandler: be8f3d7c718c76ea8e52f0fd85ba180d8aaa7d5a
+  RNPermissions: 0ad0ec401274c8145cd4587d3aeffefb76cbc81b
   RNScreens: 82303e628dc897156e686705597f2bbcbfa027c3
   RNVectorIcons: 791f13226ec4a3fd13062eda9e892159f0981fae
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
