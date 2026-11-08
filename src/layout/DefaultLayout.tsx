@@ -2,13 +2,15 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import AppHeader from '../components/AppHeader';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { User } from '../types/user';
 
 type DefaultLayoutProps = {
   children: React.ReactNode;
+  user: User | null;
   loading: boolean;
 };
 
-const DefaultLayout = ({ children, loading }: DefaultLayoutProps) => {
+const DefaultLayout = ({ children, user, loading }: DefaultLayoutProps) => {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <AppHeader loading={loading} />

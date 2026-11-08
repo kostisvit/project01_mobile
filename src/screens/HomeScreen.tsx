@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, Alert, TouchableOpacity, Modal } from 'react-native';
+import { View, StyleSheet, } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ScrollableTabs from '../components/ScrollableTabs';
 import Config from 'react-native-config';
@@ -9,10 +9,6 @@ import DefaultLayout from '../layout/DefaultLayout';
 import { User } from '../types/user';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
-
-const API_URL = Config.API_URL;
-
-
 
 
 const HomeScreen = ({ navigation }: Props) => {
