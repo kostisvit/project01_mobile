@@ -1,4 +1,3 @@
-// src/screens/LoginScreen.tsx
 import React, { useState } from 'react';
 import {
   View,
@@ -8,7 +7,6 @@ import {
   StyleSheet,
   Alert,
 } from 'react-native';
-//import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation';
 import { login } from '../api/auth';
@@ -20,8 +18,6 @@ export default function LoginScreen({ navigation }: Props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-
-  // <- Here we get setToken from the AuthContext
   const { setToken, setUser } = useAuth();
 
 

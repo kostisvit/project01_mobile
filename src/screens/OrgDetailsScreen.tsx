@@ -20,7 +20,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigation } from "@react-navigation/native";
 import MaterialIcons from '@react-native-vector-icons/material-icons';
 import { ActivityIndicator } from 'react-native';
-
+import { getOrganization } from '../services/organizationService';
 
 const API_URL = Config.API_URL;
 
@@ -130,16 +130,7 @@ const OrgDetailScreen: React.FC<Props> = ({ route }) => {
     setLoading(true);
     setOrg(null);
 
-    axios
-      .get<Organization>(
-        `${API_URL}api/organizations/${orgId}/`,
-        {
-          headers: token
-            ? { Authorization: `Bearer ${token}` }
-            : undefined,
-          signal: controller.signal,
-        }
-      )
+    getOrganization(orgId, token, controller.signal)
       .then(res => {
         setOrg({
           ...res.data,

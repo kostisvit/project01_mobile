@@ -46,7 +46,6 @@ export default function LocationPermissionScreen({ navigation }: Props) {
         }
       );
     } else {
-      // Continue without location
       goToMainTabs();
     }
   };
