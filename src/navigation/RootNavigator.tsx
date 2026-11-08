@@ -8,15 +8,22 @@ import FeedbackScreen from '../screens/SendFeedbackScreen';
 import LocationPermissionScreen from '../screens/LocationPermScreen';
 import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import WelcomeScreen from '../screens/WelcomeScreen';
+import { RootStackParamList } from '../types/navigation';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function RootNavigator() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator initialRouteName="Welcome" screenOptions={{ headerShown: false }}>
       <Stack.Screen
         name="MainTabs"
         component={BottomTabNavigator}
+      />
+
+      <Stack.Screen
+        name="Welcome"
+        component={WelcomeScreen}
       />
 
       <Stack.Screen
