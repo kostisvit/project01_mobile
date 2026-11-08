@@ -89,7 +89,7 @@ const RegisterScreen = () => {
     setError('');
 
     try {
-      await axios.post(`${API_URL}auth/register/`, {
+      await axios.post(`${API_URL}api/accounts/register/`, {
         email: normalizedEmail,
         password,
       });

@@ -44,20 +44,17 @@ const AppHeader = ({ loading }: { loading: boolean }) => {
   };
 
   const displayName =
-    user?.first_name && user?.last_name
-      ? `${user.first_name} ${user.last_name}`
-      : user?.email;
+  [
+    user?.profile?.first_name,
+    user?.profile?.last_name,
+  ]
+    .filter(Boolean)
+    .join(" ") || user?.email || "User";
 
   return (
     <>
       {/* HEADER */}
       <View style={styles.header}>
-        {/* <TouchableOpacity
-          style={styles.searchBtn}
-          onPress={() => navigation.navigate('Search')}
-        >
-          <MaterialIcons name="search" size={26} color="#fff" />
-        </TouchableOpacity> */}
 
         <Text
           style={styles.brand}

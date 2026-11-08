@@ -52,9 +52,9 @@ export default function RootNavigator() {
         component={LocationPermissionScreen}
       />
 
-      <Stack.Screen
+      {/* <Stack.Screen
         name="Home"
-        component={HomeScreen} />
+        component={HomeScreen} /> */}
     </Stack.Navigator>
   );
 }

@@ -1,7 +1,7 @@
 import Config from 'react-native-config';
 
 const API_URL = Config.API_URL;
-export const LOGIN_URL = `${API_URL}/api/auth/login/`;
+export const LOGIN_URL = `${API_URL}/api/accounts/login/`;
 
 export const login = async (email: string, password: string) => {
   const response = await fetch(LOGIN_URL, {

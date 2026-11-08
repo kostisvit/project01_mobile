@@ -58,7 +58,7 @@ export default function BottomTabNavigator() {
         options={{
           title: 'Αγαπημένα',
           tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="favorite" size={size} color={color} />
+            <MaterialIcons name="favorite-outline" size={size} color={color} />
           ),
         }}
       >
@@ -81,7 +81,7 @@ export default function BottomTabNavigator() {
           title: 'Profile',
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons
-              name="person"
+              name="person-outline"
               size={size}
               color={color}
             />

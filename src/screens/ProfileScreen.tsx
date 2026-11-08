@@ -13,7 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import AppHeader from "../components/AppHeader";
 import { getProfile, updateProfile } from "../api/user";
-import { User } from "../types/user";
+import { User,UserProfile } from "../types/user";
 
 const ProfileScreen: React.FC = () => {
   const [profile, setProfile] = useState<User | null>(null);
@@ -32,8 +32,13 @@ const ProfileScreen: React.FC = () => {
 
       setProfile({
         ...data,
-        phone: data.phone ?? "",
+        profile: {
+          first_name: data.profile?.first_name ?? "",
+          last_name: data.profile?.last_name ?? "",
+          phone: data.profile?.phone ?? "",
+        },
       });
+
     } catch (error) {
       console.error("Failed to load profile:", error);
       Alert.alert("Σφάλμα", "Αποτυχία φόρτωσης προφίλ.");
@@ -42,20 +47,18 @@ const ProfileScreen: React.FC = () => {
     }
   };
 
-  const handleChange = <K extends keyof User>(
-    key: K,
-    value: User[K]
-  ) => {
-    if (!profile) return;
+  const handleChange = (key: keyof UserProfile, value: string) => {
+    setProfile(current => {
+      if (!current) return null;
 
-    setProfile((currentProfile) =>
-      currentProfile
-        ? {
-          ...currentProfile,
+      return {
+        ...current,
+        profile: {
+          ...current.profile,
           [key]: value,
-        }
-        : null
-    );
+        },
+      };
+    });
   };
 
   const handleSave = async () => {
@@ -65,16 +68,15 @@ const ProfileScreen: React.FC = () => {
       setSaving(true);
 
       const updated = await updateProfile({
-        first_name: profile.first_name,
-        last_name: profile.last_name,
         email: profile.email,
-        phone: profile.phone,
+        profile: {
+          first_name: profile.profile.first_name,
+          last_name: profile.profile.last_name,
+          phone: profile.profile.phone,
+        },
       });
 
-      setProfile({
-        ...updated,
-        phone: updated.phone ?? "",
-      });
+      setProfile(updated);
 
       Alert.alert("Επιτυχία", "Το προφίλ ενημερώθηκε επιτυχώς.");
     } catch (error) {
@@ -142,7 +144,7 @@ const ProfileScreen: React.FC = () => {
           <Text style={styles.label}>Όνομα</Text>
 
           <TextInput
-            value={profile.first_name ?? ""}
+            value={profile.profile.first_name ?? ""}
             style={styles.input}
             placeholder="Όνομα"
             placeholderTextColor="#9ca3af"
@@ -155,7 +157,7 @@ const ProfileScreen: React.FC = () => {
           <Text style={styles.label}>Επώνυμο</Text>
 
           <TextInput
-            value={profile.last_name ?? ""}
+            value={profile.profile.last_name ?? ""}
             style={styles.input}
             placeholder="Επώνυμο"
             placeholderTextColor="#9ca3af"
@@ -178,7 +180,7 @@ const ProfileScreen: React.FC = () => {
           <Text style={styles.label}>Τηλέφωνο</Text>
 
           <TextInput
-            value={profile.phone ?? ""}
+            value={profile.profile.phone ?? ""}
             style={styles.input}
             placeholder="Τηλέφωνο"
             placeholderTextColor="#9ca3af"
